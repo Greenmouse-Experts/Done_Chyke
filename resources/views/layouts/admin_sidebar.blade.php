@@ -114,7 +114,7 @@
                             </a>
                         </li>
                         <li class="">
-                            <a href="{{route('logout')}}">
+                            <a data-toggle="modal" data-target="#logout" href="#">
                                 <i class="las la-minus"></i><span>Logout</span>
                             </a>
                         </li>

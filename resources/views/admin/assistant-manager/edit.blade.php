@@ -4,7 +4,7 @@
 <div class="content-page">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-3 col-lg-4">
+            <div class="col-xl-4 col-lg-4">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
@@ -65,11 +65,15 @@
                                 <span class="badge bg-danger">Inactive</span>
                                 @endif
                             </div>
+                            <div class="form-group">
+                                <label for="">Date Created:</label>
+                                {{$user->created_at->toDayDateTimeString()}}
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-9 col-lg-8">
+            <div class="col-xl-8 col-lg-8">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">

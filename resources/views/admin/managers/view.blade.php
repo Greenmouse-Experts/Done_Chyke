@@ -29,6 +29,7 @@
                                 <th>Phone Number</th>
                                 <th>Gender</th>
                                 <th>Status</th>
+                                <th>Date Created</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -52,6 +53,7 @@
                                     <span class="badge bg-danger">Inactive</span>
                                     @endif
                                 </td>
+                                <td>{{$manager->created_at->toDayDateTimeString()}}</td>
                                 <td>
                                     <div class="d-flex align-items-center list-action">
                                         <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" href="{{route('admin.edit.manager', Crypt::encrypt($manager->id))}}"><i class="ri-pencil-line mr-0"></i></a>

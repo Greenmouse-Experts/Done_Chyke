@@ -695,8 +695,7 @@ class AdminController extends Controller
             'notifications' => $notifications
         ]);
     }
-
-    // Notifications
+    
     public function read_notification($id)
     {
         $finder = Crypt::decrypt($id);

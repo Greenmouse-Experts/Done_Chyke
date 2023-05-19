@@ -22,6 +22,7 @@
                                 <th>User</th>
                                 <th>Amount</th>
                                 <th>Reference</th>
+                                <th>Date</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -40,6 +41,7 @@
                                 </td>
                                 <td>₦{{number_format($transaction->amount, 2)}}</td$transaction->
                                 <td>{{$transaction->reference}}</td>
+                                <td>{{$transaction->created_at->toDayDateTimeString()}}</td>
                                 <td>
                                     <span class="badge bg-success">{{$transaction->status}}</span>
                                 </td>

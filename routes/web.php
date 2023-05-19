@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\AccountantDashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AssistantManagerDashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,10 +20,40 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('index');
-Route::post('/post/login', [AuthController::class, 'post_login'])->name('post.login');
+Route::get('/forgot', [AuthController::class, 'forgot'])->name('forgot');
+Route::post('/password/forget', [AuthController::class, 'forget_password'])->name('forget.password');
+Route::get('/reset/password/email/{email}', [AuthController::class, 'password_reset_email'])->name('reset.password');
+Route::post('update/password/reset/{id}', [AuthController::class, 'reset_password'])->name('update.new.password');
+Route::post('/user/login', [AuthController::class, 'user_login'])->name('user.login');
 Route::get('/admin/login', [AuthController::class, 'admin_login'])->name('admin.login');
 Route::post('/post/admin/login', [AuthController::class, 'post_admin_login'])->name('post.admin.login');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+// General of both Accountant and Assistant Manager
+Route::prefix('/dashboard')->group(
+    function () {
+        Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/read/notification/{id}', [DashboardController::class, 'read_notification'])->name('read.notification');
+        Route::post('/update/profile/password', [DashboardController::class, 'update_password'])->name('update.password');
+        Route::post('/update/profile', [DashboardController::class, 'update_profile'])->name('update.profile');
+        Route::post('/upload/profile/picture', [DashboardController::class, 'upload_profile_picture'])->name('upload.profile.picture');
+        Route::get('/notifications', [DashboardController::class, 'notifications'])->name('notifications');
+        Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
+    }
+);
+
+// Accountant
+Route::prefix('/accountant')->group(
+    function () {
+    }
+);
+
+// Assistant Manager
+Route::prefix('/assistant-manager')->group(
+    function () {
+    }
+);
 
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
