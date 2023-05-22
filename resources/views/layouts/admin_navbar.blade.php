@@ -5,7 +5,7 @@
                 <i class="ri-menu-line wrapper-menu"></i>
                 <a href="{{route('admin.dashboard')}}" class="header-logo">
                     <img src="{{URL::asset('assets/images/logo.png')}}" class="img-fluid rounded-normal" alt="logo">
-                    <h5 class="logo-title ml-3">Done & Chyke</h5>
+                    <h5 class="logo-title ml-3">{{config('app.name')}}</h5>
 
                 </a>
             </div>

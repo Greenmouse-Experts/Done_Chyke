@@ -66,26 +66,26 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/account/funding/confirm/{response}/{amount}', [AdminController::class, 'account_funding_confirm'])->name('admin.account.funding.confirm');
 
     // Manager
-    Route::get('/admin/managers', [AdminController::class, 'managers'])->name('admin.managers');
-    Route::get('/admin/manager/add', [AdminController::class, 'manager_add'])->name('admin.add.manager');
-    Route::post('/admin/manager/post', [AdminController::class, 'manager_post'])->name('admin.post.manager');
-    Route::get('/admin/manager/edit/{id}', [AdminController::class, 'manager_edit'])->name('admin.edit.manager');
-    Route::post('/admin/manager/update/{id}', [AdminController::class, 'manager_update'])->name('admin.update.manager');
-    Route::get('/admin/manager/activate/{id}', [AdminController::class, 'manager_activate'])->name('admin.activate.manager');
-    Route::get('/admin/manager/deactivate/{id}', [AdminController::class, 'manager_deactivate'])->name('admin.deactivate.manager');
-    Route::post('/admin/manager/delete/{id}', [AdminController::class, 'manager_delete'])->name('admin.delete.manager');
+    Route::get('/admin/staff/managers', [AdminController::class, 'managers'])->name('admin.managers');
+    Route::get('/admin/staff/manager/add', [AdminController::class, 'manager_add'])->name('admin.add.manager');
+    Route::post('/admin/staff/manager/post', [AdminController::class, 'manager_post'])->name('admin.post.manager');
+    Route::get('/admin/staff/manager/edit/{id}', [AdminController::class, 'manager_edit'])->name('admin.edit.manager');
+    Route::post('/admin/staff/manager/update/{id}', [AdminController::class, 'manager_update'])->name('admin.update.manager');
+    Route::get('/admin/staff/manager/activate/{id}', [AdminController::class, 'manager_activate'])->name('admin.activate.manager');
+    Route::get('/admin/staff/manager/deactivate/{id}', [AdminController::class, 'manager_deactivate'])->name('admin.deactivate.manager');
+    Route::post('/admin/staff/manager/delete/{id}', [AdminController::class, 'manager_delete'])->name('admin.delete.manager');
 
     // Accountant
-    Route::get('/admin/accountants', [AdminController::class, 'accountants'])->name('admin.accountants');
-    Route::get('/admin/accountant/add', [AdminController::class, 'accountant_add'])->name('admin.add.accountant');
-    Route::post('/admin/accountant/post', [AdminController::class, 'accountant_post'])->name('admin.post.accountant');
-    Route::get('/admin/accountant/edit/{id}', [AdminController::class, 'accountant_edit'])->name('admin.edit.accountant');
+    Route::get('/admin/staff/accountants', [AdminController::class, 'accountants'])->name('admin.accountants');
+    Route::get('/admin/staff/accountant/add', [AdminController::class, 'accountant_add'])->name('admin.add.accountant');
+    Route::post('/admin/staff/accountant/post', [AdminController::class, 'accountant_post'])->name('admin.post.accountant');
+    Route::get('/admin/staff/accountant/edit/{id}', [AdminController::class, 'accountant_edit'])->name('admin.edit.accountant');
 
     // Assistant Manager
-    Route::get('/admin/assistance/manager', [AdminController::class, 'manager_assistances'])->name('admin.manager.assistances');
-    Route::get('/admin/assistance/manager/add', [AdminController::class, 'manager_assistance_add'])->name('admin.add.manager.assistance');
-    Route::post('/admin/assistance/manager/post', [AdminController::class, 'manager_assistance_post'])->name('admin.post.manager.assistance');
-    Route::get('/admin/assistance/manager/edit/{id}', [AdminController::class, 'assistance_manager_edit'])->name('admin.edit.manager.assistance');
+    Route::get('/admin/staff/assistance/manager', [AdminController::class, 'manager_assistances'])->name('admin.manager.assistances');
+    Route::get('/admin/staff/assistance/manager/add', [AdminController::class, 'manager_assistance_add'])->name('admin.add.manager.assistance');
+    Route::post('/admin/staff/assistance/manager/post', [AdminController::class, 'manager_assistance_post'])->name('admin.post.manager.assistance');
+    Route::get('/admin/staff/assistance/manager/edit/{id}', [AdminController::class, 'assistance_manager_edit'])->name('admin.edit.manager.assistance');
     
     // General Settings
     Route::post('/admin/staff/update/profile{id}', [AdminController::class, 'staff_update_profile'])->name('admin.update.staff.profile');
@@ -101,4 +101,22 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     // Transactions
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+
+    // Tin
+    Route::get('/admin/tins/berating', [AdminController::class, 'tins_berating'])->name('admin.tins.berating');
+    Route::get('/admin/tins/berating/add', [AdminController::class, 'add_tin_berating'])->name('admin.add.tin.berating');
+    Route::post('/admin/tins/berating/post', [AdminController::class, 'post_tin_berating'])->name('admin.post.tin.berating');
+    Route::post('/admin/tins/berating/update/{id}', [AdminController::class, 'tin_berating_update'])->name('admin.update.tin.berating');
+    Route::get('/admin/tins/berating/activate/{id}', [AdminController::class, 'tin_berating_activate'])->name('admin.activate.tin.berating');
+    Route::get('/admin/tins/berating/deactivate/{id}', [AdminController::class, 'tin_berating_deactivate'])->name('admin.deactivate.tin.berating');
+    Route::post('/admin/tins/berating/delete/{id}', [AdminController::class, 'tin_berating_delete'])->name('admin.delete.tin.berating');
+
+    // Columbite
+    Route::get('/admin/columbites/berating', [AdminController::class, 'columbites_berating'])->name('admin.columbites.berating');
+    Route::get('/admin/columbites/berating/add', [AdminController::class, 'add_columbite_berating'])->name('admin.add.columbite.berating');
+    Route::post('/admin/columbites/berating/post', [AdminController::class, 'post_columbite_berating'])->name('admin.post.columbite.berating');
+    Route::post('/admin/columbites/berating/update/{id}', [AdminController::class, 'columbite_berating_update'])->name('admin.update.columbite.berating');
+    Route::get('/admin/columbites/berating/activate/{id}', [AdminController::class, 'columbite_berating_activate'])->name('admin.activate.columbite.berating');
+    Route::get('/admin/columbites/berating/deactivate/{id}', [AdminController::class, 'columbite_berating_deactivate'])->name('admin.deactivate.columbite.berating');
+    Route::post('/admin/columbites/berating/delete/{id}', [AdminController::class, 'columbite_berating_delete'])->name('admin.delete.columbite.berating');
 });

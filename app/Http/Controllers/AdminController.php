@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ColumbiteBerating;
 use App\Models\Manager;
 use App\Models\Notification;
+use App\Models\TinBerating;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
@@ -532,7 +534,6 @@ class AdminController extends Controller
 
 
     // General Settings for Account Type [Accountant and Assistant Manager]
-
     public function staff_activate($id)
     {
         $finder = Crypt::decrypt($id);
@@ -695,7 +696,7 @@ class AdminController extends Controller
             'notifications' => $notifications
         ]);
     }
-    
+
     public function read_notification($id)
     {
         $finder = Crypt::decrypt($id);
@@ -708,4 +709,203 @@ class AdminController extends Controller
 
         return back();
     }
+
+    // Tins
+    public function tins_berating()
+    {
+        return view('admin.tins.view_berating');
+    }
+
+    public function add_tin_berating()
+    {
+        return view('admin.tins.add_berating');
+    }
+
+    public function post_tin_berating(Request $request)
+    {
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+            'price' => ['required', 'numeric'],
+            'unit_price' => ['required', 'numeric'],
+        ]);
+        
+       TinBerating::create([
+            'grade' => $request->grade,
+            'price' => $request->price,
+            'unit_price' => $request->unit_price
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Added successfully!'
+        ]);
+    }
+
+    public function tin_berating_update($id, Request $request)
+    {
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+            'price' => ['required', 'numeric'],
+            'unit_price' => ['required', 'numeric'],
+        ]);
+
+        $finder = Crypt::decrypt($id);
+
+        $tinberating = TinBerating::find($finder);
+        
+        $tinberating->update([
+            'grade' => $request->grade,
+            'price' => $request->price,
+            'unit_price' => $request->unit_price
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Updated successfully!'
+        ]);
+    }
+
+    public function tin_berating_activate($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $tinberating = TinBerating::find($finder);
+
+        $tinberating->update([
+            'status' => 'Active'
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Activated successfully!'
+        ]);
+    }
+
+    public function tin_berating_deactivate($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $tinberating = TinBerating::find($finder);
+
+        $tinberating->update([
+            'status' => 'Inactive'
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Deactivated successfully!'
+        ]);
+    }
+
+    public function tin_berating_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        TinBerating::find($finder)->delete();
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Deleted successfully!'
+        ]);
+    }
+
+    // Columbite
+    public function columbites_berating()
+    {
+        return view('admin.columbites.view_berating');
+    }
+
+    public function add_columbite_berating()
+    {
+        return view('admin.columbites.add_berating');
+    }
+
+    public function post_columbite_berating(Request $request)
+    {
+        $this->validate($request, [
+            'percentage' => ['required', 'string', 'max:255'],
+            'dollar' => ['required', 'numeric'],
+            'exchange' => ['required', 'numeric'],
+        ]);
+        
+       ColumbiteBerating::create([
+            'percentage' => $request->percentage,
+            'dollar_rate' => $request->dollar,
+            'exchange_rate' => $request->exchange
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Added successfully!'
+        ]);
+    }
+
+    public function columbite_berating_update($id, Request $request)
+    {
+        $this->validate($request, [
+            'percentage' => ['required', 'string', 'max:255'],
+            'dollar' => ['required', 'numeric'],
+            'exchange' => ['required', 'numeric'],
+        ]);
+
+        $finder = Crypt::decrypt($id);
+
+        $columbiteberating = ColumbiteBerating::find($finder);
+        
+        $columbiteberating->update([
+            'percentage' => $request->percentage,
+            'dollar_rate' => $request->dollar,
+            'exchange_rate' => $request->exchange
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Updated successfully!'
+        ]);
+    }
+
+    public function columbite_berating_activate($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $columbiteberating = ColumbiteBerating::find($finder);
+
+        $columbiteberating->update([
+            'status' => 'Active'
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Activated successfully!'
+        ]);
+    }
+
+    public function columbite_berating_deactivate($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $columbiteberating = ColumbiteBerating::find($finder);
+
+        $columbiteberating->update([
+            'status' => 'Inactive'
+        ]);
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Deactivated successfully!'
+        ]);
+    }
+
+    public function columbite_berating_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        ColumbiteBerating::find($finder)->delete();
+
+        return back()->with([
+            'type' => 'success',
+            'message' => 'Deleted successfully!'
+        ]);
+    }
+
 }
