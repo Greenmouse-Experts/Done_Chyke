@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tin_beratings', function (Blueprint $table) {
+        Schema::create('analysis_calculations', function (Blueprint $table) {
             $table->id();
-            $table->string('grade')->nullable();
-            $table->decimal('price')->default(0.00);
-            $table->decimal('unit_price')->default(0.00);
+            $table->string('percentage')->nullable();
+            $table->string('dollar_rate')->nullable();
+            $table->string('exchange_rate')->nullable();
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tin_beratings');
+        Schema::dropIfExists('analysis_calculations');
     }
 };

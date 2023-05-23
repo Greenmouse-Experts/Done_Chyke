@@ -6,7 +6,7 @@
         <div class="container">
             <div class="row align-items-center justify-content-center height-self-center">
                 <div class="col-lg-8">
-                    <div class="card auth-card">
+                    <div class="card auth-card" >
                         <div class="card-body p-0">
                             <div class="d-flex align-items-center auth-content">
                                 <div class="col-lg-7 align-self-center">
@@ -24,6 +24,7 @@
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-primary" style="width: 100%">Reset</button>
+                                            <a href="{{route('index')}}" class="form-btn btn btn-dark mt-3" style="width: 100%">Back To Login</a>
                                         </form>
                                     </div>
                                 </div>

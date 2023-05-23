@@ -87,5 +87,5 @@
         </div>
         <!-- Page end  -->
     </div>
-      </div>
+</div>
 @endsection

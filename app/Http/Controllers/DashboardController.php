@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth','verified']);
+    }
+    
     public function dashboard()
     {
         /* This sets the $time variable to the current hour in the 24 hour clock format */

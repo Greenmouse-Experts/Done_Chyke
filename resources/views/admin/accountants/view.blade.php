@@ -8,7 +8,7 @@
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
                         <h4 class="mb-3">Accountants List</h4>
-                        <p class="mb-0">All your Accountant List in one Place </p>
+                        <p class="mb-0">All your Accountant List in one place </p>
                     </div>
                     <a href="{{route('admin.add.accountant')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Accountant</a>
                 </div>

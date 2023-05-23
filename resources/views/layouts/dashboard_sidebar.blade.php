@@ -1,6 +1,6 @@
 <div class="iq-sidebar sidebar-default ">
     <div class="iq-sidebar-logo d-flex align-items-center justify-content-between">
-        <a href="{{route('admin.dashboard')}}" class="header-logo">
+        <a href="{{route('dashboard')}}" class="header-logo">
             <img src="{{URL::asset('assets/images/logo.png')}}" class="img-fluid rounded-normal light-logo" alt="logo">
             <h5 class="logo-title light-logo ml-2">{{config('app.name')}}</h5>
         </a>
@@ -21,6 +21,44 @@
                         <span class="ml-4">Dashboards</span>
                     </a>
                 </li>
+                @if(Auth::user()->account_type == 'Assistant Manager')
+                <li class="{{ (request()->is('assistant-manager/payment/analysis*')) ? 'active' : '' }}">
+                    <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <i class="ri-calculator-line mr-0"></i>
+                        <span class="ml-4">Payment Analysis</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/view')) ? 'active' : '' }}">
+                            <a href="{{route('payment.analysis.tin.view')}}">
+                                <i class="las la-minus"></i><span>Tin</span>
+                            </a>
+                            <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/add')) ? 'active' : '' }}">
+                                    <a href="{{route('payment.analysis.tin.add')}}">
+                                        <i class="las la-minus"></i><span>Add</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="{{ (request()->is('assistant-manager/payment/analysis/columbite/view')) ? 'active' : '' }}">
+                            <a href="{{route('payment.analysis.columbite.view')}}">
+                                <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
+                            <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="{{ (request()->is('payment/analysis/columbite/add')) ? 'active' : '' }}">
+                                    <a href="{{route('payment.analysis.columbite.add')}}">
+                                        <i class="las la-minus"></i><span>Add</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                @endif
                 <li class="{{ (request()->is('dashboard/notifications')) ? 'active' : '' }}">
                     <a href="{{route('notifications')}}" class="svg-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">

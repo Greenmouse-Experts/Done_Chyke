@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ColumbiteBerating;
+use App\Models\AnalysisCalculation;
+use App\Models\BeratingCalculation;
 use App\Models\Manager;
 use App\Models\Notification;
-use App\Models\TinBerating;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
@@ -18,6 +18,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth','verified']);
+    }
+    
     public function dashboard()
     {
         /* This sets the $time variable to the current hour in the 24 hour clock format */
@@ -710,18 +720,18 @@ class AdminController extends Controller
         return back();
     }
 
-    // Tins
-    public function tins_berating()
+    // Calculations
+    public function calculations_berating()
     {
-        return view('admin.tins.view_berating');
+        return view('admin.berating-calculation.view');
     }
 
-    public function add_tin_berating()
+    public function add_calculation_berating()
     {
-        return view('admin.tins.add_berating');
+        return view('admin.berating-calculation.add');
     }
 
-    public function post_tin_berating(Request $request)
+    public function post_calculation_berating(Request $request)
     {
         $this->validate($request, [
             'grade' => ['required', 'numeric'],
@@ -729,7 +739,7 @@ class AdminController extends Controller
             'unit_price' => ['required', 'numeric'],
         ]);
         
-       TinBerating::create([
+       BeratingCalculation::create([
             'grade' => $request->grade,
             'price' => $request->price,
             'unit_price' => $request->unit_price
@@ -741,7 +751,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function tin_berating_update($id, Request $request)
+    public function calculation_berating_update($id, Request $request)
     {
         $this->validate($request, [
             'grade' => ['required', 'numeric'],
@@ -751,9 +761,9 @@ class AdminController extends Controller
 
         $finder = Crypt::decrypt($id);
 
-        $tinberating = TinBerating::find($finder);
+        $beratingcalculation = BeratingCalculation::find($finder);
         
-        $tinberating->update([
+        $beratingcalculation->update([
             'grade' => $request->grade,
             'price' => $request->price,
             'unit_price' => $request->unit_price
@@ -765,13 +775,13 @@ class AdminController extends Controller
         ]);
     }
 
-    public function tin_berating_activate($id)
+    public function calculation_berating_activate($id)
     {
         $finder = Crypt::decrypt($id);
 
-        $tinberating = TinBerating::find($finder);
+        $beratingcalculation = BeratingCalculation::find($finder);
 
-        $tinberating->update([
+        $beratingcalculation->update([
             'status' => 'Active'
         ]);
 
@@ -781,13 +791,13 @@ class AdminController extends Controller
         ]);
     }
 
-    public function tin_berating_deactivate($id)
+    public function calculation_berating_deactivate($id)
     {
         $finder = Crypt::decrypt($id);
 
-        $tinberating = TinBerating::find($finder);
+        $beratingcalculation = BeratingCalculation::find($finder);
 
-        $tinberating->update([
+        $beratingcalculation->update([
             'status' => 'Inactive'
         ]);
 
@@ -797,11 +807,11 @@ class AdminController extends Controller
         ]);
     }
 
-    public function tin_berating_delete($id)
+    public function calculation_berating_delete($id)
     {
         $finder = Crypt::decrypt($id);
 
-        TinBerating::find($finder)->delete();
+        BeratingCalculation::find($finder)->delete();
 
         return back()->with([
             'type' => 'success',
@@ -809,18 +819,17 @@ class AdminController extends Controller
         ]);
     }
 
-    // Columbite
-    public function columbites_berating()
+    public function calculations_analysis()
     {
-        return view('admin.columbites.view_berating');
+        return view('admin.analysis-calculation.view');
     }
 
-    public function add_columbite_berating()
+    public function add_calculation_analysis()
     {
-        return view('admin.columbites.add_berating');
+        return view('admin.analysis-calculation.add');
     }
 
-    public function post_columbite_berating(Request $request)
+    public function post_calculation_analysis(Request $request)
     {
         $this->validate($request, [
             'percentage' => ['required', 'string', 'max:255'],
@@ -828,7 +837,7 @@ class AdminController extends Controller
             'exchange' => ['required', 'numeric'],
         ]);
         
-       ColumbiteBerating::create([
+       AnalysisCalculation::create([
             'percentage' => $request->percentage,
             'dollar_rate' => $request->dollar,
             'exchange_rate' => $request->exchange
@@ -840,7 +849,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function columbite_berating_update($id, Request $request)
+    public function calculation_analysis_update($id, Request $request)
     {
         $this->validate($request, [
             'percentage' => ['required', 'string', 'max:255'],
@@ -850,9 +859,9 @@ class AdminController extends Controller
 
         $finder = Crypt::decrypt($id);
 
-        $columbiteberating = ColumbiteBerating::find($finder);
+        $analysiscalculation = AnalysisCalculation::find($finder);
         
-        $columbiteberating->update([
+        $analysiscalculation->update([
             'percentage' => $request->percentage,
             'dollar_rate' => $request->dollar,
             'exchange_rate' => $request->exchange
@@ -864,13 +873,13 @@ class AdminController extends Controller
         ]);
     }
 
-    public function columbite_berating_activate($id)
+    public function calculation_analysis_activate($id)
     {
         $finder = Crypt::decrypt($id);
 
-        $columbiteberating = ColumbiteBerating::find($finder);
+        $analysiscalculation = AnalysisCalculation::find($finder);
 
-        $columbiteberating->update([
+        $analysiscalculation->update([
             'status' => 'Active'
         ]);
 
@@ -880,13 +889,13 @@ class AdminController extends Controller
         ]);
     }
 
-    public function columbite_berating_deactivate($id)
+    public function calculation_analysis_deactivate($id)
     {
         $finder = Crypt::decrypt($id);
 
-        $columbiteberating = ColumbiteBerating::find($finder);
+        $analysiscalculation = AnalysisCalculation::find($finder);
 
-        $columbiteberating->update([
+        $analysiscalculation->update([
             'status' => 'Inactive'
         ]);
 
@@ -896,11 +905,11 @@ class AdminController extends Controller
         ]);
     }
 
-    public function columbite_berating_delete($id)
+    public function calculation_analysis_delete($id)
     {
         $finder = Crypt::decrypt($id);
 
-        ColumbiteBerating::find($finder)->delete();
+        AnalysisCalculation::find($finder)->delete();
 
         return back()->with([
             'type' => 'success',

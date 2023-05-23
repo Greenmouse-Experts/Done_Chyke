@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('columbite_beratings', function (Blueprint $table) {
+        Schema::create('berating_calculations', function (Blueprint $table) {
             $table->id();
-            $table->string('percentage')->nullable();
-            $table->string('dollar_rate')->nullable();
-            $table->string('exchange_rate')->nullable();
+            $table->string('grade')->nullable();
+            $table->double('price')->default(0.00);
+            $table->double('unit_price')->default(0.00);
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('columbite_beratings');
+        Schema::dropIfExists('berating_calculations');
     }
 };

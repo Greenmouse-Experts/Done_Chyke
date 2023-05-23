@@ -8,7 +8,7 @@
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
                         <h4 class="mb-3">Assistants Manager List</h4>
-                        <p class="mb-0">All your Assistants Manager List in one Place</p>
+                        <p class="mb-0">All your Assistants Manager List in one place</p>
                     </div>
                     <a href="{{route('admin.add.manager.assistance')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Assistant Manager</a>
                 </div>
