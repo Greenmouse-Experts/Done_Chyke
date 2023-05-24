@@ -121,7 +121,7 @@
                                             </div>
                                             <div class="mt-5">
                                                 <a href="{{route('payment.analysis.tin.post')}}" onclick="event.preventDefault();
-                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview</a>
+                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
