@@ -18,12 +18,7 @@
                     <table class="data-table table mb-0 tbl-server-info">
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
-                                <th>
-                                    <div class="checkbox d-inline-block">
-                                        <input type="checkbox" class="checkbox-input" id="checkbox1">
-                                        <label for="checkbox1" class="mb-0"></label>
-                                    </div>
-                                </th>
+                                <th>S/N</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone Number</th>
@@ -36,12 +31,7 @@
                         <tbody class="ligth-body">
                             @foreach(App\Models\Manager::latest()->get() as $manager)
                             <tr>
-                                <td>
-                                    <div class="checkbox d-inline-block">
-                                        <input type="checkbox" class="checkbox-input" id="checkbox2">
-                                        <label for="checkbox2" class="mb-0"></label>
-                                    </div>
-                                </td>
+                                <td>{{$loop->iteration}}</td>
                                 <td>{{$manager->name}}</td>
                                 <td>{{$manager->email}}</td>
                                 <td>{{$manager->phone}}</td>

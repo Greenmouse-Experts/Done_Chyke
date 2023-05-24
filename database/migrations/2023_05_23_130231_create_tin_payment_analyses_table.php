@@ -23,8 +23,11 @@ return new class extends Migration
             $table->double('bags')->default(0.00);
             $table->double('pounds')->default(0.00);
             $table->double('percentage_analysis')->default(0.00);
+            $table->double('bag_equivalent')->default(0.00);
+            $table->double('pound_equivalent')->default(0.00);
             $table->double('price')->default(0.00);
             $table->longText('receipt')->nullable();
+            $table->date('date')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

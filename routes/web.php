@@ -58,8 +58,8 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
         function () {
             //Tin
             Route::get('/payment/analysis/tin/view', [AssistantManagerController::class, 'payment_analysis_tin_view'])->name('payment.analysis.tin.view');
-            Route::get('/payment/analysis/tin/add', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
-            Route::get('/payment/analysis/tin/post', [AssistantManagerController::class, 'payment_analysis_tin_post'])->name('payment.analysis.tin.post');
+            Route::get('/payment/analysis/tin/add/{price}', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
+            Route::any('/payment/analysis/tin/post', [AssistantManagerController::class, 'payment_analysis_tin_post'])->name('payment.analysis.tin.post');
             // Columbite
             Route::get('/payment/analysis/columbite/view', [AssistantManagerController::class, 'payment_analysis_columbite_view'])->name('payment.analysis.columbite.view');
             Route::get('/payment/analysis/columbite/add', [AssistantManagerController::class, 'payment_analysis_columbite_add'])->name('payment.analysis.columbite.add');

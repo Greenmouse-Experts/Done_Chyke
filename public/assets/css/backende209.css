@@ -18698,6 +18698,7 @@ fieldset[disabled] .btn {
     position: relative;
     height: 100vh;
     z-index: 99;
+    background-color: #c56963;
 }
 .login-content .floating-label label {
     color: #676e8a;

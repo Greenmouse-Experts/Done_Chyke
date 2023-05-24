@@ -10,6 +10,10 @@
                         <div class="header-title">
                             <h4 class="card-title">Add Tin Payment Analysis</h4>
                         </div>
+                        @php
+                            $total = $price ?? 0;
+                        @endphp
+                        <span><b>Price: ₦{{number_format($total, 2)}}</b></span>
                     </div>
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">
@@ -24,8 +28,9 @@
                             <div class="tab-pane fade active show" id="pills-pound-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
                                 <div class="card" style="border: 1px solid #c7cbd3 !important;">
                                     <div class="card-body">
-                                        <form action="#" method="POST" data-toggle="validator">
+                                        <form id="preview-button" action="{{route('payment.analysis.tin.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
                                             @csrf
+                                            <input name="type" value="pound" hidden/>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -37,11 +42,20 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Berating</label>
-                                                        <input type="number" class="form-control" placeholder="Enter berating value" name="berating" required>
+                                                        <select class="selectpicker form-control" data-style="py-0" name="berating" required>
+                                                            <option value="">-- Select Berating --</option>
+                                                            @if(App\Models\BeratingCalculation::latest()->get()->count() > 0)
+                                                                @foreach(App\Models\BeratingCalculation::latest()->get() as $berating)
+                                                                <option value="{{$berating->id}}">{{$berating->grade}}</option>
+                                                                @endforeach
+                                                            @else
+                                                            <option value="">No Manager Added</option>
+                                                            @endif
+                                                        </select>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-12">
                                                     <div class="form-group">
                                                         <label>Weight</label>
                                                         <br>
@@ -61,7 +75,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Pounds</label>
-                                                                <input type="number" class="form-control" placeholder="Enter pounds value" name="pounds">
+                                                                <input type="number" class="form-control" placeholder="Enter pounds value" value="0" name="bag_pounds">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
@@ -74,7 +88,7 @@
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>Managers</label>
                                                         <select name="manager" class="selectpicker form-control" data-style="py-0" required>
@@ -87,16 +101,17 @@
                                                             <option value="">No Manager Added</option>
                                                             @endif
                                                         </select>
+                                                        <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>Date</label>
                                                         <input type="date" class="form-control" placeholder="Enter date" name="date" required>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>Receipt</label>
                                                         <input type="file" class="form-control" placeholder="Upload receipt" name="receipt" accept="image/png, image/jpeg, image/jpg" required>
@@ -104,8 +119,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-primary mr-2">Save</button>
-                                            <button type="reset" class="btn btn-danger">Reset</button>
+                                            <div class="mt-5">
+                                                <a href="{{route('payment.analysis.tin.post')}}" onclick="event.preventDefault();
+                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview</a>
+                                                <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
+                                                <button type="reset" class="btn btn-danger">Reset</button>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
