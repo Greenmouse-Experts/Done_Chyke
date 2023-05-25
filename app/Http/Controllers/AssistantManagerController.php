@@ -66,12 +66,22 @@ class AssistantManagerController extends Controller
 
             if($request->weight == 'bag')
             {
+                if($request->bag_pounds == null)
+                {
+                    $bag_pounds = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_pounds' => ['required', 'numeric', 'max:69'],
+                    ]);
+
+                    $bag_pounds = $request->bag_pounds;
+                }
+
                 $this->validate($request, [
                     'bags' => ['required', 'numeric'],
-                    'bag_pounds' => ['string', 'numeric', 'max:69'],
                 ]);
 
-                if($request->bag_pounds < pound_rate)
+                if($bag_pounds < pound_rate)
                 {
                     $price_pound = $berating->unit_price;
                 }
@@ -79,7 +89,7 @@ class AssistantManagerController extends Controller
                 $price_bag = $berating->price;
 
                 $equivalentPriceForBag = $request->bags * $price_bag;
-                $equivalentPriceForPound = $request->bag_pounds * $price_pound;
+                $equivalentPriceForPound = $bag_pounds * $price_pound;
 
                 $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
 
@@ -93,7 +103,7 @@ class AssistantManagerController extends Controller
                     'manager_id' => $manager->id,
                     'berating' => $request->berating,
                     'bags' => $request->bags,
-                    'pounds' => $request->bag_pounds,
+                    'pounds' => $bag_pounds,
                     'bag_equivalent' => $equivalentPriceForBag,
                     'pound_equivalent' => $equivalentPriceForPound,
                     'price' => $totalPrice,
@@ -163,12 +173,22 @@ class AssistantManagerController extends Controller
        
         if($request->weight == 'bag')
         {
+            if($request->bag_pounds == null)
+            {
+                $bag_pounds = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_pounds' => ['required', 'numeric', 'max:69'],
+                ]);
+
+                $bag_pounds = $request->bag_pounds;
+            }
+
             $this->validate($request, [
                 'bags' => ['required', 'numeric'],
-                'bag_pounds' => ['string', 'numeric', 'max:69'],
             ]);
 
-            if($request->bag_pounds < pound_rate)
+            if($bag_pounds < pound_rate)
             {
                 $price_pound = $berating->unit_price;
             }

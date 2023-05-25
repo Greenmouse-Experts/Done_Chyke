@@ -71,7 +71,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Pounds</label>
-                                                                <input type="number" class="form-control" placeholder="Enter pounds value" value="0" name="bag_pounds">
+                                                                <input type="number" class="form-control" id="txtWeight" value="0" onkeyup="this.value = minmax(this.value, null, 69)" placeholder="Enter pounds value" name="bag_pounds">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
@@ -254,6 +254,15 @@
 </div>
 
 <script>
+    function minmax(value, min, max) 
+    {
+        if(parseInt(value) < min || isNaN(parseInt(value))) 
+            return min; 
+        else if(parseInt(value) > max) 
+            return max; 
+        else return value;
+    }
+
     $(document).ready(function() {
         $("input[name$='weight']").click(function() {
             var test = $(this).val();
