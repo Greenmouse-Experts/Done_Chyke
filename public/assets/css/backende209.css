@@ -8703,7 +8703,7 @@ a.text-light-gray:focus {
     top: 0;
     width: 260px;
     height: 100%;
-    background: #fff;
+    background: #c66963;
     -webkit-transition: all 0.6s ease-in-out;
     -moz-transition: all 0.6s ease-in-out;
     -ms-transition: all 0.6s ease-in-out;
@@ -8759,7 +8759,7 @@ a.text-light-gray:focus {
     font-size: 16px;
     white-space: nowrap;
     display: block;
-    color: #676e8a;
+    color: #fff;
     position: relative;
     padding: 15px 20px 15px 20px;
     margin-bottom: 5px;
@@ -8858,11 +8858,13 @@ a.text-light-gray:focus {
     border-radius: unset;
 }
 .sidebar-default .iq-sidebar-menu .iq-menu li a:hover {
-    color: #01041b;
+    color: #c7cbd3;
 }
-.sidebar-default .iq-sidebar-menu .iq-menu li a:hover svg {
-    color: #ff7e41;
+.sidebar-default .iq-sidebar-menu .iq-menu li a:hover svg,
+.sidebar-default .iq-sidebar-menu .iq-menu li a:hover i {
+    color: #c7cbd3;
 }
+
 .sidebar-default .iq-sidebar-menu .iq-menu li a[aria-expanded="true"] {
     color: #ff7e41;
     text-decoration: none;
@@ -8906,7 +8908,7 @@ a.text-light-gray:focus {
     color: #ff7e41;
 }
 .sidebar-default .iq-sidebar-menu .iq-menu li.active .iq-submenu li.active > a {
-    color: #01041b;
+    color: #fff;
     border-radius: 0;
 }
 .sidebar-default
@@ -9157,7 +9159,7 @@ a.text-light-gray:focus {
 .wrapper-menu {
     font-size: 25px;
     text-align: center;
-    color: #110a57;
+    color: #000;
     position: relative;
     -webkit-transition: all 0.6s ease-in-out;
     -moz-transition: all 0.6s ease-in-out;
