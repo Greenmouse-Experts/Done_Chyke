@@ -132,8 +132,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-5">
-                                                <a href="#" onclick="event.preventDefault();
-                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
+                                                <a href="#" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
@@ -252,8 +251,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-5">
-                                                <a href="#" onclick="event.preventDefault();
-                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
+                                                <a href="#" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
