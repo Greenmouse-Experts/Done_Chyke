@@ -18,7 +18,7 @@
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                         </svg>
-                        <span class="ml-4">Dashboards</span>
+                        <span class="ml-4">Dashboard</span>
                     </a>
                 </li>
                 @if(Auth::user()->account_type == 'Assistant Manager')
@@ -37,8 +37,8 @@
                                 <i class="las la-minus"></i><span>Tin</span>
                             </a>
                             <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/add/0')) ? 'active' : '' }}">
-                                    <a href="{{route('payment.analysis.tin.add', 0)}}">
+                                <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/add')) ? 'active' : '' }}">
+                                    <a href="{{route('payment.analysis.tin.add')}}">
                                         <i class="las la-minus"></i><span>Add</span>
                                     </a>
                                 </li>
@@ -49,7 +49,7 @@
                                 <i class="las la-minus"></i><span>Columbite</span>
                             </a>
                             <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('payment/analysis/columbite/add')) ? 'active' : '' }}">
+                                <li class="{{ (request()->is('assistant-manager/payment/analysis/columbite/add')) ? 'active' : '' }}">
                                     <a href="{{route('payment.analysis.columbite.add')}}">
                                         <i class="las la-minus"></i><span>Add</span>
                                     </a>

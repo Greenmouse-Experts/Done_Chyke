@@ -33,7 +33,7 @@
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="custom-control custom-checkbox mb-3">
-                                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                                            <input type="checkbox" class="custom-control-input" name="remember" id="customCheck1">
                                                             <label class="custom-control-label control-label-1" for="customCheck1">Remember Me</label>
                                                         </div>
                                                     </div>

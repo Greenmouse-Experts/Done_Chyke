@@ -25,11 +25,9 @@ class AssistantManagerController extends Controller
         return view('assistant_managers.payment_analysis_tin_view');
     }
 
-    public function payment_analysis_tin_add($price)
+    public function payment_analysis_tin_add()
     {
-        return view('assistant_managers.payment_analysis_tin_add', [
-            'price' => $price
-        ]);
+        return view('assistant_managers.payment_analysis_tin_add');
     }
 
     public function payment_analysis_tin_post(Request $request)
@@ -104,7 +102,7 @@ class AssistantManagerController extends Controller
                 ]);
 
                 return back()->with([
-                    'type' => 'success',
+                    'alertType' => 'success',
                     'message' => 'Payment Voucher created successfully'
                 ]);
             } 
@@ -138,7 +136,7 @@ class AssistantManagerController extends Controller
                 ]);
 
                 return back()->with([
-                    'type' => 'success',
+                    'alertType' => 'success',
                     'message' => 'Payment Voucher created successfully'
                 ]);
             } 
@@ -182,7 +180,11 @@ class AssistantManagerController extends Controller
 
             $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
 
-            return redirect()->route('payment.analysis.tin.add', $totalPrice);
+            // return redirect()->route('payment.analysis.tin.add', $totalPrice);
+            return back()->with([
+                'previewPrice' => 'success',
+                'message' => $totalPrice
+            ]);
         } 
 
         if($request->weight == 'pound')
@@ -197,7 +199,11 @@ class AssistantManagerController extends Controller
 
             $totalPrice = $equivalentPriceForPound;
 
-            return redirect()->route('payment.analysis.tin.add', $totalPrice);
+            // return redirect()->route('payment.analysis.tin.add', $totalPrice);
+            return back()->with([
+                'previewPrice' => 'success',
+                'message' => $totalPrice
+            ]);
         } 
 
         return back()->with([

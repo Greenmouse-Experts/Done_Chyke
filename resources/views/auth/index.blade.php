@@ -226,7 +226,7 @@
                         </div>
                         <div class="forget-style">
                             <div>
-                                <input type="checkbox" class="checks" />
+                                <input type="checkbox" name="remember" class="checks" />
                                 <label class="">Remember Me</label>
                             </div>
                             <div>

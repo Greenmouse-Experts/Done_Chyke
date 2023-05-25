@@ -58,7 +58,7 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
         function () {
             //Tin
             Route::get('/payment/analysis/tin/view', [AssistantManagerController::class, 'payment_analysis_tin_view'])->name('payment.analysis.tin.view');
-            Route::get('/payment/analysis/tin/add/{price}', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
+            Route::get('/payment/analysis/tin/add', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
             Route::any('/payment/analysis/tin/post', [AssistantManagerController::class, 'payment_analysis_tin_post'])->name('payment.analysis.tin.post');
             // Columbite
             Route::get('/payment/analysis/columbite/view', [AssistantManagerController::class, 'payment_analysis_columbite_view'])->name('payment.analysis.columbite.view');
@@ -130,4 +130,10 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/calculations/analysis/activate/{id}', [AdminController::class, 'calculation_analysis_activate'])->name('admin.activate.calculation.analysis');
     Route::get('/admin/calculations/analysis/deactivate/{id}', [AdminController::class, 'calculation_analysis_deactivate'])->name('admin.deactivate.calculation.analysis');
     Route::post('/admin/calculations/analysis/delete/{id}', [AdminController::class, 'calculation_analysis_delete'])->name('admin.delete.calculation.analysis');
+
+    // Payment Voucher
+    //Tin
+    Route::get('/admin/payment/voucher/tin/view', [AdminController::class, 'payment_voucher_tin_view'])->name('admin.payment.voucher.tin.view');
+    // Columbite
+    Route::get('/admin/payment/voucher/columbite/view', [AdminController::class, 'payment_voucher_columbite_view'])->name('admin.payment.voucher.columbite.view');
 });

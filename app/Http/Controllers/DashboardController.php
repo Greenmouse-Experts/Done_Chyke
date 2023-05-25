@@ -81,7 +81,7 @@ class DashboardController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' profile updated successfully!'
         ]);
     }
@@ -99,7 +99,7 @@ class DashboardController extends Controller
         $user->save();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' password updated successfully.'
         ]); 
     }
@@ -121,7 +121,7 @@ class DashboardController extends Controller
         $user->save();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' profile picture uploaded successfully!'
         ]);
     }

@@ -18,7 +18,7 @@
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                         </svg>
-                        <span class="ml-4">Dashboards</span>
+                        <span class="ml-4">Dashboard</span>
                     </a>
                 </li>
                 <li class="{{ (request()->is('admin/staff*')) ? 'active' : '' }}">
@@ -107,6 +107,28 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="{{ (request()->is('admin/payment/voucher*')) ? 'active' : '' }}">
+                    <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <i class="ri-calculator-line mr-0"></i>
+                        <span class="ml-4">Payment Voucher</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('admin/payment/voucher/tin/view')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payment.voucher.tin.view')}}">
+                                <i class="las la-minus"></i><span>Tin</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('admin/payment/voucher/columbite/view')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payment.voucher.columbite.view')}}">
+                                <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
                         </li>
                     </ul>
                 </li>

@@ -49,7 +49,7 @@ class AuthController extends Controller
         }
 
         // authentication attempt
-        if (auth()->attempt($input)) {
+        if (auth()->attempt($input, $request->get('remember'))) {
             if ($user->account_type == 'Administrator') {
                 return redirect()->route('admin.dashboard');
             }
@@ -207,7 +207,7 @@ class AuthController extends Controller
         }
 
         // authentication attempt
-        if (auth()->attempt($input)) 
+        if (auth()->attempt($input, $request->get('remember'))) 
         {
             if ($user->status == '0') {
 

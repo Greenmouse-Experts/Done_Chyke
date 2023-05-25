@@ -6,6 +6,7 @@ use App\Models\AnalysisCalculation;
 use App\Models\BeratingCalculation;
 use App\Models\Manager;
 use App\Models\Notification;
+use App\Models\TinPaymentAnalysis;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
@@ -27,7 +28,7 @@ class AdminController extends Controller
     {
         $this->middleware(['auth','verified']);
     }
-    
+
     public function dashboard()
     {
         /* This sets the $time variable to the current hour in the 24 hour clock format */
@@ -92,7 +93,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' profile updated successfully!'
         ]);
     }
@@ -110,7 +111,7 @@ class AdminController extends Controller
         $user->save();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' password updated successfully.'
         ]); 
     }
@@ -132,7 +133,7 @@ class AdminController extends Controller
         $user->save();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' profile picture uploaded successfully!'
         ]);
     }
@@ -160,7 +161,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Wallet funded successfully.'
         ]);
     }
@@ -202,7 +203,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $manager->name. ' added successfully!'
         ]);
     }
@@ -279,7 +280,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $manager->name. ' updated successfully!'
         ]);
     }
@@ -295,7 +296,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $manager->name. ' activated successfully!'
         ]);
     }
@@ -311,7 +312,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $manager->name. ' deactivated successfully!'
         ]);
     }
@@ -323,7 +324,7 @@ class AdminController extends Controller
         Manager::find($finder)->delete();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Manager deleted successfully!'
         ]);
     }
@@ -387,7 +388,7 @@ class AdminController extends Controller
             });
 
             return back()->with([
-                'type' => 'success',
+                'alertType' => 'success',
                 'message' => $user->name. ' account created successfully!'
             ]);
         }
@@ -418,7 +419,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' account created successfully!'
         ]);
     }
@@ -495,7 +496,7 @@ class AdminController extends Controller
             });
 
             return back()->with([
-                'type' => 'success',
+                'alertType' => 'success',
                 'message' => $user->name. ' account created successfully!'
             ]);
         }
@@ -526,7 +527,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' account created successfully!'
         ]);
     }
@@ -555,7 +556,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' account activated successfully!'
         ]);
     }
@@ -571,7 +572,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' account deactivated successfully!'
         ]);
     }
@@ -583,7 +584,7 @@ class AdminController extends Controller
         User::find($finder)->delete();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'User deleted successfully!'
         ]);
     }
@@ -620,7 +621,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' profile updated successfully!'
         ]);
     }
@@ -658,7 +659,7 @@ class AdminController extends Controller
         }
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' password updated successfully.'
         ]); 
     }
@@ -682,7 +683,7 @@ class AdminController extends Controller
         $user->save();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => $user->name. ' profile picture uploaded successfully!'
         ]);
     }
@@ -746,7 +747,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Added successfully!'
         ]);
     }
@@ -770,7 +771,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Updated successfully!'
         ]);
     }
@@ -786,7 +787,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Activated successfully!'
         ]);
     }
@@ -802,7 +803,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Deactivated successfully!'
         ]);
     }
@@ -814,7 +815,7 @@ class AdminController extends Controller
         BeratingCalculation::find($finder)->delete();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Deleted successfully!'
         ]);
     }
@@ -844,7 +845,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Added successfully!'
         ]);
     }
@@ -868,7 +869,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Updated successfully!'
         ]);
     }
@@ -884,7 +885,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Activated successfully!'
         ]);
     }
@@ -900,7 +901,7 @@ class AdminController extends Controller
         ]);
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Deactivated successfully!'
         ]);
     }
@@ -912,9 +913,25 @@ class AdminController extends Controller
         AnalysisCalculation::find($finder)->delete();
 
         return back()->with([
-            'type' => 'success',
+            'alertType' => 'success',
             'message' => 'Deleted successfully!'
         ]);
     }
+
+    // Payment Voucher
+    public function payment_voucher_tin_view()
+    {
+        $tinPaymentVoucher = TinPaymentAnalysis::latest()->get();
+
+        return view('admin.payment-voucher.view_tin', [
+            'tinPaymentVoucher' => $tinPaymentVoucher
+        ]);
+    }
+
+    public function payment_voucher_columbite_view()
+    {
+        return view('admin.payment-voucher.view_columbite');
+    }
+
 
 }
