@@ -78,8 +78,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary mr-2">Save</button>
-                            <button type="reset" class="btn btn-danger">Reset</button>
+                            <div class="mt-5">
+                                <button type="submit" class="btn btn-primary mr-2">Save</button>
+                                <button type="reset" class="btn btn-danger">Reset</button>
+                            </div>
                         </form>
                     </div>
                 </div>

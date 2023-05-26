@@ -59,10 +59,12 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
             //Tin
             Route::get('/payment/analysis/tin/view', [AssistantManagerController::class, 'payment_analysis_tin_view'])->name('payment.analysis.tin.view');
             Route::get('/payment/analysis/tin/add', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
-            Route::any('/payment/analysis/tin/post', [AssistantManagerController::class, 'payment_analysis_tin_post'])->name('payment.analysis.tin.post');
+            Route::any('/payment/analysis/tin/pound/post', [AssistantManagerController::class, 'payment_analysis_tin_pound_post'])->name('payment.analysis.tin.pound.post');
+            Route::any('/payment/analysis/tin/kg/post', [AssistantManagerController::class, 'payment_analysis_tin_kg_post'])->name('payment.analysis.tin.kg.post');
             // Columbite
             Route::get('/payment/analysis/columbite/view', [AssistantManagerController::class, 'payment_analysis_columbite_view'])->name('payment.analysis.columbite.view');
             Route::get('/payment/analysis/columbite/add', [AssistantManagerController::class, 'payment_analysis_columbite_add'])->name('payment.analysis.columbite.add');
+            Route::any('/payment/analysis/columbite/pound/post', [AssistantManagerController::class, 'payment_analysis_columbite_pound_post'])->name('payment.analysis.columbite.pound.post');
         }
     );
 });
@@ -114,22 +116,22 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     // Transactions
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
 
-    // Calculations
-    Route::get('/admin/calculations/berating', [AdminController::class, 'calculations_berating'])->name('admin.calculations.berating');
-    Route::get('/admin/calculations/berating/add', [AdminController::class, 'add_calculation_berating'])->name('admin.add.calculation.berating');
-    Route::post('/admin/calculations/berating/post', [AdminController::class, 'post_calculation_berating'])->name('admin.post.calculation.berating');
-    Route::post('/admin/calculations/berating/update/{id}', [AdminController::class, 'calculation_berating_update'])->name('admin.update.calculation.berating');
-    Route::get('/admin/calculations/berating/activate/{id}', [AdminController::class, 'calculation_berating_activate'])->name('admin.activate.calculation.berating');
-    Route::get('/admin/calculations/berating/deactivate/{id}', [AdminController::class, 'calculation_berating_deactivate'])->name('admin.deactivate.calculation.berating');
-    Route::post('/admin/calculations/berating/delete/{id}', [AdminController::class, 'calculation_berating_delete'])->name('admin.delete.calculation.berating');
+    // Rates
+    Route::get('/admin/rates/berating', [AdminController::class, 'rates_berating'])->name('admin.rates.berating');
+    Route::get('/admin/rates/berating/add', [AdminController::class, 'add_rate_berating'])->name('admin.add.rate.berating');
+    Route::post('/admin/rates/berating/post', [AdminController::class, 'post_rate_berating'])->name('admin.post.rate.berating');
+    Route::post('/admin/rates/berating/update/{id}', [AdminController::class, 'rate_berating_update'])->name('admin.update.rate.berating');
+    Route::get('/admin/rates/berating/activate/{id}', [AdminController::class, 'rate_berating_activate'])->name('admin.activate.rate.berating');
+    Route::get('/admin/rates/berating/deactivate/{id}', [AdminController::class, 'rate_berating_deactivate'])->name('admin.deactivate.rate.berating');
+    Route::post('/admin/rates/berating/delete/{id}', [AdminController::class, 'rate_berating_delete'])->name('admin.delete.rate.berating');
 
-    Route::get('/admin/calculations/analysis', [AdminController::class, 'calculations_analysis'])->name('admin.calculations.analysis');
-    Route::get('/admin/calculations/analysis/add', [AdminController::class, 'add_calculation_analysis'])->name('admin.add.calculation.analysis');
-    Route::post('/admin/calculations/analysis/post', [AdminController::class, 'post_calculation_analysis'])->name('admin.post.calculation.analysis');
-    Route::post('/admin/calculations/analysis/update/{id}', [AdminController::class, 'calculation_analysis_update'])->name('admin.update.calculation.analysis');
-    Route::get('/admin/calculations/analysis/activate/{id}', [AdminController::class, 'calculation_analysis_activate'])->name('admin.activate.calculation.analysis');
-    Route::get('/admin/calculations/analysis/deactivate/{id}', [AdminController::class, 'calculation_analysis_deactivate'])->name('admin.deactivate.calculation.analysis');
-    Route::post('/admin/calculations/analysis/delete/{id}', [AdminController::class, 'calculation_analysis_delete'])->name('admin.delete.calculation.analysis');
+    Route::get('/admin/rates/analysis', [AdminController::class, 'rates_analysis'])->name('admin.rates.analysis');
+    Route::get('/admin/rates/analysis/add', [AdminController::class, 'add_rate_analysis'])->name('admin.add.rate.analysis');
+    Route::post('/admin/rates/analysis/post', [AdminController::class, 'post_rate_analysis'])->name('admin.post.rate.analysis');
+    Route::post('/admin/rates/analysis/update/{id}', [AdminController::class, 'rate_analysis_update'])->name('admin.update.rate.analysis');
+    Route::get('/admin/rates/analysis/activate/{id}', [AdminController::class, 'rate_analysis_activate'])->name('admin.activate.rate.analysis');
+    Route::get('/admin/rates/analysis/deactivate/{id}', [AdminController::class, 'rate_analysis_deactivate'])->name('admin.deactivate.rate.analysis');
+    Route::post('/admin/rates/analysis/delete/{id}', [AdminController::class, 'rate_analysis_delete'])->name('admin.delete.rate.analysis');
 
     // Payment Voucher
     //Tin

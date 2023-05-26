@@ -26,7 +26,10 @@
                         <div class="success_icon succes-animation icon-top"><i class="ri-check-line"></i></div>
                         <p class="text-success" style="margin-top: 4rem;">Success!</p>
                         <p style="font-size: 24px;">{{session()->get('message')}}</p>
-                        <button type="button" class="btn btn-secondary" id="close">Close</button>
+                        <button type="button" class="btn btn-secondary mr-3" id="close">Close</button>
+                        @if(session()->has('back'))
+                        <a type="button" class="btn btn-secondary" href="{{session()->get('back')}}">Back</a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -53,16 +56,16 @@
 @endif
 
 <script>
-// Get the modal
-var modal = document.getElementById("sweetModal");
+    // Get the modal
+    var modal = document.getElementById("sweetModal");
 
-// Get the <span> element that closes the modal
-var span = document.getElementById("close");
+    // Get the <span> element that closes the modal
+    var span = document.getElementById("close");
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+    modal.style.display = "none";
+    }
 </script>
 
 <style>

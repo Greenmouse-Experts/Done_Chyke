@@ -74,35 +74,35 @@
                         </li>
                     </ul>
                 </li>
-                <li class="{{ (request()->is('admin/calculations*')) ? 'active' : '' }}">
+                <li class="{{ (request()->is('admin/rates*')) ? 'active' : '' }}">
                     <a href="#calculation" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-calculator-line mr-0"></i>
-                        <span class="ml-4">Calculations</span>
+                        <span class="ml-4">Rates</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="10 15 15 20 20 15"></polyline>
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>
                     </a>
                     <ul id="calculation" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="{{ (request()->is('admin/calculations/berating')) ? 'active' : '' }}">
-                            <a href="{{route('admin.calculations.berating')}}">
+                        <li class="{{ (request()->is('admin/rates/berating')) ? 'active' : '' }}">
+                            <a href="{{route('admin.rates.berating')}}">
                                 <i class="las la-minus"></i><span>Berating</span>
                             </a>
                             <ul id="calculation" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('admin/calculations/berating/add')) ? 'active' : '' }}">
-                                    <a href="{{route('admin.add.calculation.berating')}}">
+                                <li class="{{ (request()->is('admin/rates/berating/add')) ? 'active' : '' }}">
+                                    <a href="{{route('admin.add.rate.berating')}}">
                                         <i class="las la-minus"></i><span>Add Berating</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="{{ (request()->is('admin/calculations/analysis')) ? 'active' : '' }}">
-                            <a href="{{route('admin.calculations.analysis')}}">
+                        <li class="{{ (request()->is('admin/rates/analysis')) ? 'active' : '' }}">
+                            <a href="{{route('admin.rates.analysis')}}">
                                 <i class="las la-minus"></i><span>Analysis</span>
                             </a>
                             <ul id="calculation" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('admin/calculations/analysis/add')) ? 'active' : '' }}">
-                                    <a href="{{route('admin.add.calculation.analysis')}}">
+                                <li class="{{ (request()->is('admin/rates/analysis/add')) ? 'active' : '' }}">
+                                    <a href="{{route('admin.add.rate.analysis')}}">
                                         <i class="las la-minus"></i><span>Add Analysis</span>
                                     </a>
                                 </li>

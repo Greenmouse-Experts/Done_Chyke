@@ -22,9 +22,10 @@ return new class extends Migration
             $table->double('berating')->default(0.00);
             $table->double('bags')->default(0.00);
             $table->double('pounds')->default(0.00);
+            $table->double('kgs')->default(0.00);
             $table->double('percentage_analysis')->default(0.00);
-            $table->double('bag_equivalent')->default(0.00);
-            $table->double('pound_equivalent')->default(0.00);
+            $table->double('total_in_pounds')->default(0.00);
+            $table->double('total_in_kg')->default(0.00);
             $table->double('price')->default(0.00);
             $table->longText('receipt')->nullable();
             $table->date('date')->nullable();

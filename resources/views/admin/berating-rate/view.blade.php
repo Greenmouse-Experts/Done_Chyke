@@ -7,10 +7,10 @@
             <div class="col-lg-12">
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
-                        <h4 class="mb-3">Berating Calculation List</h4>
-                        <p class="mb-0">All berating price in one place </p>
+                        <h4 class="mb-3">Berating Rate List</h4>
+                        <p class="mb-0">All berating rates in one place </p>
                     </div>
-                    <a href="{{route('admin.add.calculation.berating')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
+                    <a href="{{route('admin.add.rate.berating')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
             <div class="col-lg-12">
@@ -52,7 +52,7 @@
                                                         <div class="popup text-left">
                                                             <h4 class="mb-4">Edit</h4>
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('admin.update.calculation.berating', Crypt::encrypt($berating->id))}}" method="POST" data-toggle="validator">
+                                                                <form action="{{route('admin.update.rate.berating', Crypt::encrypt($berating->id))}}" method="POST" data-toggle="validator">
                                                                     @csrf
                                                                     <div class="row">
                                                                         <div class="col-md-6">
@@ -87,9 +87,9 @@
                                             </div>
                                         </div>
                                         @if($berating->status == 'Active')
-                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate"href="{{route('admin.deactivate.calculation.berating', Crypt::encrypt($berating->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
+                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate"href="{{route('admin.deactivate.rate.berating', Crypt::encrypt($berating->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
                                         @else
-                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.calculation.berating', Crypt::encrypt($berating->id))}}"><i class="ri-play-line mr-0"></i></a>
+                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.rate.berating', Crypt::encrypt($berating->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
                                         <a class="badge bg-danger mr-2" data-toggle="modal" data-target="#delete-{{$berating->id}}" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                         <div class="modal fade" id="delete-{{$berating->id}}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -99,7 +99,7 @@
                                                         <div class="popup text-left">
                                                             <h4 class="mb-3">Are you sure, you want to delete this analysis price?</h4>
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('admin.delete.calculation.berating', Crypt::encrypt($berating->id))}}" method="post">
+                                                                <form action="{{route('admin.delete.rate.berating', Crypt::encrypt($berating->id))}}" method="post">
                                                                     @csrf
                                                                     <div class="col-lg-12 mt-4">
                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">

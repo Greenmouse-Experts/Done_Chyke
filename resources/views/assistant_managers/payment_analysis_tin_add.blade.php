@@ -24,7 +24,7 @@
                             <div class="tab-pane fade active show" id="pills-pound-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
                                 <div class="card" style="border: 1px solid #c7cbd3 !important;">
                                     <div class="card-body">
-                                        <form id="preview-button" action="{{route('payment.analysis.tin.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
+                                        <form id="preview-button" action="{{route('payment.analysis.tin.pound.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
                                             @csrf
                                             <input name="type" value="pound" hidden/>
                                             <div class="row">
@@ -40,8 +40,8 @@
                                                         <label>Berating</label>
                                                         <select class="selectpicker form-control" data-style="py-0" name="berating" required>
                                                             <option value="">-- Select Berating --</option>
-                                                            @if(App\Models\BeratingCalculation::latest()->get()->count() > 0)
-                                                                @foreach(App\Models\BeratingCalculation::latest()->get() as $berating)
+                                                            @if(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get()->count() > 0)
+                                                                @foreach(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get() as $berating)
                                                                 <option value="{{$berating->id}}">{{$berating->grade}}</option>
                                                                 @endforeach
                                                             @else
@@ -89,8 +89,8 @@
                                                         <label>Managers</label>
                                                         <select name="manager" class="selectpicker form-control" data-style="py-0" required>
                                                             <option value="">-- Select Manager --</option>
-                                                            @if(App\Models\Manager::latest()->get()->count() > 0)
-                                                                @foreach(App\Models\Manager::latest()->get() as $manager)
+                                                            @if(App\Models\Manager::latest()->get()->where('status', '1')->count() > 0)
+                                                                @foreach(App\Models\Manager::latest()->where('status', '1')->get() as $manager)
                                                                 <option value="{{$manager->id}}">{{$manager->name}}</option>
                                                                 @endforeach
                                                             @else
@@ -116,7 +116,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-5">
-                                                <a href="{{route('payment.analysis.tin.post')}}" onclick="event.preventDefault();
+                                                <a href="{{route('payment.analysis.tin.pound.post')}}" onclick="event.preventDefault();
                                                         document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
@@ -128,7 +128,7 @@
                             <div class="tab-pane fade" id="pills-kg-fill" role="tabpanel" aria-labelledby="pills-kg-tab-fill">
                                 <div class="card" style="border: 1px solid #c7cbd3 !important;">
                                     <div class="card-body">
-                                        <form id="preview-button" action="#" method="POST" data-toggle="validator" enctype="multipart/form-data">
+                                        <form id="kg-button" action="{{route('payment.analysis.tin.kg.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
                                             @csrf
                                             <input name="type" value="kg" hidden/>
                                             <div class="row">
@@ -144,8 +144,8 @@
                                                         <label>Berating</label>
                                                         <select class="selectpicker form-control" data-style="py-0" name="berating" required>
                                                             <option value="">-- Select Berating --</option>
-                                                            @if(App\Models\BeratingCalculation::latest()->get()->count() > 0)
-                                                                @foreach(App\Models\BeratingCalculation::latest()->get() as $berating)
+                                                            @if(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get()->count() > 0)
+                                                                @foreach(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get() as $berating)
                                                                 <option value="{{$berating->id}}">{{$berating->grade}}</option>
                                                                 @endforeach
                                                             @else
@@ -158,16 +158,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Percentage (%) Analysis</label>
-                                                        <select class="selectpicker form-control" data-style="py-0" name="berating" required>
-                                                            <option value="">-- Select Percentage (%) Analysis --</option>
-                                                            @if(App\Models\AnalysisCalculation::latest()->get()->count() > 0)
-                                                                @foreach(App\Models\AnalysisCalculation::latest()->get() as $analysis)
-                                                                <option value="{{$berating->id}}">{{$analysis->percentage}}</option>
-                                                                @endforeach
-                                                            @else
-                                                            <option value="">No Percentage Analysis Added</option>
-                                                            @endif
-                                                        </select>
+                                                        <input type="number" class="form-control" placeholder="Enter percentage analysis value" name="percentage">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -175,11 +166,11 @@
                                                     <div class="form-group">
                                                         <label>Weight</label>
                                                         <br>
-                                                        <input type="radio" name="weight" value="bag" /> Bag
-                                                        <input type="radio" name="weight" style="margin-left: 2rem;" value="pound"/> Pound
+                                                        <input type="radio" name="kgweight" value="bag" /> Bag
+                                                        <input type="radio" name="kgweight" style="margin-left: 2rem;" value="kg"/> Kg
                                                     </div>
                                                 </div>
-                                                <div id="weightbag" class="desc col-12" style="display: none;">
+                                                <div id="kgweightbag" class="desc col-12" style="display: none;">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
@@ -190,17 +181,17 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Pounds</label>
-                                                                <input type="number" class="form-control" placeholder="Enter pounds value" value="0" name="bag_pounds">
+                                                                <label>Kg</label>
+                                                                <input type="number" class="form-control" placeholder="Enter kg value" onkeyup="this.value = minmax(this.value, null, 49)" value="0" name="bag_kg">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div id="weightpound" class="desc col-12" style="display: none;">
+                                                <div id="kgweightkg" class="desc col-12" style="display: none;">
                                                     <div class="form-group">
-                                                        <label>Pounds</label>
-                                                        <input type="number" class="form-control" placeholder="Enter pounds value" name="pounds">
+                                                        <label>Kg</label>
+                                                        <input type="number" class="form-control" placeholder="Enter kg value" name="kg">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -209,8 +200,8 @@
                                                         <label>Managers</label>
                                                         <select name="manager" class="selectpicker form-control" data-style="py-0" required>
                                                             <option value="">-- Select Manager --</option>
-                                                            @if(App\Models\Manager::latest()->get()->count() > 0)
-                                                                @foreach(App\Models\Manager::latest()->get() as $manager)
+                                                            @if(App\Models\Manager::latest()->where('status', '1')->get()->count() > 0)
+                                                                @foreach(App\Models\Manager::latest()->where('status', '1')->get() as $manager)
                                                                 <option value="{{$manager->id}}">{{$manager->name}}</option>
                                                                 @endforeach
                                                             @else
@@ -236,7 +227,8 @@
                                                 </div>
                                             </div>
                                             <div class="mt-5">
-                                                <a href="#" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
+                                                <a href="{{route('payment.analysis.tin.kg.post')}}" onclick="event.preventDefault();
+                                                        document.getElementById('kg-button').submit();"class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
@@ -269,6 +261,15 @@
 
             $("div.desc").hide();
             $("#weight" + test).show();
+        });
+    });
+
+    $(document).ready(function() {
+        $("input[name$='kgweight']").click(function() {
+            var test = $(this).val();
+
+            $("div.desc").hide();
+            $("#kgweight" + test).show();
         });
     });
 </script>

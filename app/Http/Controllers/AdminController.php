@@ -204,6 +204,7 @@ class AdminController extends Controller
 
         return back()->with([
             'alertType' => 'success',
+            'back' => route('admin.managers'),
             'message' => $manager->name. ' added successfully!'
         ]);
     }
@@ -389,6 +390,7 @@ class AdminController extends Controller
 
             return back()->with([
                 'alertType' => 'success',
+                'back' => route('admin.accountants'),
                 'message' => $user->name. ' account created successfully!'
             ]);
         }
@@ -420,6 +422,7 @@ class AdminController extends Controller
 
         return back()->with([
             'alertType' => 'success',
+            'back' => route('admin.accountants'),
             'message' => $user->name. ' account created successfully!'
         ]);
     }
@@ -497,6 +500,7 @@ class AdminController extends Controller
 
             return back()->with([
                 'alertType' => 'success',
+                'back' => route('admin.manager.assistances'),
                 'message' => $user->name. ' account created successfully!'
             ]);
         }
@@ -528,6 +532,7 @@ class AdminController extends Controller
 
         return back()->with([
             'alertType' => 'success',
+            'back' => route('admin.manager.assistances'),
             'message' => $user->name. ' account created successfully!'
         ]);
     }
@@ -721,18 +726,18 @@ class AdminController extends Controller
         return back();
     }
 
-    // Calculations
-    public function calculations_berating()
+    // Rates
+    public function rates_berating()
     {
-        return view('admin.berating-calculation.view');
+        return view('admin.berating-rate.view');
     }
 
-    public function add_calculation_berating()
+    public function add_rate_berating()
     {
-        return view('admin.berating-calculation.add');
+        return view('admin.berating-rate.add');
     }
 
-    public function post_calculation_berating(Request $request)
+    public function post_rate_berating(Request $request)
     {
         $this->validate($request, [
             'grade' => ['required', 'numeric'],
@@ -748,11 +753,12 @@ class AdminController extends Controller
 
         return back()->with([
             'alertType' => 'success',
+            'back' => route('admin.rates.berating'),
             'message' => 'Added successfully!'
         ]);
     }
 
-    public function calculation_berating_update($id, Request $request)
+    public function rate_berating_update($id, Request $request)
     {
         $this->validate($request, [
             'grade' => ['required', 'numeric'],
@@ -776,7 +782,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculation_berating_activate($id)
+    public function rate_berating_activate($id)
     {
         $finder = Crypt::decrypt($id);
 
@@ -792,7 +798,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculation_berating_deactivate($id)
+    public function rate_berating_deactivate($id)
     {
         $finder = Crypt::decrypt($id);
 
@@ -808,7 +814,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculation_berating_delete($id)
+    public function rate_berating_delete($id)
     {
         $finder = Crypt::decrypt($id);
 
@@ -820,40 +826,44 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculations_analysis()
+    public function rates_analysis()
     {
-        return view('admin.analysis-calculation.view');
+        return view('admin.analysis-rate.view');
     }
 
-    public function add_calculation_analysis()
+    public function add_rate_analysis()
     {
-        return view('admin.analysis-calculation.add');
+        return view('admin.analysis-rate.add');
     }
 
-    public function post_calculation_analysis(Request $request)
+    public function post_rate_analysis(Request $request)
     {
         $this->validate($request, [
-            'percentage' => ['required', 'string', 'max:255'],
+            'percentage_min' => ['required', 'string', 'max:255'],
+            'percentage_max' => ['required', 'string', 'max:255'],
             'dollar' => ['required', 'numeric'],
             'exchange' => ['required', 'numeric'],
         ]);
         
        AnalysisCalculation::create([
-            'percentage' => $request->percentage,
+            'percentage_min' => $request->percentage_min,
+            'percentage_max' => $request->percentage_max,
             'dollar_rate' => $request->dollar,
             'exchange_rate' => $request->exchange
         ]);
 
         return back()->with([
             'alertType' => 'success',
+            'back' => route('admin.rates.analysis'),
             'message' => 'Added successfully!'
         ]);
     }
 
-    public function calculation_analysis_update($id, Request $request)
+    public function rate_analysis_update($id, Request $request)
     {
         $this->validate($request, [
-            'percentage' => ['required', 'string', 'max:255'],
+            'percentage_min' => ['required', 'string', 'max:255'],
+            'percentage_max' => ['required', 'string', 'max:255'],
             'dollar' => ['required', 'numeric'],
             'exchange' => ['required', 'numeric'],
         ]);
@@ -863,7 +873,8 @@ class AdminController extends Controller
         $analysiscalculation = AnalysisCalculation::find($finder);
         
         $analysiscalculation->update([
-            'percentage' => $request->percentage,
+            'percentage_min' => $request->percentage_min,
+            'percentage_max' => $request->percentage_max,
             'dollar_rate' => $request->dollar,
             'exchange_rate' => $request->exchange
         ]);
@@ -874,7 +885,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculation_analysis_activate($id)
+    public function rate_analysis_activate($id)
     {
         $finder = Crypt::decrypt($id);
 
@@ -890,7 +901,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculation_analysis_deactivate($id)
+    public function rate_analysis_deactivate($id)
     {
         $finder = Crypt::decrypt($id);
 
@@ -906,7 +917,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function calculation_analysis_delete($id)
+    public function rate_analysis_delete($id)
     {
         $finder = Crypt::decrypt($id);
 
