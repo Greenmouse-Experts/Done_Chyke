@@ -10,7 +10,7 @@
                         <h4 class="mb-3">Columbite Payment Analysis</h4>
                         <p class="mb-0">All columbite payment analysis in one place </p>
                     </div>
-                    <a href="{{route('payment.analysis.columbite.add')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
+                    <a href="{{route('payment.analysis.columbite.add', 'pound')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
 

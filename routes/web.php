@@ -63,12 +63,12 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
         function () {
             //Tin
             Route::get('/payment/analysis/tin/view', [AssistantManagerController::class, 'payment_analysis_tin_view'])->name('payment.analysis.tin.view');
-            Route::get('/payment/analysis/tin/add', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
+            Route::get('/payment/analysis/tin/add/{id}', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
             Route::any('/payment/analysis/tin/pound/post', [AssistantManagerController::class, 'payment_analysis_tin_pound_post'])->name('payment.analysis.tin.pound.post');
             Route::any('/payment/analysis/tin/kg/post', [AssistantManagerController::class, 'payment_analysis_tin_kg_post'])->name('payment.analysis.tin.kg.post');
             // Columbite
             Route::get('/payment/analysis/columbite/view', [AssistantManagerController::class, 'payment_analysis_columbite_view'])->name('payment.analysis.columbite.view');
-            Route::get('/payment/analysis/columbite/add', [AssistantManagerController::class, 'payment_analysis_columbite_add'])->name('payment.analysis.columbite.add');
+            Route::get('/payment/analysis/columbite/add/{id}', [AssistantManagerController::class, 'payment_analysis_columbite_add'])->name('payment.analysis.columbite.add');
             Route::any('/payment/analysis/columbite/pound/post', [AssistantManagerController::class, 'payment_analysis_columbite_pound_post'])->name('payment.analysis.columbite.pound.post');
         }
     );

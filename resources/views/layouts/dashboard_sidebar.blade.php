@@ -37,8 +37,8 @@
                                 <i class="las la-minus"></i><span>Tin</span>
                             </a>
                             <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/add')) ? 'active' : '' }}">
-                                    <a href="{{route('payment.analysis.tin.add')}}">
+                                <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/add/pound')) ? 'active' : '' }}">
+                                    <a href="{{route('payment.analysis.tin.add', 'pound')}}">
                                         <i class="las la-minus"></i><span>Add</span>
                                     </a>
                                 </li>
@@ -49,8 +49,8 @@
                                 <i class="las la-minus"></i><span>Columbite</span>
                             </a>
                             <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('assistant-manager/payment/analysis/columbite/add')) ? 'active' : '' }}">
-                                    <a href="{{route('payment.analysis.columbite.add')}}">
+                                <li class="{{ (request()->is('assistant-manager/payment/analysis/columbite/add/pound')) ? 'active' : '' }}">
+                                    <a href="{{route('payment.analysis.columbite.add', 'pound')}}">
                                         <i class="las la-minus"></i><span>Add</span>
                                     </a>
                                 </li>

@@ -32,9 +32,18 @@ class AssistantManagerController extends Controller
         return view('assistant_managers.payment_analysis_tin_view');
     }
 
-    public function payment_analysis_tin_add()
+    public function payment_analysis_tin_add($id)
     {
-        return view('assistant_managers.payment_analysis_tin_add');
+        $active_tab = $id;
+
+        if($active_tab == 'pound') {
+            return view ('assistant_managers.payment_analysis_tin_add', compact('active_tab'));
+        } elseif($active_tab == 'kg') {
+            return view ('assistant_managers.payment_analysis_tin_add', compact('active_tab'));
+        } else {
+            $active_tab == 'kg';
+            return view ('assistant_managers.payment_analysis_tin_add', compact('active_tab'));
+        }
     }
 
     public function payment_analysis_tin_pound_post(Request $request)
@@ -119,7 +128,7 @@ class AssistantManagerController extends Controller
                         'receipt' => '/storage/payment_analysis/'.$filename
                     ]);
 
-                    return back()->with([
+                    return redirect()->route('payment.analysis.tin.add', 'pound')->with([
                         'alertType' => 'success',
                         'message' => 'Payment Voucher created successfully'
                     ]);
@@ -161,7 +170,7 @@ class AssistantManagerController extends Controller
                     'receipt' => '/storage/payment_analysis/'.$filename
                 ]);
 
-                return back()->with([
+                return redirect()->route('payment.analysis.tin.add', 'pound')->with([
                     'alertType' => 'success',
                     'message' => 'Payment Voucher created successfully'
                 ]);
@@ -214,7 +223,7 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
 
-                return back()->with([
+                return redirect()->route('payment.analysis.tin.add', 'pound')->with([
                     'previewPrice' => 'success',
                     'message' => $this->replaceCharsInNumber($totalPrice, '0')
                 ]);
@@ -238,7 +247,7 @@ class AssistantManagerController extends Controller
 
             $totalPrice = $equivalentPriceForPound;
 
-            return back()->with([
+            return redirect()->route('payment.analysis.tin.add', 'pound')->with([
                 'previewPrice' => 'success',
                 'message' => $this->replaceCharsInNumber($totalPrice, '0')
             ]);
@@ -347,7 +356,7 @@ class AssistantManagerController extends Controller
                         'receipt' => '/storage/payment_analysis/'.$filename
                     ]);
 
-                    return back()->with([
+                    return redirect()->route('payment.analysis.tin.add', 'kg')->with([
                         'alertType' => 'success',
                         'message' => 'Payment Voucher created successfully'
                     ]);
@@ -403,7 +412,7 @@ class AssistantManagerController extends Controller
                     'receipt' => '/storage/payment_analysis/'.$filename
                 ]);
 
-                return back()->with([
+                return redirect()->route('payment.analysis.tin.add', 'kg')->with([
                     'alertType' => 'success',
                     'message' => 'Payment Voucher created successfully'
                 ]);
@@ -472,7 +481,7 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                return back()->with([
+                return redirect()->route('payment.analysis.tin.add', 'kg')->with([
                     'previewPrice' => 'success',
                     'message' => $this->replaceCharsInNumber($totalPrice, '0')
                 ]);
@@ -512,7 +521,7 @@ class AssistantManagerController extends Controller
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
-            return back()->with([
+            return redirect()->route('payment.analysis.tin.add', 'kg')->with([
                 'previewPrice' => 'success',
                 'message' => $this->replaceCharsInNumber($totalPrice, '0')
             ]);
@@ -529,9 +538,18 @@ class AssistantManagerController extends Controller
         return view('assistant_managers.payment_analysis_columbite_view');
     }
 
-    public function payment_analysis_columbite_add()
+    public function payment_analysis_columbite_add($id)
     {
-        return view('assistant_managers.payment_analysis_columbite_add');
+        $active_tab = $id;
+
+        if($active_tab == 'pound') {
+            return view ('assistant_managers.payment_analysis_columbite_add', compact('active_tab'));
+        } elseif($active_tab == 'kg') {
+            return view ('assistant_managers.payment_analysis_columbite_add', compact('active_tab'));
+        } else {
+            $active_tab == 'kg';
+            return view ('assistant_managers.payment_analysis_columbite_add', compact('active_tab'));
+        }
     }
 
     public function payment_analysis_columbite_pound_post(Request $request)
@@ -630,7 +648,7 @@ class AssistantManagerController extends Controller
                         'receipt' => '/storage/payment_analysis/'.$filename
                     ]);
 
-                    return back()->with([
+                    return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
                         'alertType' => 'success',
                         'message' => 'Payment Voucher created successfully'
                     ]);
@@ -686,7 +704,7 @@ class AssistantManagerController extends Controller
                     'receipt' => '/storage/payment_analysis/'.$filename
                 ]);
 
-                return back()->with([
+                return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
                     'alertType' => 'success',
                     'message' => 'Payment Voucher created successfully'
                 ]);
@@ -755,7 +773,7 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                return back()->with([
+                return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
                     'previewPrice' => 'success',
                     'message' => $this->replaceCharsInNumber($totalPrice, '0')
                 ]);
@@ -795,7 +813,7 @@ class AssistantManagerController extends Controller
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
-            return back()->with([
+            return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
                 'previewPrice' => 'success',
                 'message' => $this->replaceCharsInNumber($totalPrice, '0')
             ]);

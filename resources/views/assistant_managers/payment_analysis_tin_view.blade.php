@@ -10,7 +10,7 @@
                         <h4 class="mb-3">Tin Payment Analysis</h4>
                         <p class="mb-0">All tin payment analysis in one place </p>
                     </div>
-                    <a href="{{route('payment.analysis.tin.add')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
+                    <a href="{{route('payment.analysis.tin.add', 'pound')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
 
@@ -19,7 +19,7 @@
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
+                                <a class="nav-link" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-kg-tab" data-toggle="pill" href="#pills-kg" role="tab" aria-controls="pills-kg" aria-selected="false">KG</a>
