@@ -46,13 +46,20 @@
                                 <td>{{$berating->created_at->toDayDateTimeString()}}</td>
                                 <td>
                                     <div class="d-flex align-items-center list-action">
-                                        <a class="badge bg-success mr-2" data-toggle="modal"  data-target="#edit-{{$berating->id}}" href="#"><i class="ri-pencil-line mr-0"></i></a>
+                                        <span data-toggle="modal" data-target="#edit-{{$berating->id}}">
+                                            <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="#"><i class="ri-pencil-line mr-0"></i></a>
+                                        </span>
                                         <div class="modal fade" id="edit-{{$berating->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
-                                                            <h4 class="mb-4">Edit</h4>
                                                             <div class="content create-workform bg-body">
                                                                 <form action="{{route('admin.update.rate.analysis', Crypt::encrypt($berating->id))}}" method="POST" data-toggle="validator">
                                                                     @csrf
@@ -102,10 +109,18 @@
                                         @else
                                         <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.rate.analysis', Crypt::encrypt($berating->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
-                                        <a class="badge bg-danger mr-2" data-toggle="modal" data-target="#delete-{{$berating->id}}" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
+                                        <span data-toggle="modal" data-target="#delete-{{$berating->id}}">
+                                            <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
+                                        </span>
                                         <div class="modal fade" id="delete-{{$berating->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Delete</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
                                                             <h4 class="mb-3">Are you sure, you want to delete this analysis price?</h4>

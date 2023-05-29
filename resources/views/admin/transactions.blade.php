@@ -34,6 +34,7 @@
                                 </td>
                                 <td>
                                     @if (App\Models\User::where('id', $transaction->user_id)->exists())
+                                    <p>{{App\Models\User::find($transaction->user_id)->account_type}}</p>
                                     {{App\Models\User::find($transaction->user_id)->name}}
                                     @else
                                         <b>{{ 'USER DELETED' }}</b> 
@@ -43,7 +44,13 @@
                                 <td>{{$transaction->reference}}</td>
                                 <td>{{$transaction->created_at->toDayDateTimeString()}}</td>
                                 <td>
+                                    @if($transaction->status == 'Top Up')
                                     <span class="badge bg-success">{{$transaction->status}}</span>
+                                    @elseif($transaction->status == 'Expense')
+                                    <span class="badge bg-danger">{{$transaction->status}}</span>
+                                    @else
+                                    <span class="badge bg-success">{{$transaction->status}}</span>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

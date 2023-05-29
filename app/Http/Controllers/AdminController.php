@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AnalysisCalculation;
 use App\Models\BeratingCalculation;
+use App\Models\Expenses;
 use App\Models\Manager;
 use App\Models\Notification;
 use App\Models\TinPaymentAnalysis;
@@ -944,5 +945,209 @@ class AdminController extends Controller
         return view('admin.payment-voucher.view_columbite');
     }
 
+    // Expenses
+    public function expenses()
+    {
+        $expenses = Expenses::latest()->get();
+
+        return view('admin.expenses', [
+            'expenses' => $expenses
+        ]);
+    }
+
+    public function update_expense($id, Request $request)
+    {
+        $this->validate($request, [
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric'],
+            'date' => ['required', 'date'],
+        ]);
+
+        $finder = Crypt::decrypt($id);
+
+        $expense = Expenses::find($finder);
+
+        $wallet = Wallet::latest()->first();
+
+        $transaction = Transaction::where('accountant_process_id', $expense->id)->first();
+
+        if($request->amount == $expense->amount)
+        {
+            if (request()->hasFile('receipt')) 
+            {
+                $this->validate($request, [
+                    'receipt' => 'required|mimes:jpeg,png,jpg'
+                ]);
+                
+                $filename = request()->receipt->getClientOriginalName();
+
+                if($expense->receipt) {
+                    Storage::delete(str_replace("storage", "public", $expense->receipt));
+                }
+
+                request()->receipt->storeAs('expenses_receipts', $filename, 'public');
+
+                $expense->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'amount' => $request->amount,
+                    'date' => $request->date,
+                    'receipt' => '/storage/expenses_receipts/'.$filename
+                ]);
+            } else {
+                $expense->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'amount' => $request->amount,
+                    'date' => $request->date
+                ]);
+            }
+
+            Notification::create([
+                'to' => $expense->user_id,
+                'admin_id' => Auth::user()->id,
+                'title' => config('app.name'),
+                'body' => 'Admin has update an expense added by you with title - '.$expense->title
+            ]);
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => 'Expense updated successfully!'
+            ]);
+        } 
+
+        if($request->amount < $expense->amount)
+        {
+            $amount = $expense->amount - $request->amount;
+
+            if (request()->hasFile('receipt')) 
+            {
+                $this->validate($request, [
+                    'receipt' => 'required|mimes:jpeg,png,jpg'
+                ]);
+                
+                $filename = request()->receipt->getClientOriginalName();
+
+                if($expense->receipt) {
+                    Storage::delete(str_replace("storage", "public", $expense->receipt));
+                }
+
+                request()->receipt->storeAs('expenses_receipts', $filename, 'public');
+                
+                $expense->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'amount' => $request->amount,
+                    'date' => $request->date,
+                    'receipt' => '/storage/expenses_receipts/'.$filename
+                ]);
+            } else {
+                $expense->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'amount' => $request->amount,
+                    'date' => $request->date
+                ]);
+            }
+
+            $wallet->update([
+                'amount' => $wallet->amount + $amount
+            ]);
+    
+            $transaction->update([
+                'amount' => $expense->amount,
+            ]);
+    
+            return back()->with([
+                'alertType' => 'success',
+                'message' => 'Expense updated successfully!'
+            ]);
+        }
+
+        $amount = $request->amount - $expense->amount;
+
+        if($amount > $wallet->amount)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Wallet is low, top up and try again!'
+            ]);
+        }
+
+        if (request()->hasFile('receipt')) 
+        {
+            $this->validate($request, [
+                'receipt' => 'required|mimes:jpeg,png,jpg'
+            ]);
+            
+            $filename = request()->receipt->getClientOriginalName();
+
+            if($expense->receipt) {
+                Storage::delete(str_replace("storage", "public", $expense->receipt));
+            }
+
+            request()->receipt->storeAs('expenses_receipts', $filename, 'public');
+
+            $expense->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'amount' => $request->amount,
+                'date' => $request->date,
+                'receipt' => '/storage/expenses_receipts/'.$filename
+            ]);
+        } else {
+            $expense->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'amount' => $request->amount,
+                'date' => $request->date,
+            ]);
+        }
+
+        $wallet->update([
+            'amount' => $wallet->amount - $amount
+        ]);
+
+        $transaction->update([
+            'amount' => $expense->amount,
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Expense updated successfully!'
+        ]);
+    }
+
+    public function delete_expense($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $expense = Expenses::find($finder);
+
+        $wallet = Wallet::latest()->first();
+
+        $transaction = Transaction::where('accountant_process_id', $expense->id)->first();
+
+        if($transaction)
+        {
+            $transaction->delete();
+        }
+
+        $wallet->update([
+            'amount' => $wallet->amount + $expense->amount
+        ]);
+
+        if($expense->receipt) {
+            Storage::delete(str_replace("storage", "public", $expense->receipt));
+        }
+
+        $expense->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Expense deleted successfully!'
+        ]);
+    }
 
 }

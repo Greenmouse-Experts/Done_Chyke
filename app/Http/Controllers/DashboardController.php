@@ -45,8 +45,11 @@ class DashboardController extends Controller
             $moment = "Good night";
         }
 
+        $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
+
         return view('dashboard.dashboard', [
-            'moment' => $moment
+            'moment' => $moment,
+            'notifications' => $notifications
         ]);
     }
 

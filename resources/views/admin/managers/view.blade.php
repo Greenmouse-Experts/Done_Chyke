@@ -48,14 +48,22 @@
                                     <div class="d-flex align-items-center list-action">
                                         <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" href="{{route('admin.edit.manager', Crypt::encrypt($manager->id))}}"><i class="ri-pencil-line mr-0"></i></a>
                                         @if($manager->status == '1')
-                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate"href="{{route('admin.deactivate.manager', Crypt::encrypt($manager->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
+                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="Deactivate" data-original-title="Deactivate"href="{{route('admin.deactivate.manager', Crypt::encrypt($manager->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
                                         @else
-                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.manager', Crypt::encrypt($manager->id))}}"><i class="ri-play-line mr-0"></i></a>
+                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Active" data-original-title="Active" href="{{route('admin.activate.manager', Crypt::encrypt($manager->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
-                                        <a class="badge bg-danger mr-2" data-toggle="modal" data-target="#delete-{{$manager->id}}" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
+                                        <span data-toggle="modal" data-target="#delete-{{$manager->id}}">
+                                            <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
+                                        </span>
                                         <div class="modal fade" id="delete-{{$manager->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Delete</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
                                                             <h4 class="mb-3">Are you sure, you want to delete this user?</h4>

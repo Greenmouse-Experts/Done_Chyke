@@ -40,7 +40,9 @@
                                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                                 </svg>
-                                <span class="bg-primary "></span>
+                                @if(App\Models\Notification::latest()->where('to', Auth::user()->id)->where('status', 'Unread')->get()->count() > 0)
+                                    <span class="badge badge-light ml-2">{{App\Models\Notification::latest()->where('to', Auth::user()->id)->where('status', 'Unread')->get()->count()}}</span>
+                                @endif
                             </a>
                             <div class="iq-sub-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <div class="card shadow-none m-0">
@@ -107,7 +109,7 @@
                                         </div>
                                         <div class="p-3">
                                             <h5 class="mb-1">{{Auth::user()->name}}</h5>
-                                            <h5 class="mb-1">{{Auth::user()->email}}</h5>
+                                            <h6 class="mb-1">{{Auth::user()->email}}</h6>
                                             <p class="mb-0">Since {{Auth::user()->created_at->toDayDateTimeString()}}</p>
                                             <div class="d-flex align-items-center justify-content-center mt-3">
                                                 <a href="{{route('admin.profile')}}" class="btn border mr-2">Profile</a>
@@ -128,9 +130,14 @@
 <div class="modal fade" id="fund-account" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Fund Wallet</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
             <div class="modal-body">
                 <div class="popup text-left">
-                    <h4 class="mb-3">Fund Wallet</h4>
                     <div class="content create-workform bg-body">
                         <form class="paymentForm" data-toggle="validator">
                             @csrf
@@ -156,6 +163,12 @@
 <div class="modal fade" id="logout" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Account Logout</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
             <div class="modal-body">
                 <div class="popup text-left">
                     <h4 class="mb-3 text-center">Are you sure, you want to logout?</h4>

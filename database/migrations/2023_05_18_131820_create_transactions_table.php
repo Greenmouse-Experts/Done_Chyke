@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
+            $table->string('accountant_process_id')->nullable();
+            $table->string('assistant_manager_process_id')->nullable();
             $table->string('amount')->nullable();
             $table->string('reference')->nullable();
             $table->string('status')->nullable();
