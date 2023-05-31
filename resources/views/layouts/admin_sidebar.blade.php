@@ -29,7 +29,7 @@
                             <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
-                        <span class="ml-4">Staffs</span>
+                        <span class="ml-4">Staff</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="10 15 15 20 20 15"></polyline>
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
@@ -111,7 +111,7 @@
                     </ul>
                 </li>
                 <li class="{{ (request()->is('admin/payment/voucher*')) ? 'active' : '' }}">
-                    <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                    <a href="#voucher" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-calculator-line mr-0"></i>
                         <span class="ml-4">Payment Voucher</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -119,7 +119,7 @@
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>
                     </a>
-                    <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                    <ul id="voucher" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="{{ (request()->is('admin/payment/voucher/tin/view')) ? 'active' : '' }}">
                             <a href="{{route('admin.payment.voucher.tin.view')}}">
                                 <i class="las la-minus"></i><span>Tin</span>
@@ -128,6 +128,78 @@
                         <li class="{{ (request()->is('admin/payment/voucher/columbite/view')) ? 'active' : '' }}">
                             <a href="{{route('admin.payment.voucher.columbite.view')}}">
                                 <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="{{ (request()->is('admin/materials*')) ? 'active' : '' }}">
+                    <a href="#material" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <svg class="svg-icon" id="p-dash3" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span class="ml-4">Materials</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="material" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('admin/materials/tin')) ? 'active' : '' }}">
+                            <a href="{{route('admin.material.tin')}}">
+                                <i class="las la-minus"></i><span>Tin</span>
+                            </a>
+                            <ul id="material" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="{{ (request()->is('admin/materials/tin/add')) ? 'active' : '' }}">
+                                    <a href="{{route('admin.add.material.tin')}}">
+                                        <i class="las la-minus"></i><span>Add</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="{{ (request()->is('admin/materials/columbite')) ? 'active' : '' }}">
+                            <a href="{{route('admin.material.columbite')}}">
+                                <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
+                            <ul id="material" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                                <li class="{{ (request()->is('admin/materials/columbite/add')) ? 'active' : '' }}">
+                                    <a href="{{route('admin.add.material.columbite')}}">
+                                        <i class="las la-minus"></i><span>Add</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="{{ (request()->is('admin/weekly/analysis*')) ? 'active' : '' }}">
+                    <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <svg class="svg-icon" id="p-dash7" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span class="ml-4">Weekly Analysis</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('admin/weekly/analysis/tin/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.weekly.analysis.tin.pound')}}">
+                                <i class="las la-minus"></i><span>Tin (Pounds)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('')) ? 'active' : '' }}">
+                            <a href="">
+                                <i class="las la-minus"></i><span>Tin (Kg)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('')) ? 'active' : '' }}">
+                            <a href="">
+                                <i class="las la-minus"></i><span>Columbite (Pounds)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('')) ? 'active' : '' }}">
+                            <a href="">
+                                <i class="las la-minus"></i><span>Columbite (Kg)</span>
                             </a>
                         </li>
                     </ul>

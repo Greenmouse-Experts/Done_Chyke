@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\AnalysisCalculation;
 use App\Models\BeratingCalculation;
+use App\Models\ColumbiteMaterial;
 use App\Models\Expenses;
 use App\Models\Manager;
 use App\Models\Notification;
+use App\Models\TinMaterial;
 use App\Models\TinPaymentAnalysis;
 use App\Models\Transaction;
 use App\Models\User;
@@ -17,6 +19,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use DataTables;
 
 class AdminController extends Controller
 {
@@ -940,6 +943,18 @@ class AdminController extends Controller
         ]);
     }
 
+    public function payment_voucher_tin_edit($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $tinPayment = TinPaymentAnalysis::find($finder);
+
+        return view('admin.payment-voucher.edit_tin', [
+            'tinPayment' => $tinPayment
+        ]);
+
+    }
+
     public function payment_voucher_columbite_view()
     {
         return view('admin.payment-voucher.view_columbite');
@@ -1150,4 +1165,171 @@ class AdminController extends Controller
         ]);
     }
 
+    // Tin Materials
+    public function material_tin()
+    {
+        return view('admin.materials.tin.view');
+    }
+
+    public function add_material_tin()
+    {
+        return view('admin.materials.tin.add');
+    }
+
+    public function post_material_tin(Request $request)
+    {
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+            'material' => ['required', 'numeric'],
+        ]);
+        
+       TinMaterial::create([
+            'grade' => $request->grade,
+            'material' => $request->material,
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'back' => route('admin.material.tin'),
+            'message' => 'Added successfully!'
+        ]);
+    }
+
+    public function material_tin_update($id, Request $request)
+    {
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+            'material' => ['required', 'numeric'],
+        ]);
+
+        $finder = Crypt::decrypt($id);
+
+        $tinMaterial = TinMaterial::find($finder);
+        
+        $tinMaterial->update([
+            'grade' => $request->grade,
+            'material' => $request->material,
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Updated successfully!'
+        ]);
+    }
+
+    public function material_tin_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        TinMaterial::find($finder)->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Deleted successfully!'
+        ]);
+    }
+
+    // Columbite Materials
+    public function material_columbite()
+    {
+        return view('admin.materials.columbite.view');
+    }
+
+    public function add_material_columbite()
+    {
+        return view('admin.materials.columbite.add');
+    }
+
+    public function post_material_columbite(Request $request)
+    {
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+            'material' => ['required', 'numeric'],
+        ]);
+        
+       ColumbiteMaterial::create([
+            'grade' => $request->grade,
+            'material' => $request->material,
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'back' => route('admin.material.columbite'),
+            'message' => 'Added successfully!'
+        ]);
+    }
+
+    public function material_columbite_update($id, Request $request)
+    {
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+            'material' => ['required', 'numeric'],
+        ]);
+
+        $finder = Crypt::decrypt($id);
+
+        $columbiteMaterial = ColumbiteMaterial::find($finder);
+        
+        $columbiteMaterial->update([
+            'grade' => $request->grade,
+            'material' => $request->material,
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Updated successfully!'
+        ]);
+    }
+
+    public function material_columbite_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        ColumbiteMaterial::find($finder)->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Deleted successfully!'
+        ]);
+    }
+
+    // Weekly Analysis Tin (Pounds)
+    public function weekly_analysis_tin_pound()
+    {
+        $tinPayment = TinPaymentAnalysis::latest()->where('type', 'pound')->get();
+
+        if($tinPayment->isEmpty())
+        {
+            $analysis = [];
+
+        } else {
+            
+            $beratingCalculation = BeratingCalculation::latest()->get();
+
+            foreach($tinPayment as $tinpound)
+            {
+                foreach($beratingCalculation as $berating)
+                {
+                    $beratingpayment = BeratingCalculation::find($tinpound->berating);
+
+                    if($berating->grade == $beratingpayment->grade)
+                    {
+                        $data[] = ['date' => $tinpound->date, 'berating' => $berating->grade, 'total' => $tinpound->total_in_pounds];
+
+                        $analysis = array_values(array_unique($data, 0));
+                                    
+                        rsort($analysis);
+                    }
+                }
+            }
+        }
+
+        // return $analysis;
+
+        if (request()->ajax()) {
+            return DataTables::of($analysis)->make(true);
+        }
+        
+        return view('admin.weekly_analysis.tin_pound');
+    }
 }

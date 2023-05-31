@@ -56,7 +56,7 @@
                                 </td>
                                 <td>
                                     <span data-toggle="modal" data-target="#edit-{{$expense->id}}">
-                                        <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="#"><i class="ri-pencil-line mr-0"></i></a>
+                                        <a class="badge bg-primary mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="#"><i class="ri-pencil-line mr-0"></i></a>
                                     </span>
                                     <div class="modal fade" id="edit-{{$expense->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -121,7 +121,7 @@
                                         </div>
                                     </div>
                                     <span data-toggle="modal" data-target="#delete-{{$expense->id}}">
-                                        <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
+                                        <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="{{route('admin.expense.delete', Crypt::encrypt($expense->id))}}"><i class="ri-delete-bin-line mr-0"></i></a>
                                     </span>
                                     <div class="modal fade" id="delete-{{$expense->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">

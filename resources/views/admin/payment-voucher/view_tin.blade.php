@@ -42,6 +42,7 @@
                                                 <th>Receipt</th>
                                                 <th>Total Price</th>
                                                 <th>Date</th>
+                                                <td>Action</td>
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
@@ -61,6 +62,41 @@
                                                 <td><a href="{{config('app.url')}}{{$analysis->receipt}}" target=”_blank”><img id="file-ip-1-preview" class="rm-profile-pic rounded avatar-100" src="{{$analysis->receipt}}" alt="{{$analysis->receipt}}"></a></td>
                                                 <td>₦{{number_format($analysis->price, 2)}}</td>
                                                 <td>{{$analysis->date}}</td>
+                                                <td>
+                                                    <a class="badge bg-primary mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="{{route('admin.payment.voucher.tin.pound.edit', Crypt::encrypt($analysis->id))}}"><i class="ri-pencil-line mr-0"></i></a>
+                                                    <span data-toggle="modal" data-target="#delete-{{$analysis->id}}">
+                                                        <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
+                                                    </span>
+                                                    <div class="modal fade" id="delete-{{$analysis->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Delete</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="popup text-left">
+                                                                        <h4 class="mb-3">Are you sure, you want to delete this voucher?</h4>
+                                                                        <p><span class="text-danger">Note:</span> Every details attached to this coucher will be deleted and amount will be deposited back to the WALLET.</p>
+                                                                        <div class="content create-workform bg-body">
+                                                                            <form action="{{route('admin.expense.delete', Crypt::encrypt($analysis->id))}}" method="post">
+                                                                                @csrf
+                                                                                <div class="col-lg-12 mt-4">
+                                                                                    <div class="d-flex flex-wrap align-items-ceter justify-content-center">
+                                                                                        <div class="btn btn-primary mr-4" data-dismiss="modal">Cancel</div>
+                                                                                        <button type="submit" class="btn btn-primary mr-2">Delete</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
                                             </tr>
                                             @endforeach
                                         </tbody>

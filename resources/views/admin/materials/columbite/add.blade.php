@@ -8,31 +8,24 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Add Berating Rate</h4>
+                            <h4 class="card-title">Add Columbite Material</h4>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{route('admin.post.rate.berating')}}" method="POST" data-toggle="validator">
+                        <form action="{{route('admin.post.material.columbite')}}" method="POST" data-toggle="validator">
                         @csrf
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Grade *</label>
                                         <input type="text" class="form-control" placeholder="Enter grade" name="grade" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Price (per bag) *</label>
-                                        <input type="number" class="form-control" placeholder="Enter price" name="price" required>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Unit Price (per pound) *</label>
-                                        <input type="number" class="form-control" placeholder="Enter unit price" name="unit_price" required>
+                                        <label>Material *</label>
+                                        <input type="number" class="form-control" placeholder="Enter material" name="material" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>

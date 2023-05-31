@@ -164,6 +164,7 @@ class AssistantManagerController extends Controller
 
                     return redirect()->route('payment.analysis.tin.add', 'pound')->with([
                         'alertType' => 'success',
+                        'back' => route('payment.analysis.tin.view'),
                         'message' => 'Payment Voucher created successfully'
                     ]);
                 } else {
@@ -234,6 +235,7 @@ class AssistantManagerController extends Controller
 
                 return redirect()->route('payment.analysis.tin.add', 'pound')->with([
                     'alertType' => 'success',
+                    'back' => route('payment.analysis.tin.view'),
                     'message' => 'Payment Voucher created successfully'
                 ]);
             } 
@@ -450,6 +452,7 @@ class AssistantManagerController extends Controller
     
                     return redirect()->route('payment.analysis.tin.add', 'kg')->with([
                         'alertType' => 'success',
+                        'back' => route('payment.analysis.tin.view'),
                         'message' => 'Payment Voucher created successfully'
                     ]);
                 } else {
@@ -534,6 +537,7 @@ class AssistantManagerController extends Controller
 
                 return redirect()->route('payment.analysis.tin.add', 'kg')->with([
                     'alertType' => 'success',
+                    'back' => route('payment.analysis.tin.view'),
                     'message' => 'Payment Voucher created successfully'
                 ]);
             } 
@@ -800,6 +804,7 @@ class AssistantManagerController extends Controller
 
                     return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
                         'alertType' => 'success',
+                        'back' => route('payment.analysis.columbite.view'),
                         'message' => 'Payment Voucher created successfully'
                     ]);
                 } else {
@@ -884,6 +889,7 @@ class AssistantManagerController extends Controller
 
                 return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
                     'alertType' => 'success',
+                    'back' => route('payment.analysis.columbite.view'),
                     'message' => 'Payment Voucher created successfully'
                 ]);
             } 
