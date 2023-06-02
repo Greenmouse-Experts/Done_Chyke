@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expenses;
-use App\Models\Notification;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,24 +39,6 @@ class AccountantController extends Controller
             'date' => ['required', 'date'],
         ]);
 
-        $wallet = Wallet::latest()->first();
-
-        if($request->amount > $wallet->amount)
-        {
-            $admin = User::where('account_type', 'Administrator')->first();
-
-            Notification::create([
-                'to' => $admin->id,
-                'title' => config('app.name'),
-                'body' => 'Wallet is low, please top up.'
-            ]);
-
-            return back()->with([
-                'type' => 'danger',
-                'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-            ]);
-        }
-
         if (request()->hasFile('receipt')) 
         {
             $this->validate($request, [
@@ -78,7 +58,7 @@ class AccountantController extends Controller
             ]);
 
         } else {
-            
+
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
                 'title' => $request->title,
@@ -87,10 +67,6 @@ class AccountantController extends Controller
                 'date' => $request->date
             ]);
         }
-
-        $wallet->update([
-            'amount' => $wallet->amount - $expense->amount
-        ]);
 
         Transaction::create([
             'user_id' => Auth::user()->id,

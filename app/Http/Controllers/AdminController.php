@@ -9,11 +9,9 @@ use App\Models\ColumbitePaymentAnalysis;
 use App\Models\Expenses;
 use App\Models\Manager;
 use App\Models\Notification;
-use App\Models\TinMaterial;
 use App\Models\TinPaymentAnalysis;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -141,34 +139,6 @@ class AdminController extends Controller
         return back()->with([
             'alertType' => 'success',
             'message' => $user->name. ' profile picture uploaded successfully!'
-        ]);
-    }
-
-    // Fund Account
-    public function account_funding_confirm($response, $amount)
-    {
-        $wallet = Wallet::first();
-
-        $wallet->update([
-            'amount' => $wallet->amount + $amount
-        ]);
-
-        Transaction::create([
-            'user_id' => Auth::user()->id,
-            'amount' => $amount,
-            'reference' => $response,
-            'status' => 'Top Up'
-        ]);
-
-        Notification::create([
-            'to' => Auth::user()->id,
-            'title' => config('app.name'),
-            'body' => 'You have funded ₦' . $amount . ' to '.config('app.name').' wallet.'
-        ]);
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => 'Wallet funded successfully.'
         ]);
     }
 
@@ -985,8 +955,6 @@ class AdminController extends Controller
 
         $expense = Expenses::find($finder);
 
-        $wallet = Wallet::latest()->first();
-
         $transaction = Transaction::where('accountant_process_id', $expense->id)->first();
 
         if($request->amount == $expense->amount)
@@ -1036,8 +1004,6 @@ class AdminController extends Controller
 
         if($request->amount < $expense->amount)
         {
-            $amount = $expense->amount - $request->amount;
-
             if (request()->hasFile('receipt')) 
             {
                 $this->validate($request, [
@@ -1067,10 +1033,6 @@ class AdminController extends Controller
                     'date' => $request->date
                 ]);
             }
-
-            $wallet->update([
-                'amount' => $wallet->amount + $amount
-            ]);
     
             $transaction->update([
                 'amount' => $expense->amount,
@@ -1079,16 +1041,6 @@ class AdminController extends Controller
             return back()->with([
                 'alertType' => 'success',
                 'message' => 'Expense updated successfully!'
-            ]);
-        }
-
-        $amount = $request->amount - $expense->amount;
-
-        if($amount > $wallet->amount)
-        {
-            return back()->with([
-                'type' => 'danger',
-                'message' => 'Wallet is low, top up and try again!'
             ]);
         }
 
@@ -1122,10 +1074,6 @@ class AdminController extends Controller
             ]);
         }
 
-        $wallet->update([
-            'amount' => $wallet->amount - $amount
-        ]);
-
         $transaction->update([
             'amount' => $expense->amount,
         ]);
@@ -1142,18 +1090,12 @@ class AdminController extends Controller
 
         $expense = Expenses::find($finder);
 
-        $wallet = Wallet::latest()->first();
-
         $transaction = Transaction::where('accountant_process_id', $expense->id)->first();
 
         if($transaction)
         {
             $transaction->delete();
         }
-
-        $wallet->update([
-            'amount' => $wallet->amount + $expense->amount
-        ]);
 
         if($expense->receipt) {
             Storage::delete(str_replace("storage", "public", $expense->receipt));

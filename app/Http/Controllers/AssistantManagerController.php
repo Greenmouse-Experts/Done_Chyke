@@ -6,11 +6,9 @@ use App\Models\AnalysisCalculation;
 use App\Models\BeratingCalculation;
 use App\Models\ColumbitePaymentAnalysis;
 use App\Models\Manager;
-use App\Models\Notification;
 use App\Models\TinPaymentAnalysis;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,8 +64,6 @@ class AssistantManagerController extends Controller
 
             $berating = BeratingCalculation::find($request->berating);
 
-            $wallet = Wallet::latest()->first();
-    
             if(!$berating)
             {
                 return back()->with([
@@ -115,22 +111,6 @@ class AssistantManagerController extends Controller
 
                     $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
 
-                    if($totalPrice > $wallet->amount)
-                    {
-                        $admin = User::where('account_type', 'Administrator')->first();
-
-                        Notification::create([
-                            'to' => $admin->id,
-                            'title' => config('app.name'),
-                            'body' => 'Wallet is low, please top up.'
-                        ]);
-
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-                        ]);
-                    }
-
                     $filename = request()->receipt->getClientOriginalName();
                     request()->receipt->storeAs('payment_analysis', $filename, 'public');
 
@@ -148,10 +128,6 @@ class AssistantManagerController extends Controller
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date' => $request->date,
                         'receipt' => '/storage/payment_analysis/'.$filename
-                    ]);
-
-                    $wallet->update([
-                        'amount' => $wallet->amount - $tinPayment->price
                     ]);
             
                     Transaction::create([
@@ -188,22 +164,6 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = $equivalentPriceForPound;
 
-                if($totalPrice > $wallet->amount)
-                {
-                    $admin = User::where('account_type', 'Administrator')->first();
-
-                    Notification::create([
-                        'to' => $admin->id,
-                        'title' => config('app.name'),
-                        'body' => 'Wallet is low, please top up.'
-                    ]);
-
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-                    ]);
-                }
-
                 $filename = request()->receipt->getClientOriginalName();
                 request()->receipt->storeAs('payment_analysis', $filename, 'public');
 
@@ -219,10 +179,6 @@ class AssistantManagerController extends Controller
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date' => $request->date,
                     'receipt' => '/storage/payment_analysis/'.$filename
-                ]);
-
-                $wallet->update([
-                    'amount' => $wallet->amount - $tinPayment->price
                 ]);
         
                 Transaction::create([
@@ -341,8 +297,6 @@ class AssistantManagerController extends Controller
 
             $berating = BeratingCalculation::find($request->berating);
 
-            $wallet = Wallet::latest()->first();
-    
             if(!$berating)
             {
                 return back()->with([
@@ -404,22 +358,6 @@ class AssistantManagerController extends Controller
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
-                    if($totalPrice > $wallet->amount)
-                    {
-                        $admin = User::where('account_type', 'Administrator')->first();
-
-                        Notification::create([
-                            'to' => $admin->id,
-                            'title' => config('app.name'),
-                            'body' => 'Wallet is low, please top up.'
-                        ]);
-
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-                        ]);
-                    }
-
                     $filename = request()->receipt->getClientOriginalName();
                     request()->receipt->storeAs('payment_analysis', $filename, 'public');
 
@@ -438,10 +376,6 @@ class AssistantManagerController extends Controller
                         'receipt' => '/storage/payment_analysis/'.$filename
                     ]);
 
-                    $wallet->update([
-                        'amount' => $wallet->amount - $tinPayment->price
-                    ]);
-            
                     Transaction::create([
                         'user_id' => Auth::user()->id,
                         'accountant_process_id' => $tinPayment->id,
@@ -490,22 +424,6 @@ class AssistantManagerController extends Controller
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                if($totalPrice > $wallet->amount)
-                {
-                    $admin = User::where('account_type', 'Administrator')->first();
-
-                    Notification::create([
-                        'to' => $admin->id,
-                        'title' => config('app.name'),
-                        'body' => 'Wallet is low, please top up.'
-                    ]);
-
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-                    ]);
-                }
-
                 $filename = request()->receipt->getClientOriginalName();
                 request()->receipt->storeAs('payment_analysis', $filename, 'public');
 
@@ -521,10 +439,6 @@ class AssistantManagerController extends Controller
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date' => $request->date,
                     'receipt' => '/storage/payment_analysis/'.$filename
-                ]);
-
-                $wallet->update([
-                    'amount' => $wallet->amount - $tinPayment->price
                 ]);
         
                 Transaction::create([
@@ -692,8 +606,6 @@ class AssistantManagerController extends Controller
             ]);
 
             $berating = BeratingCalculation::find($request->berating);
-
-            $wallet = Wallet::latest()->first();
     
             if(!$berating)
             {
@@ -755,22 +667,6 @@ class AssistantManagerController extends Controller
                     $total = $subTotal * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
-
-                    if($totalPrice > $wallet->amount)
-                    {
-                        $admin = User::where('account_type', 'Administrator')->first();
-
-                        Notification::create([
-                            'to' => $admin->id,
-                            'title' => config('app.name'),
-                            'body' => 'Wallet is low, please top up.'
-                        ]);
-
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-                        ]);
-                    }
                     
                     $filename = request()->receipt->getClientOriginalName();
                     request()->receipt->storeAs('payment_analysis', $filename, 'public');
@@ -788,10 +684,6 @@ class AssistantManagerController extends Controller
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date' => $request->date,
                         'receipt' => '/storage/payment_analysis/'.$filename
-                    ]);
-
-                    $wallet->update([
-                        'amount' => $wallet->amount - $columbitePayment->price
                     ]);
             
                     Transaction::create([
@@ -842,22 +734,6 @@ class AssistantManagerController extends Controller
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                if($totalPrice > $wallet->amount)
-                {
-                    $admin = User::where('account_type', 'Administrator')->first();
-
-                    Notification::create([
-                        'to' => $admin->id,
-                        'title' => config('app.name'),
-                        'body' => 'Wallet is low, please top up.'
-                    ]);
-
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Wallet is low, please contact the administrator to top up and try again!'
-                    ]);
-                }
-
                 $filename = request()->receipt->getClientOriginalName();
                 request()->receipt->storeAs('payment_analysis', $filename, 'public');
 
@@ -873,10 +749,6 @@ class AssistantManagerController extends Controller
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date' => $request->date,
                     'receipt' => '/storage/payment_analysis/'.$filename
-                ]);
-
-                $wallet->update([
-                    'amount' => $wallet->amount - $columbitePayment->price
                 ]);
         
                 Transaction::create([

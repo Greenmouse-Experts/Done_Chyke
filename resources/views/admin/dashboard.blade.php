@@ -41,8 +41,8 @@
                                             <i class="ri-wallet-2-fill mr-0"></i>
                                         </div>
                                         <div>
-                                            <p class="mb-2">Total Wallet Balance</p>
-                                            <h4>₦{{number_format(App\Models\Wallet::latest()->first()->amount, 2)}}</h4>
+                                            <p class="mb-2">Total</p>
+                                            <h4></h4>
                                         </div>
                                     </div>
                                     <div class="iq-progress-bar mt-2">
