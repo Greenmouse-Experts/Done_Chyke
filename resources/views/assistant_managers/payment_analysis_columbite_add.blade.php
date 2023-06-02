@@ -16,9 +16,6 @@
                             <li class="nav-item">
                                 <a class="nav-link @if($active_tab == 'pound') active @endif" id="pills-pound-tab-fill" data-toggle="pill" href="#pills-pound-fill" role="tab" aria-controls="pills-pound" aria-selected="true">COLUMBITE (POUND)</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link  @if($active_tab == 'kg') active @endif" id="pills-kg-tab-fill" data-toggle="pill" href="#pills-kg-fill" role="tab" aria-controls="pills-kg" aria-selected="false">COLUMBITE (KG)</a>
-                            </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent-1">
                             <div class="tab-pane fade  @if($active_tab == 'pound') active show @endif" id="pills-pound-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
@@ -129,13 +126,6 @@
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
                                         </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade @if($active_tab == 'kg') active show @endif" id="pills-kg-fill" role="tabpanel" aria-labelledby="pills-kg-tab-fill">
-                                <div class="card" style="border: 1px solid #c7cbd3 !important;">
-                                    <div class="card-body">
-                                        
                                     </div>
                                 </div>
                             </div>

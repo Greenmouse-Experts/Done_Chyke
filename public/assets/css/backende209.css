@@ -3892,7 +3892,7 @@ textarea.form-control.is-invalid {
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
     list-style: none;
-    background-color: #e9ecef;
+    background-color: #fff;
     border-radius: 10px;
 }
 .breadcrumb-item {

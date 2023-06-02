@@ -2,6 +2,18 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-end">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page">Tin(Pound) Summary</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -12,9 +24,34 @@
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div style="justify-content: flex-start;">
+                            <form action="{{ route('admin.weekly.analysis.tin.pound')}}" method="POST" data-toggle="validator">
+                                @csrf
+                                <label class="mr-2"><strong>Start Date :</strong>
+                                <input type="date" name="start_date" class="form-control" required>
+                                </label>&nbsp;&nbsp;
+                                <label class="mr-2"><strong>End Date :</strong>
+                                <input type="date" name="end_date" class="form-control" required>
+                                </label>
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                            </form>
+                        </div>
+                        <div style="justify-content: flex-end;">
+                            <form action="{{ route('admin.weekly.analysis.tin.pound')}}" method="POST" data-toggle="validator">
+                                @csrf
+                                <select class="form-control">
+                                    <option>-- Select Manager --</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <div class="table-responsive rounded mb-3">
-                    <table class="table mb-0 tbl-server-info" id="tin-pound">
+                    <table class="data-table table mb-0 tbl-server-info" id="tin-pound">
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>Date</th>
@@ -37,6 +74,103 @@
                                 <th>20.4</th>
                                 <th>20.5</th>
                             </tr>
+                            <tbody class="ligth-body">
+                            @foreach($analysis as $anana)
+                            <tr>
+                                <td>{{$anana['date']}}</td>
+                                <td>
+                                    @if ($anana['berating'] == '18.8') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                @if ($anana['berating'] == '18.9') 
+                                    {{$anana['total']}}
+                                     @endif
+                                </td>
+                                <td> 
+                                    @if ($anana['berating'] == '19.0') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td> 
+                                    @if ($anana['berating'] == '19.1') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.2') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.3') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.4') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.5') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.6') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.7') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.8') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '19.9') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.0') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.1') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.2') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.3') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.4') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.5') 
+                                    {{$anana['total']}}
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
                         </thead>
                     </table>
                 </div>
@@ -51,23 +185,23 @@
                         <div class="row w-100 mt-5">
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">18 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">20<sup>28</sup></p>
+                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['18M']['bags']}}<sup>{{$data['18M']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">19 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">38<sup>68</sup></p>
+                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['19M']['bags']}}<sup>{{$data['19M']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">20 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">0</p>
+                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['20M']['bags']}}<sup>{{$data['20M']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Total (bags)</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">59<sup>26</sup></p>
+                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['TOTAL_BAGS']['bags']}}<sup>{{$data['TOTAL_BAGS']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Average Berating</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">18.98</p>
+                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['AB']}}</p>
                             </div>
                         </div>
                     </div>
@@ -78,18 +212,34 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function() { 
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#tin-pound').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('admin.weekly.analysis.tin.pound') }}",
-                columns: [{
-                            data: 'date',
+    });       
+
+
+    $('#filterTable').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('admin.weekly.analysis.tin.pounds') }}",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (data) => {
+                console.log(data);
+                $('#tin-pound').dataTable({
+                    destroy: true,
+                    processing: true,
+                    serverSide: true,
+                    columns: [
+                        {
+                            data: 'data.date',
                             name: 'date'
                         },
                         {
@@ -293,8 +443,13 @@
                     ],
                     order: [
                         [0, 'desc']
-                    ]
+                    ] 
                 });
+            },
+            error: function(data) {
+                console.log(data);
+            }
         });
+    });
 </script>
 @endsection

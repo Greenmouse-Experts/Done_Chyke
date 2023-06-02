@@ -154,19 +154,10 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     // Columbite
     Route::get('/admin/payment/voucher/columbite/view', [AdminController::class, 'payment_voucher_columbite_view'])->name('admin.payment.voucher.columbite.view');
 
-    // Materials
-    Route::get('/admin/materials/tin', [AdminController::class, 'material_tin'])->name('admin.material.tin');
-    Route::get('/admin/materials/tin/add', [AdminController::class, 'add_material_tin'])->name('admin.add.material.tin');
-    Route::post('/admin/materials/tin/post', [AdminController::class, 'post_material_tin'])->name('admin.post.material.tin');
-    Route::post('/admin/materials/tin/update/{id}', [AdminController::class, 'material_tin_update'])->name('admin.update.material.tin');
-    Route::post('/admin/materials/tin/delete/{id}', [AdminController::class, 'material_tin_delete'])->name('admin.delete.material.tin');
-
-    Route::get('/admin/materials/columbite', [AdminController::class, 'material_columbite'])->name('admin.material.columbite');
-    Route::get('/admin/materials/columbite/add', [AdminController::class, 'add_material_columbite'])->name('admin.add.material.columbite');
-    Route::post('/admin/materials/columbite/post', [AdminController::class, 'post_material_columbite'])->name('admin.post.material.columbite');
-    Route::post('/admin/materials/columbite/update/{id}', [AdminController::class, 'material_columbite_update'])->name('admin.update.material.columbite');
-    Route::post('/admin/materials/columbite/delete/{id}', [AdminController::class, 'material_columbite_delete'])->name('admin.delete.material.columbite');
-
     // Weekly Analysis
-    Route::get('/admin/weekly/analysis/tin/pound', [AdminController::class, 'weekly_analysis_tin_pound'])->name('admin.weekly.analysis.tin.pound');
+    Route::any('/admin/weekly/analysis/tin/pound', [AdminController::class, 'weekly_analysis_tin_pound'])->name('admin.weekly.analysis.tin.pound');
+    Route::post('/admin/weekly/analysis/tin/pounds', [AdminController::class, 'weekly_analysis_tin_pounds'])->name('admin.weekly.analysis.tin.pounds');
+
+    Route::any('/admin/weekly/analysis/tin/kg', [AdminController::class, 'weekly_analysis_tin_kg'])->name('admin.weekly.analysis.tin.kg');
+    Route::any('/admin/weekly/analysis/columbite/pound', [AdminController::class, 'weekly_analysis_columbite_pound'])->name('admin.weekly.analysis.columbite.pound');
 });

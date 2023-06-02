@@ -2,6 +2,17 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-end">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-3 col-lg-4">
@@ -12,7 +23,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.upload.profile.picture')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('admin.upload.profile.picture')}}" method="post" enctype="multipart/form-data" data-toggle="validator">
                             @csrf
                             <div class="form-group">
                                 <div class="crm-profile-img-edit position-relative">
@@ -66,7 +77,7 @@
                     </div>
                     <div class="card-body">
                         <div class="new-user-info">
-                            <form action="{{ route('admin.update.profile')}}" method="post">
+                            <form action="{{ route('admin.update.profile')}}" method="post" data-toggle="validator">
                                 @csrf
                                 <div class="row">
                                     <div class="form-group col-md-6">

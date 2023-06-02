@@ -21,9 +21,6 @@
                             <li class="nav-item">
                                 <a class="nav-link active" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-kg-tab" data-toggle="pill" href="#pills-kg" role="tab" aria-controls="pills-kg" aria-selected="false">KG</a>
-                            </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent-2">
                             <div class="tab-pane fade show active" id="pills-pound" role="tabpanel" aria-labelledby="pills-pound-tab">

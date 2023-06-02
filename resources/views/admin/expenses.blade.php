@@ -2,6 +2,17 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-end">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
+                    <li class="breadcrumb-item active" aria-current="page">Expenses</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
