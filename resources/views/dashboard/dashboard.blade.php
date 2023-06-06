@@ -3,6 +3,19 @@
 @section('page-content')
 @if(Auth::user()->account_type == 'Assistant Manager')
     <div class="content-page">
+        <div class="col-lg-12">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="mb-3">Dashboard</h4>
+                </div>
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-4">
@@ -24,11 +37,11 @@
                                         </div>
                                         <div>
                                             <p class="mb-2">Tin (Pound)</p>
-                                            <h4>{{App\Models\TinPaymentAnalysis::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                            <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}</h4>
                                         </div>
                                     </div>
                                     <div class="iq-progress-bar mt-2">
-                                        <span class="bg-info iq-progress progress-1" data-percent="{{App\Models\TinPaymentAnalysis::latest()->where('type', 'pound')->get()->count()}}">
+                                        <span class="bg-info iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
                                         </span>
                                     </div>
                                 </div>
@@ -43,11 +56,11 @@
                                         </div>
                                         <div>
                                             <p class="mb-2">Tin (Kg)</p>
-                                            <h4>{{App\Models\TinPaymentAnalysis::latest()->where('type', 'kg')->get()->count()}}</h4>
+                                            <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get()->count()}}</h4>
                                         </div>
                                     </div>
                                     <div class="iq-progress-bar mt-2">
-                                        <span class="bg-success iq-progress progress-1" data-percent="{{App\Models\TinPaymentAnalysis::latest()->where('type', 'pound')->get()->count()}}">
+                                        <span class="bg-success iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
                                         </span>
                                     </div>
                                 </div>
@@ -57,7 +70,7 @@
                 </div>
                 <div class="col-lg-12">
                     <div class="row">
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-12 col-md-12">
                             <div class="card card-block card-stretch card-height">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-4 card-total-sale">
@@ -66,30 +79,11 @@
                                         </div>
                                         <div>
                                             <p class="mb-2">Columbite (Pound)</p>
-                                            <h4>{{App\Models\ColumbitePaymentAnalysis::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                            <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
                                         </div>
                                     </div>
                                     <div class="iq-progress-bar mt-2">
-                                        <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\ColumbitePaymentAnalysis::latest()->where('type', 'pound')->get()->count()}}">
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4 card-total-sale">
-                                        <div class="icon iq-icon-box-2 bg-success-light">
-                                            <i class="ri-oil-line mr-0"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-2">Columbite (Kg)</p>
-                                            <h4>{{App\Models\ColumbitePaymentAnalysis::latest()->where('type', 'kg')->get()->count()}}</h4>
-                                        </div>
-                                    </div>
-                                    <div class="iq-progress-bar mt-2">
-                                        <span class="bg-success iq-progress progress-1" data-percent="{{App\Models\TinPaymentAnalysis::latest()->where('type', 'kg')->get()->count()}}">
+                                        <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}">
                                         </span>
                                     </div>
                                 </div>
@@ -113,58 +107,64 @@
                         @if($notifications->isEmpty())
                         <p>No Notification</p>
                         @else
-                            @foreach($notifications as $notification)
-                            <tr>
-                                <td>
-                                    @if($notification->status == 'Unread')
-                                    <div class="text-left toast fade show bg-primary text-white border-0 rounded p-2" role="alert" aria-live="assertive" aria-atomic="true">
-                                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Click to read notification" href="{{route('read.notification', Crypt::encrypt($notification->id))}}">
-                                            <div class="toast-header bg-primary text-white">
-                                                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
-                                                    <rect width="100%" height="100%" fill="#fff"></rect>
-                                                </svg>
-                                                <strong class="mr-auto text-white">{{$notification->title}}</strong>
-                                                <small class="text-white">{{$notification->created_at->diffForHumans()}}</small>
-                                                <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
-                                                    <span aria-hidden="true" class="text-white">
-                                                        @if($notification->admin_id == null)
-                                                        @else
-                                                        {{App\Models\User::find($notification->admin_id)->name}}
-                                                        @endif
-                                                    </span>
-                                                </button>
+                        <div class="table-responsive rounded mb-3">
+                            <table class="data-table table mb-0 tbl-server-info">
+                                <tbody class="ligth-body">
+                                    @foreach($notifications as $notification)
+                                    <tr>
+                                        <td>
+                                            @if($notification->status == 'Unread')
+                                            <div class="text-left toast fade show bg-primary text-white border-0 rounded p-2" role="alert" aria-live="assertive" aria-atomic="true">
+                                                <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Click to read notification" href="{{route('read.notification', Crypt::encrypt($notification->id))}}">
+                                                    <div class="toast-header bg-primary text-white">
+                                                        <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                                                            <rect width="100%" height="100%" fill="#fff"></rect>
+                                                        </svg>
+                                                        <strong class="mr-auto text-white">{{$notification->title}}</strong>
+                                                        <small class="text-white">{{$notification->created_at->diffForHumans()}}</small>
+                                                        <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
+                                                            <span aria-hidden="true" class="text-white">
+                                                                @if($notification->admin_id == null)
+                                                                @else
+                                                                {{App\Models\User::find($notification->admin_id)->name}}
+                                                                @endif
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="toast-body text-white">
+                                                        {{$notification->body}}
+                                                    </div>
+                                                </a>
                                             </div>
-                                            <div class="toast-body text-white">
-                                                {{$notification->body}}
+                                            @endif
+                                            @if($notification->status == 'Read')
+                                            <div class="text-left toast fade show bg-success text-white border-0 rounded p-2 mt-3" role="alert" aria-live="assertive" aria-atomic="true">
+                                                <div class="toast-header bg-success text-white">
+                                                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                                                        <rect width="100%" height="100%" fill="#fff"></rect>
+                                                    </svg>
+                                                    <strong class="mr-auto text-white">{{$notification->title}}</strong>
+                                                    <small>{{$notification->created_at->diffForHumans()}}</small>
+                                                    <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
+                                                        <span aria-hidden="true" class="text-white">
+                                                            @if($notification->admin_id == null)
+                                                            @else
+                                                            {{App\Models\User::find($notification->admin_id)->name}}
+                                                            @endif
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <div class="toast-body">
+                                                    {{$notification->body}}
+                                                </div>
                                             </div>
-                                        </a>
-                                    </div>
-                                    @endif
-                                    @if($notification->status == 'Read')
-                                    <div class="text-left toast fade show bg-success text-white border-0 rounded p-2 mt-3" role="alert" aria-live="assertive" aria-atomic="true">
-                                        <div class="toast-header bg-success text-white">
-                                            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
-                                                <rect width="100%" height="100%" fill="#fff"></rect>
-                                            </svg>
-                                            <strong class="mr-auto text-white">{{$notification->title}}</strong>
-                                            <small>{{$notification->created_at->diffForHumans()}}</small>
-                                            <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
-                                                <span aria-hidden="true" class="text-white">
-                                                    @if($notification->admin_id == null)
-                                                    @else
-                                                    {{App\Models\User::find($notification->admin_id)->name}}
-                                                    @endif
-                                                </span>
-                                            </button>
-                                        </div>
-                                        <div class="toast-body">
-                                            {{$notification->body}}
-                                        </div>
-                                    </div>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                         @endif
                         </div>
                     </div>
@@ -293,58 +293,64 @@
                                 @if($notifications->isEmpty())
                                 <p>No Notification</p>
                                 @else
-                                @foreach($notifications as $notification)
-                                <tr>
-                                    <td>
-                                        @if($notification->status == 'Unread')
-                                        <div class="text-left toast fade show bg-primary text-white border-0 rounded p-2" role="alert" aria-live="assertive" aria-atomic="true">
-                                            <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Click to read notification" href="{{route('read.notification', Crypt::encrypt($notification->id))}}">
-                                                <div class="toast-header bg-primary text-white">
-                                                    <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
-                                                        <rect width="100%" height="100%" fill="#fff"></rect>
-                                                    </svg>
-                                                    <strong class="mr-auto text-white">{{$notification->title}}</strong>
-                                                    <small class="text-white">{{$notification->created_at->diffForHumans()}}</small>
-                                                    <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
-                                                        <span aria-hidden="true" class="text-white">
-                                                            @if($notification->admin_id == null)
-                                                            @else
-                                                            {{App\Models\User::find($notification->admin_id)->name}}
-                                                            @endif
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                                <div class="toast-body text-white">
-                                                    {{$notification->body}}
-                                                </div>
-                                            </a>
-                                        </div>
-                                        @endif
-                                        @if($notification->status == 'Read')
-                                        <div class="text-left toast fade show bg-success text-white border-0 rounded p-2 mt-3" role="alert" aria-live="assertive" aria-atomic="true">
-                                            <div class="toast-header bg-success text-white">
-                                                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
-                                                    <rect width="100%" height="100%" fill="#fff"></rect>
-                                                </svg>
-                                                <strong class="mr-auto text-white">{{$notification->title}}</strong>
-                                                <small>{{$notification->created_at->diffForHumans()}}</small>
-                                                <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
-                                                    <span aria-hidden="true" class="text-white">
-                                                        @if($notification->admin_id == null)
-                                                        @else
-                                                        {{App\Models\User::find($notification->admin_id)->name}}
-                                                        @endif
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div class="toast-body">
-                                                {{$notification->body}}
-                                            </div>
-                                        </div>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
+                                <div class="table-responsive rounded mb-3">
+                                    <table class="data-table table mb-0 tbl-server-info">
+                                        <tbody class="ligth-body">
+                                            @foreach($notifications as $notification)
+                                            <tr>
+                                                <td>
+                                                    @if($notification->status == 'Unread')
+                                                    <div class="text-left toast fade show bg-primary text-white border-0 rounded p-2" role="alert" aria-live="assertive" aria-atomic="true">
+                                                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Click to read notification" href="{{route('read.notification', Crypt::encrypt($notification->id))}}">
+                                                            <div class="toast-header bg-primary text-white">
+                                                                <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                                                                    <rect width="100%" height="100%" fill="#fff"></rect>
+                                                                </svg>
+                                                                <strong class="mr-auto text-white">{{$notification->title}}</strong>
+                                                                <small class="text-white">{{$notification->created_at->diffForHumans()}}</small>
+                                                                <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
+                                                                    <span aria-hidden="true" class="text-white">
+                                                                        @if($notification->admin_id == null)
+                                                                        @else
+                                                                        {{App\Models\User::find($notification->admin_id)->name}}
+                                                                        @endif
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="toast-body text-white">
+                                                                {{$notification->body}}
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                    @endif
+                                                    @if($notification->status == 'Read')
+                                                    <div class="text-left toast fade show bg-success text-white border-0 rounded p-2 mt-3" role="alert" aria-live="assertive" aria-atomic="true">
+                                                        <div class="toast-header bg-success text-white">
+                                                            <svg class="bd-placeholder-img rounded mr-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                                                                <rect width="100%" height="100%" fill="#fff"></rect>
+                                                            </svg>
+                                                            <strong class="mr-auto text-white">{{$notification->title}}</strong>
+                                                            <small>{{$notification->created_at->diffForHumans()}}</small>
+                                                            <button type="button" class="mb-1 close text-white" style="font-size: 14px !important;" data-dismiss="toast" aria-label="Close">
+                                                                <span aria-hidden="true" class="text-white">
+                                                                    @if($notification->admin_id == null)
+                                                                    @else
+                                                                    {{App\Models\User::find($notification->admin_id)->name}}
+                                                                    @endif
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="toast-body">
+                                                            {{$notification->body}}
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                                 @endif
                                 </div>
                             </div>

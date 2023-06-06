@@ -209,7 +209,7 @@ class AuthController extends Controller
         // authentication attempt
         if (auth()->attempt($input, $request->get('remember'))) 
         {
-            if ($user->status == '0') {
+            if ($user->status == '0' || $user->access == '0') {
 
                 Auth::logout();
 
@@ -218,6 +218,17 @@ class AuthController extends Controller
                     'message' => 'Account disactivated, please contact administrator.'
                 ]);
             }
+
+            if ($user->access == '0') {
+
+                Auth::logout();
+
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'No access given to you to login.'
+                ]);
+            }
+
 
 
             if ($user->account_type == 'Accountant') {

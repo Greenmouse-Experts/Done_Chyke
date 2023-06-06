@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('berating_calculations', function (Blueprint $table) {
             $table->id();
-            $table->string('grade')->nullable();
+            $table->string('grade')->unique()->nullable();
             $table->double('price')->default(0.00);
             $table->double('unit_price')->default(0.00);
             $table->enum('status', ['Active', 'Inactive'])->default('Active');

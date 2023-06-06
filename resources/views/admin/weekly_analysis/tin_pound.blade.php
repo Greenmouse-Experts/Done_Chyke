@@ -2,29 +2,22 @@
 
 @section('page-content')
 <div class="content-page">
-    <div class="col-12">
-        <div class="d-flex flex-wrap align-items-center justify-content-end">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Summary of Tin (Pound) Material Collected</h4>
+            </div>
+
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
-                    <li class="breadcrumb-item active" aria-current="page">Tin(Pound) Summary</li>
+                    <li class="breadcrumb-item active" aria-current="page">Tin (Pound) Summary</li>
                 </ol>
             </nav>
         </div>
     </div>
-
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-                    <div>
-                        <h4 class="mb-3">Summary of Tin (Pound) Material Collected</h4>
-                        <p class="mb-0">Overall summary of material collected in one place</p>
-                    </div>
-                </div>
-            </div>
-            
+        <div class="row">            
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
@@ -181,7 +174,7 @@
             <div class="col-lg-12">
                 <div class="mt-5 d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div class="w-100">
-                        <h4 class="mb-3">Weekly Production</h4>
+                        <h4 class="mb-3">Production</h4>
                         <div class="row w-100 mt-5">
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">18 Material</p>

@@ -22,39 +22,25 @@
                     </a>
                 </li>
                 @if(Auth::user()->account_type == 'Assistant Manager')
-                <li class="{{ (request()->is('assistant-manager/payment/analysis*')) ? 'active' : '' }}">
-                    <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                <li class="{{ (request()->is('assistant-manager/payment/receipt*')) ? 'active' : '' }}">
+                    <a href="#receipt" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-calculator-line mr-0"></i>
-                        <span class="ml-4">Payment Analysis</span>
+                        <span class="ml-4">Payment receipt</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="10 15 15 20 20 15"></polyline>
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>
                     </a>
-                    <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/view')) ? 'active' : '' }}">
-                            <a href="{{route('payment.analysis.tin.view')}}">
+                    <ul id="receipt" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('assistant-manager/payment/receipt/tin/view')) ? 'active' : '' }}">
+                            <a href="{{route('payment.receipt.tin.view')}}">
                                 <i class="las la-minus"></i><span>Tin</span>
                             </a>
-                            <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('assistant-manager/payment/analysis/tin/add/pound')) ? 'active' : '' }}">
-                                    <a href="{{route('payment.analysis.tin.add', 'pound')}}">
-                                        <i class="las la-minus"></i><span>Add</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
-                        <li class="{{ (request()->is('assistant-manager/payment/analysis/columbite/view')) ? 'active' : '' }}">
-                            <a href="{{route('payment.analysis.columbite.view')}}">
+                        <li class="{{ (request()->is('assistant-manager/payment/receipt/columbite/view')) ? 'active' : '' }}">
+                            <a href="{{route('payment.receipt.columbite.view')}}">
                                 <i class="las la-minus"></i><span>Columbite</span>
                             </a>
-                            <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('assistant-manager/payment/analysis/columbite/add/pound')) ? 'active' : '' }}">
-                                    <a href="{{route('payment.analysis.columbite.add', 'pound')}}">
-                                        <i class="las la-minus"></i><span>Add</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                     </ul>
                 </li>

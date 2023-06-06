@@ -2,14 +2,24 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Analysis Rates List</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Analysis Rate List</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-                    <div>
-                        <h4 class="mb-3">Analysis Rates List</h4>
-                        <p class="mb-0">All analysis rates in one place </p>
-                    </div>
+                <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
                     <a href="{{route('admin.add.rate.analysis')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
@@ -29,27 +39,29 @@
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
-                            @foreach(App\Models\AnalysisCalculation::latest()->get() as $berating)
+                            @foreach(App\Models\AnalysisCalculation::latest()->get() as $rate)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                <td>{{$berating->percentage_min}}</td>
-                                <td>{{$berating->percentage_max}}</td>
-                                <td>{{$berating->dollar_rate}}</td>
-                                <td>{{$berating->exchange_rate}}</td>
+                                <td>{{$rate->percentage_min}}</td>
+                                <td>{{$rate->percentage_max}}</td>
+                                <td>{{$rate->dollar_rate}}</td>
+                                <td>{{$rate->exchange_rate}}</td>
                                 <td>
-                                    @if($berating->status == 'Active')
+                                    @if($rate->status == 'Active')
                                     <span class="badge bg-success">Active</span>
                                     @else
                                     <span class="badge bg-danger">Inactive</span>
                                     @endif
                                 </td>
-                                <td>{{$berating->created_at->toDayDateTimeString()}}</td>
+                                <td>{{$rate->created_at->toDayDateTimeString()}}</td>
                                 <td>
                                     <div class="d-flex align-items-center list-action">
-                                        <span data-toggle="modal" data-target="#edit-{{$berating->id}}">
+                                        @if($rate->created_at < \Carbon\Carbon::now()->addDay())
+                                        <span data-toggle="modal" data-target="#edit-{{$rate->id}}">
                                             <a class="badge bg-primary mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="#"><i class="ri-pencil-line mr-0"></i></a>
                                         </span>
-                                        <div class="modal fade" id="edit-{{$berating->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        @endif
+                                        <div class="modal fade" id="edit-{{$rate->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -61,34 +73,34 @@
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('admin.update.rate.analysis', Crypt::encrypt($berating->id))}}" method="POST" data-toggle="validator">
+                                                                <form action="{{route('admin.update.rate.analysis', Crypt::encrypt($rate->id))}}" method="POST" data-toggle="validator">
                                                                     @csrf
                                                                     <div class="row">
                                                                         <div class="col-md-6">
                                                                             <div class="form-group">
                                                                                 <label>Percentage Min(%) *</label>
-                                                                                <input type="text" class="form-control" placeholder="Enter percentage minimum" value="{{$berating->percentage_min}}" name="percentage_min" required>
+                                                                                <input type="text" class="form-control" placeholder="Enter percentage minimum" value="{{$rate->percentage_min}}" name="percentage_min" required>
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-6">
                                                                             <div class="form-group">
                                                                                 <label>Percentage(%) *</label>
-                                                                                <input type="text" class="form-control" placeholder="Enter percentage maximum" value="{{$berating->percentage_max}}" name="percentage_max" required>
+                                                                                <input type="text" class="form-control" placeholder="Enter percentage maximum" value="{{$rate->percentage_max}}" name="percentage_max" required>
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-12">
                                                                             <div class="form-group">
                                                                                 <label>Percentage Max(%) *</label>
-                                                                                <input type="text" class="form-control" placeholder="Enter Dollar Rate" value="{{$berating->dollar_rate}}" name="dollar" required>
+                                                                                <input type="text" class="form-control" placeholder="Enter Dollar Rate" value="{{$rate->dollar_rate}}" name="dollar" required>
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-12">
                                                                             <div class="form-group">
                                                                                 <label>Exchange Rate *</label>
-                                                                                <input type="number" class="form-control" placeholder="Enter Exchange Rate" value="{{$berating->exchange_rate}}" name="exchange" required>
+                                                                                <input type="number" class="form-control" placeholder="Enter Exchange Rate" value="{{$rate->exchange_rate}}" name="exchange" required>
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
@@ -104,15 +116,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if($berating->status == 'Active')
-                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate"href="{{route('admin.deactivate.rate.analysis', Crypt::encrypt($berating->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
+                                        @if($rate->status == 'Active')
+                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate"href="{{route('admin.deactivate.rate.analysis', Crypt::encrypt($rate->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
                                         @else
-                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.rate.analysis', Crypt::encrypt($berating->id))}}"><i class="ri-play-line mr-0"></i></a>
+                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.rate.analysis', Crypt::encrypt($rate->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
-                                        <span data-toggle="modal" data-target="#delete-{{$berating->id}}">
+                                        <span data-toggle="modal" data-target="#delete-{{$rate->id}}">
                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                         </span>
-                                        <div class="modal fade" id="delete-{{$berating->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal fade" id="delete-{{$rate->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -125,7 +137,7 @@
                                                         <div class="popup text-left">
                                                             <h4 class="mb-3">Are you sure, you want to delete this analysis price?</h4>
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('admin.delete.rate.analysis', Crypt::encrypt($berating->id))}}" method="post">
+                                                                <form action="{{route('admin.delete.rate.analysis', Crypt::encrypt($rate->id))}}" method="post">
                                                                     @csrf
                                                                     <div class="col-lg-12 mt-4">
                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">

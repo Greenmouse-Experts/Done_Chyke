@@ -70,6 +70,8 @@ class DashboardController extends Controller
         {
             $user->update([
                 'name' => $request->name,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
             ]); 
         } else {
             //Validate Request
@@ -80,6 +82,8 @@ class DashboardController extends Controller
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
             ]); 
         }
 

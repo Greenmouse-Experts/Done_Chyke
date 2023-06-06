@@ -1,7 +1,7 @@
 <footer class="iq-footer">
     <div class="container-fluid">
-        <div class="card">
-            <div class="card-body">
+        <div class="card" style="margin-top: 10px !important; margin-bottom: 10px !important;">
+            <div class="card-body" style="padding: 10px !important;">
                 <div class="row">
                     <div class="col-lg-6 text-right">
                         <span class="mr-1">

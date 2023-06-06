@@ -2,14 +2,24 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Berating Rates List</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Berating Rate List</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-                    <div>
-                        <h4 class="mb-3">Berating Rate List</h4>
-                        <p class="mb-0">All berating rates in one place </p>
-                    </div>
+                <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
                     <a href="{{route('admin.add.rate.berating')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
@@ -44,9 +54,11 @@
                                 <td>{{$berating->created_at->toDayDateTimeString()}}</td>
                                 <td>
                                     <div class="d-flex align-items-center list-action">
+                                        @if($berating->created_at < \Carbon\Carbon::now()->addDay())
                                         <span data-toggle="modal" data-target="#edit-{{$berating->id}}">
                                             <a class="badge bg-primary mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="#"><i class="ri-pencil-line mr-0"></i></a>
                                         </span>
+                                        @endif
                                         <div class="modal fade" id="edit-{{$berating->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">

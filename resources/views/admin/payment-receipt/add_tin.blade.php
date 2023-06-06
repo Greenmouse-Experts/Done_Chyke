@@ -1,14 +1,29 @@
-@extends('layouts.dashboard_frontend')
+@extends('layouts.admin_frontend')
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Add Tin Payment Receipts</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.payment.receipt.tin.view')}}">Tin Payment Receipts</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid add-form-list">
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Add Tin Payment Analysis</h4>
+                            <h5 class="card-title">Provide the following informations</h5>
                         </div>
                     </div>
                     <div class="card-body">
@@ -24,26 +39,42 @@
                             <div class="tab-pane fade  @if($active_tab == 'pound') active show @endif" id="pills-pound-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
                                 <div class="card" style="border: 1px solid #c7cbd3 !important;">
                                     <div class="card-body">
-                                        <form id="preview-button" action="{{route('payment.analysis.tin.pound.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
+                                        <form id="preview-button" action="{{route('admin.payment.receipt.tin.pound.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
                                             @csrf
-                                            <input name="type" value="pound" hidden/>
+                                            <input name="type" value="pound" hidden />
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-12">
                                                     <div class="form-group">
-                                                        <label>Customer *</label>
-                                                        <input type="text" class="form-control" placeholder="Enter customer name" name="customer" required>
+                                                        <label>Assistant Manager *</label>
+                                                        <select class="selectpicker form-control" data-style="py-0" name="assist_manager" required>
+                                                            <option value="">-- Select Assistant Manager --</option>
+                                                            @if(App\Models\User::latest()->where('account_type', 'Assistant Manager')->where('status', '1')->get()->count() > 0)
+                                                            @foreach(App\Models\User::latest()->where('account_type', 'Assistant Manager')->where('status', '1')->get() as $assistant)
+                                                            <option value="{{$assistant->id}}">{{$assistant->name}}</option>
+                                                            @endforeach
+                                                            @else
+                                                            <option value="">No Assistant Manager Added</option>
+                                                            @endif
+                                                        </select>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Berating</label>
-                                                        <select class="selectpicker form-control" data-style="py-0" name="berating" required>
-                                                            <option value="">-- Select Berating --</option>
+                                                        <label>Supplier Name *</label>
+                                                        <input type="text" class="form-control" placeholder="Enter supplier name" name="supplier" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Rates List (Berating) *</label>
+                                                        <select class="selectpicker form-control" data-style="py-0" name="grade" required>
+                                                            <option value="">-- Select Grade --</option>
                                                             @if(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get()->count() > 0)
-                                                                @foreach(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get() as $berating)
-                                                                <option value="{{$berating->id}}">{{$berating->grade}}</option>
-                                                                @endforeach
+                                                            @foreach(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get() as $berating)
+                                                            <option value="{{$berating->id}}">{{$berating->grade}}</option>
+                                                            @endforeach
                                                             @else
                                                             <option value="">No Berating Added</option>
                                                             @endif
@@ -53,17 +84,17 @@
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label>Weight</label>
+                                                        <label>Weight *</label>
                                                         <br>
                                                         <input type="radio" name="weight" value="bag" /> Bag
-                                                        <input type="radio" name="weight" style="margin-left: 2rem;" value="pound"/> Pound
+                                                        <input type="radio" name="weight" style="margin-left: 2rem;" value="pound" /> Pound
                                                     </div>
                                                 </div>
                                                 <div id="weightbag" class="desc col-12" style="display: none;">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Bags</label>
+                                                                <label>Bag</label>
                                                                 <input type="number" class="form-control" placeholder="Enter bags value" name="bags">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
@@ -84,15 +115,15 @@
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Managers</label>
+                                                        <label>Manager *</label>
                                                         <select name="manager" class="selectpicker form-control" data-style="py-0" required>
                                                             <option value="">-- Select Manager --</option>
-                                                            @if(App\Models\Manager::latest()->get()->where('status', '1')->count() > 0)
-                                                                @foreach(App\Models\Manager::latest()->where('status', '1')->get() as $manager)
-                                                                <option value="{{$manager->id}}">{{$manager->name}}</option>
-                                                                @endforeach
+                                                            @if(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get()->count() > 0)
+                                                            @foreach(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get() as $manager)
+                                                            <option value="{{$manager->id}}">{{$manager->name}}</option>
+                                                            @endforeach
                                                             @else
                                                             <option value="">No Manager Added</option>
                                                             @endif
@@ -100,24 +131,31 @@
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Date</label>
-                                                        <input type="date" class="form-control" placeholder="Enter date" name="date" required>
+                                                        <label>Date of Purchase *</label>
+                                                        <input type="date" class="form-control" placeholder="Enter date" name="date_of_purchase" required>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Receipt</label>
-                                                        <input type="file" class="form-control" placeholder="Upload receipt" name="receipt" accept="image/png, image/jpeg, image/jpg" required>
+                                                        <label>Receipt Number *</label>
+                                                        <input type="text" class="form-control" placeholder="Enter receipt number" name="receipt_no" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Receipt Image *</label>
+                                                        <input type="file" class="form-control" placeholder="Upload receipt" name="receipt_image" accept="image/png, image/jpeg, image/jpg" required>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="mt-5">
-                                                <a href="{{route('payment.analysis.tin.pound.post')}}" onclick="event.preventDefault();
-                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
+                                                <a href="{{route('admin.payment.receipt.tin.pound.post')}}" onclick="event.preventDefault();
+                                                        document.getElementById('preview-button').submit();" class="btn btn-primary mr-2" name="save" value="preview">Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
@@ -128,26 +166,42 @@
                             <div class="tab-pane fade  @if($active_tab == 'kg') active show @endif" id="pills-kg-fill" role="tabpanel" aria-labelledby="pills-kg-tab-fill">
                                 <div class="card" style="border: 1px solid #c7cbd3 !important;">
                                     <div class="card-body">
-                                        <form id="kg-button" action="{{route('payment.analysis.tin.kg.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
+                                        <form id="kg-button" action="{{route('admin.payment.receipt.tin.kg.post')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
                                             @csrf
-                                            <input name="type" value="kg" hidden/>
+                                            <input name="type" value="kg" hidden />
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Customer *</label>
-                                                        <input type="text" class="form-control" placeholder="Enter customer name" name="customer" required>
+                                                        <label>Assistant Manager *</label>
+                                                        <select class="selectpicker form-control" data-style="py-0" name="assist_manager" required>
+                                                            <option value="">-- Select Assistant Manager --</option>
+                                                            @if(App\Models\User::latest()->where('account_type', 'Assistant Manager')->where('status', '1')->get()->count() > 0)
+                                                            @foreach(App\Models\User::latest()->where('account_type', 'Assistant Manager')->where('status', '1')->get() as $assistant)
+                                                            <option value="{{$assistant->id}}">{{$assistant->name}}</option>
+                                                            @endforeach
+                                                            @else
+                                                            <option value="">No Assistant Manager Added</option>
+                                                            @endif
+                                                        </select>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Berating</label>
-                                                        <select class="selectpicker form-control" data-style="py-0" name="berating" required>
+                                                        <label>Supplier Name *</label>
+                                                        <input type="text" class="form-control" placeholder="Enter supplier name" name="supplier" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Rates List (Berating) *</label>
+                                                        <select class="selectpicker form-control" data-style="py-0" name="grade" required>
                                                             <option value="">-- Select Berating --</option>
                                                             @if(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get()->count() > 0)
-                                                                @foreach(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get() as $berating)
-                                                                <option value="{{$berating->id}}">{{$berating->grade}}</option>
-                                                                @endforeach
+                                                            @foreach(App\Models\BeratingCalculation::latest()->where('status', 'Active')->get() as $grade)
+                                                            <option value="{{$grade->id}}">{{$grade->grade}}</option>
+                                                            @endforeach
                                                             @else
                                                             <option value="">No Berating Added</option>
                                                             @endif
@@ -157,24 +211,24 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Percentage (%) Analysis</label>
+                                                        <label>Percentage (%) Analysis *</label>
                                                         <input type="number" class="form-control" placeholder="Enter percentage analysis value" name="percentage">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label>Weight</label>
+                                                        <label>Weight *</label>
                                                         <br>
                                                         <input type="radio" name="kgweight" value="bag" /> Bag
-                                                        <input type="radio" name="kgweight" style="margin-left: 2rem;" value="kg"/> Kg
+                                                        <input type="radio" name="kgweight" style="margin-left: 2rem;" value="kg" /> Kg
                                                     </div>
                                                 </div>
                                                 <div id="kgweightbag" class="desc col-12" style="display: none;">
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
-                                                                <label>Bags</label>
+                                                                <label>Bag</label>
                                                                 <input type="number" class="form-control" placeholder="Enter bags value" name="bags">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
@@ -195,15 +249,15 @@
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Managers</label>
+                                                        <label>Manager *</label>
                                                         <select name="manager" class="selectpicker form-control" data-style="py-0" required>
                                                             <option value="">-- Select Manager --</option>
-                                                            @if(App\Models\Manager::latest()->where('status', '1')->get()->count() > 0)
-                                                                @foreach(App\Models\Manager::latest()->where('status', '1')->get() as $manager)
-                                                                <option value="{{$manager->id}}">{{$manager->name}}</option>
-                                                                @endforeach
+                                                            @if(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get()->count() > 0)
+                                                            @foreach(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get() as $manager)
+                                                            <option value="{{$manager->id}}">{{$manager->name}}</option>
+                                                            @endforeach
                                                             @else
                                                             <option value="">No Manager Added</option>
                                                             @endif
@@ -211,24 +265,31 @@
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Date</label>
-                                                        <input type="date" class="form-control" placeholder="Enter date" name="date" required>
+                                                        <label>Date of Purchase *</label>
+                                                        <input type="date" class="form-control" placeholder="Enter date" name="date_of_purchase" required>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>Receipt</label>
-                                                        <input type="file" class="form-control" placeholder="Upload receipt" name="receipt" accept="image/png, image/jpeg, image/jpg" required>
+                                                        <label>Receipt Number *</label>
+                                                        <input type="text" class="form-control" placeholder="Enter receipt number" name="receipt_no" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Receipt Image *</label>
+                                                        <input type="file" class="form-control" placeholder="Upload receipt" name="receipt_image" accept="image/png, image/jpeg, image/jpg" required>
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="mt-5">
-                                                <a href="{{route('payment.analysis.tin.kg.post')}}" onclick="event.preventDefault();
-                                                        document.getElementById('kg-button').submit();"class="btn btn-primary mr-2" name="save" value="preview" >Preview Price</a>
+                                                <a href="{{route('admin.payment.receipt.tin.kg.post')}}" onclick="event.preventDefault();
+                                                        document.getElementById('kg-button').submit();" class="btn btn-primary mr-2" name="save" value="preview">Preview Price</a>
                                                 <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
                                                 <button type="reset" class="btn btn-danger">Reset</button>
                                             </div>
@@ -246,12 +307,11 @@
 </div>
 
 <script>
-    function minmax(value, min, max) 
-    {
-        if(parseInt(value) < min || isNaN(parseInt(value))) 
-            return min; 
-        else if(parseInt(value) > max) 
-            return max; 
+    function minmax(value, min, max) {
+        if (parseInt(value) < min || isNaN(parseInt(value)))
+            return min;
+        else if (parseInt(value) > max)
+            return max;
         else return value;
     }
 

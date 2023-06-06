@@ -2,12 +2,15 @@
 
 @section('page-content')
 <div class="content-page">
-    <div class="col-12">
-        <div class="d-flex flex-wrap align-items-center justify-content-end">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Profile</h4>
+            </div>
+
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <!-- <li class="breadcrumb-item"><a href="#"></a></li> -->
                     <li class="breadcrumb-item active" aria-current="page">Profile</li>
                 </ol>
             </nav>

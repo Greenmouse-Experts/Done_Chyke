@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AnalysisCalculation;
 use App\Models\BeratingCalculation;
-use App\Models\ColumbiteMaterial;
-use App\Models\ColumbitePaymentAnalysis;
+use App\Models\PaymentReceiptColumbite;
 use App\Models\Expenses;
-use App\Models\Manager;
 use App\Models\Notification;
-use App\Models\TinPaymentAnalysis;
+use App\Models\PaymentReceiptTin;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
@@ -31,6 +29,15 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware(['auth','verified']);
+        define("pound_rate", 70);
+        define("rate", 50);
+        define("fixed_rate", 2.20462);
+        define("columbite_rate", 80);
+    }
+
+    function replaceCharsInNumber($num, $chars) 
+    {
+        return substr((string) $num, 0, -strlen($chars)) . $chars;
     }
 
     public function dashboard()
@@ -57,8 +64,7 @@ class AdminController extends Controller
         }
 
         $user = User::where('account_type', '!=', 'Administrator')->get()->count();
-        $manager = Manager::get()->count();
-        $staffs = $user + $manager;
+        $staffs = $user;
 
         return view('admin.dashboard', [
             'moment' => $moment,
@@ -142,390 +148,154 @@ class AdminController extends Controller
         ]);
     }
 
-    public function managers()
+    public function staff()
     {
-        return view('admin.managers.view');
+        return view('admin.staff.view');
     }
 
-    public function manager_add()
+    public function staff_add()
     {
-        return view('admin.managers.index');
+        return view('admin.staff.index');
     }
 
-    public function manager_post(Request $request)
+    public function staff_post(Request $request)
     {
         $this->validate($request, [
+            'account_type' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['string', 'email', 'max:255', 'unique:managers'],
+            'email' => ['string', 'email', 'max:255', 'unique:users']
         ]);
-        
-        if($request->status !== null && $request->status == 'false')
+
+        if($request->account_type == 'Accountant' || $request->account_type == 'Assistant Manager')
         {
-            $manager =  Manager::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'status' => false
+            $this->validate($request, [
+                'password' => ['required', 'string', 'min:8', 'confirmed']
             ]);
-        } else {
-            $manager = Manager::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'status' => true
-            ]);
-        }
 
-        return back()->with([
-            'alertType' => 'success',
-            'back' => route('admin.managers'),
-            'message' => $manager->name. ' added successfully!'
-        ]);
-    }
-
-    public function manager_edit($id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        $manager = Manager::find($finder);
-
-        return view ('admin.managers.edit', [
-            'manager' => $manager
-        ]);
-    }
-
-    public function manager_update(Request $request, $id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        $manager = Manager::find($finder);
-
-        $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-        ]);
-        
-        if($request->status !== null && $request->status == '0')
-        {
-            if($manager->email == $request->email)
+            if($request->notify == 'on')
             {
-                $manager->update([
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'gender' => $request->gender,
-                    'status' => false
-                ]);
-            } else {
-                //Validate Request
-                $this->validate($request, [
-                    'email' => ['string', 'email', 'max:255', 'unique:managers'],
-                ]);
+                if($request->status !== null && $request->status == 'false')
+                {
+                    $user = User::create([
+                        'account_type' => $request->account_type,
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'email_verified_at' => now(),
+                        'password' => Hash::make($request->password),
+                        'phone' => $request->phone,
+                        'gender' => $request->gender,
+                        'status' => false,
+                        'access' => true
+                    ]);
+                } else {
+                    $user = User::create([
+                        'account_type' => $request->account_type,
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'email_verified_at' => now(),
+                        'password' => Hash::make($request->password),
+                        'phone' => $request->phone,
+                        'gender' => $request->gender,
+                        'status' => true,
+                        'access' => true
+                    ]);   
+                }
 
-                $manager->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                    'gender' => $request->gender,
-                    'status' => false
+
+                /** Store information to include in mail in $data as an array */
+                $data = array(
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'password' => $request->password
+                );
+
+                /** Send message to the user */
+                Mail::send('emails.notifyUser', $data, function ($m) use ($data) {
+                    $m->to($data['email'])->subject(config('app.name'));
+                });
+
+                return back()->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.staff'),
+                    'message' => $user->name. ' account created successfully!'
                 ]);
             }
-            
-        } else {
-            if($manager->email == $request->email)
-            {
-                $manager->update([
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'gender' => $request->gender,
-                    'status' => true
-                ]);
-            } else {
-                //Validate Request
-                $this->validate($request, [
-                    'email' => ['string', 'email', 'max:255', 'unique:managers'],
-                ]);
-
-                $manager->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
-                    'gender' => $request->gender,
-                    'status' => true
-                ]);
-            }
-        }
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => $manager->name. ' updated successfully!'
-        ]);
-    }
-
-    public function manager_activate(Request $request, $id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        $manager = Manager::find($finder);
-
-        $manager->update([
-            'status' => true
-        ]);
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => $manager->name. ' activated successfully!'
-        ]);
-    }
-
-    public function manager_deactivate(Request $request, $id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        $manager = Manager::find($finder);
-
-        $manager->update([
-            'status' => false
-        ]);
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => $manager->name. ' deactivated successfully!'
-        ]);
-    }
-
-    public function manager_delete($id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        Manager::find($finder)->delete();
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => 'Manager deleted successfully!'
-        ]);
-    }
-
-    public function accountants()
-    {
-        return view('admin.accountants.view');
-    }
-
-    public function accountant_add()
-    {
-        return view('admin.accountants.index');
-    }
-
-    public function accountant_post(Request $request)
-    {
-        $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed']
-        ]);
-
-        if($request->notify == 'on')
-        {
+        
             if($request->status !== null && $request->status == 'false')
             {
-                $user = User::create([
-                    'account_type' => 'Accountant',
+                $user =  User::create([
+                    'account_type' => $request->account_type,
                     'name' => $request->name,
                     'email' => $request->email,
                     'email_verified_at' => now(),
                     'password' => Hash::make($request->password),
                     'phone' => $request->phone,
                     'gender' => $request->gender,
-                    'status' => false
+                    'status' => false,
+                    'access' => true
                 ]);
             } else {
                 $user = User::create([
-                    'account_type' => 'Accountant',
+                    'account_type' => $request->account_type,
                     'name' => $request->name,
                     'email' => $request->email,
                     'email_verified_at' => now(),
                     'password' => Hash::make($request->password),
                     'phone' => $request->phone,
                     'gender' => $request->gender,
-                    'status' => true
-                ]);   
+                    'status' => true,
+                    'access' => true
+                ]);
             }
-
-
-            /** Store information to include in mail in $data as an array */
-            $data = array(
-                'name' => $user->name,
-                'email' => $user->email,
-                'password' => $request->password
-            );
-
-            /** Send message to the user */
-            Mail::send('emails.notifyUser', $data, function ($m) use ($data) {
-                $m->to($data['email'])->subject(config('app.name'));
-            });
 
             return back()->with([
                 'alertType' => 'success',
-                'back' => route('admin.accountants'),
+                'back' => route('admin.staff'),
+                'message' => $user->name. ' account created successfully!'
+            ]);
+        } else {
+            if($request->status !== null && $request->status == 'false')
+            {
+                $user =  User::create([
+                    'account_type' => $request->account_type,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'status' => false,
+                ]);
+            } else {
+                $user = User::create([
+                    'account_type' => $request->account_type,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'status' => true,
+                ]);
+            }
+
+            return back()->with([
+                'alertType' => 'success',
+                'back' => route('admin.staff'),
                 'message' => $user->name. ' account created successfully!'
             ]);
         }
-        
-        if($request->status !== null && $request->status == 'false')
-        {
-            $user =  User::create([
-                'account_type' => 'Accountant',
-                'name' => $request->name,
-                'email' => $request->email,
-                'email_verified_at' => now(),
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'status' => false
-            ]);
-        } else {
-            $user = User::create([
-                'account_type' => 'Accountant',
-                'name' => $request->name,
-                'email' => $request->email,
-                'email_verified_at' => now(),
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'status' => true
-            ]);
-        }
-
-        return back()->with([
-            'alertType' => 'success',
-            'back' => route('admin.accountants'),
-            'message' => $user->name. ' account created successfully!'
-        ]);
     }
 
-    public function accountant_edit($id)
+    public function staff_edit($id)
     {
         $finder = Crypt::decrypt($id);
 
         $user = User::find($finder);
 
-        return view ('admin.accountants.edit', [
-            'user' => $user
-        ]);
-    }
-    
-    public function manager_assistances()
-    {
-        return view('admin.assistant-manager.view');
-    }
-
-    public function manager_assistance_add()
-    {
-        return view('admin.assistant-manager.index');
-    }
-
-    public function manager_assistance_post(Request $request)
-    {
-        $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed']
-        ]);
-
-        // dd($request->all());
-
-        if($request->notify == 'on')
-        {
-            if($request->status !== null && $request->status == 'false')
-            {
-                $user = User::create([
-                    'account_type' => 'Assistant Manager',
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'email_verified_at' => now(),
-                    'password' => Hash::make($request->password),
-                    'phone' => $request->phone,
-                    'gender' => $request->gender,
-                    'status' => false
-                ]);
-            } else {
-                $user = User::create([
-                    'account_type' => 'Assistant Manager',
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'email_verified_at' => now(),
-                    'password' => Hash::make($request->password),
-                    'phone' => $request->phone,
-                    'gender' => $request->gender,
-                    'status' => true
-                ]);   
-            }
-
-
-            /** Store information to include in mail in $data as an array */
-            $data = array(
-                'name' => $user->name,
-                'email' => $user->email,
-                'password' => $request->password
-            );
-
-            /** Send message to the user */
-            Mail::send('emails.notifyUser', $data, function ($m) use ($data) {
-                $m->to($data['email'])->subject(config('app.name'));
-            });
-
-            return back()->with([
-                'alertType' => 'success',
-                'back' => route('admin.manager.assistances'),
-                'message' => $user->name. ' account created successfully!'
-            ]);
-        }
-        
-        if($request->status !== null && $request->status == 'false')
-        {
-            $user =  User::create([
-                'account_type' => 'Assistant Manager',
-                'name' => $request->name,
-                'email' => $request->email,
-                'email_verified_at' => now(),
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'status' => false
-            ]);
-        } else {
-            $user = User::create([
-                'account_type' => 'Assistant Manager',
-                'name' => $request->name,
-                'email' => $request->email,
-                'email_verified_at' => now(),
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'status' => true
-            ]);
-        }
-
-        return back()->with([
-            'alertType' => 'success',
-            'back' => route('admin.manager.assistances'),
-            'message' => $user->name. ' account created successfully!'
-        ]);
-    }
-
-    public function assistance_manager_edit($id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        $user = User::find($finder);
-
-        return view ('admin.assistant-manager.edit', [
+        return view ('admin.staff.edit', [
             'user' => $user
         ]);
     }
 
-
-    // General Settings for Account Type [Accountant and Assistant Manager]
     public function staff_activate($id)
     {
         $finder = Crypt::decrypt($id);
@@ -702,7 +472,7 @@ class AdminController extends Controller
         return back();
     }
 
-    // Rates
+    // Rates List
     public function rates_berating()
     {
         return view('admin.berating-rate.view');
@@ -716,7 +486,7 @@ class AdminController extends Controller
     public function post_rate_berating(Request $request)
     {
         $this->validate($request, [
-            'grade' => ['required', 'numeric'],
+            'grade' => ['required', 'numeric', 'unique:berating_calculations'],
             'price' => ['required', 'numeric'],
             'unit_price' => ['required', 'numeric'],
         ]);
@@ -737,24 +507,45 @@ class AdminController extends Controller
     public function rate_berating_update($id, Request $request)
     {
         $this->validate($request, [
-            'grade' => ['required', 'numeric'],
             'price' => ['required', 'numeric'],
             'unit_price' => ['required', 'numeric'],
         ]);
 
         $finder = Crypt::decrypt($id);
-
-        $beratingcalculation = BeratingCalculation::find($finder);
         
-        $beratingcalculation->update([
-            'grade' => $request->grade,
-            'price' => $request->price,
-            'unit_price' => $request->unit_price
-        ]);
+        $beratingcalculation = BeratingCalculation::find($finder);
+
+        if($beratingcalculation->created_at < \Carbon\Carbon::now()->addDay())
+        {
+            if($beratingcalculation->grade == $request->grade)
+            {
+                $beratingcalculation->update([
+                    'grade' => $request->grade,
+                    'price' => $request->price,
+                    'unit_price' => $request->unit_price
+                ]);
+        
+            } else {
+                $this->validate($request, [
+                    'grade' => ['required', 'numeric', 'unique:berating_calculations'],
+                ]);
+
+                $beratingcalculation->update([
+                    'grade' => $request->grade,
+                    'price' => $request->price,
+                    'unit_price' => $request->unit_price
+                ]);
+            }
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => 'Updated successfully!'
+            ]);
+        }
 
         return back()->with([
-            'alertType' => 'success',
-            'message' => 'Updated successfully!'
+            'type' => 'danger',
+            'message' => "Rate list exceeded 24hours upon creation, can't be editted."
         ]);
     }
 
@@ -815,8 +606,8 @@ class AdminController extends Controller
     public function post_rate_analysis(Request $request)
     {
         $this->validate($request, [
-            'percentage_min' => ['required', 'string', 'max:255'],
-            'percentage_max' => ['required', 'string', 'max:255'],
+            'percentage_min' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+            'percentage_max' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
             'dollar' => ['required', 'numeric'],
             'exchange' => ['required', 'numeric'],
         ]);
@@ -838,8 +629,6 @@ class AdminController extends Controller
     public function rate_analysis_update($id, Request $request)
     {
         $this->validate($request, [
-            'percentage_min' => ['required', 'string', 'max:255'],
-            'percentage_max' => ['required', 'string', 'max:255'],
             'dollar' => ['required', 'numeric'],
             'exchange' => ['required', 'numeric'],
         ]);
@@ -848,16 +637,40 @@ class AdminController extends Controller
 
         $analysiscalculation = AnalysisCalculation::find($finder);
         
-        $analysiscalculation->update([
-            'percentage_min' => $request->percentage_min,
-            'percentage_max' => $request->percentage_max,
-            'dollar_rate' => $request->dollar,
-            'exchange_rate' => $request->exchange
-        ]);
+        if($analysiscalculation->created_at < \Carbon\Carbon::now()->addDay())
+        {
+            if($analysiscalculation->grade == $request->grade)
+            {
+                $analysiscalculation->update([
+                    'percentage_min' => $request->percentage_min,
+                    'percentage_max' => $request->percentage_max,
+                    'dollar_rate' => $request->dollar,
+                    'exchange_rate' => $request->exchange
+                ]);
 
+            } else {
+                $this->validate($request, [
+                    'percentage_min' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+                    'percentage_max' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+                ]);
+
+                $analysiscalculation->update([
+                    'percentage_min' => $request->percentage_min,
+                    'percentage_max' => $request->percentage_max,
+                    'dollar_rate' => $request->dollar,
+                    'exchange_rate' => $request->exchange
+                ]);
+            }
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => 'Updated successfully!'
+            ]);
+        }
+        
         return back()->with([
-            'alertType' => 'success',
-            'message' => 'Updated successfully!'
+            'type' => 'danger',
+            'message' => "Rate list exceeded 24hours upon creation, can't be editted."
         ]);
     }
 
@@ -905,31 +718,2087 @@ class AdminController extends Controller
         ]);
     }
 
-    // Payment Voucher
-    public function payment_voucher_tin_view()
+    // Payment Receipt
+    public function payment_receipt_tin_view()
     {
-        $tinPaymentVoucher = TinPaymentAnalysis::latest()->get();
+        $tinPaymentReceipt = PaymentReceiptTin::latest()->get();
 
-        return view('admin.payment-voucher.view_tin', [
-            'tinPaymentVoucher' => $tinPaymentVoucher
+        return view('admin.payment-receipt.view_tin', [
+            'tinPaymentVoucher' => $tinPaymentReceipt
         ]);
     }
 
-    public function payment_voucher_tin_edit($id)
+    public function payment_receipt_tin_add($id)
+    {
+        $active_tab = $id;
+
+        if($active_tab == 'pound') {
+            return view ('admin.payment-receipt.add_tin', compact('active_tab'));
+        } elseif($active_tab == 'kg') {
+            return view ('admin.payment-receipt.add_tin', compact('active_tab'));
+        } else {
+            $active_tab == 'kg';
+            return view ('admin.payment-receipt.add_tin', compact('active_tab'));
+        }
+    }
+
+    public function payment_receipt_tin_pound_post(Request $request)
+    {
+        if($request->save) 
+        {
+            $this->validate($request, [
+                'assist_manager' => ['required', 'string', 'max:255'],
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
+                'manager' => ['required', 'numeric'],
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+                'receipt_image' => 'required|mimes:jpeg,png,jpg'
+            ]);
+
+            $berating = BeratingCalculation::find($request->grade);
+
+            if(!$berating)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Admin yet to add this berating value, try again later.'
+                ]); 
+            }
+
+            $manager = User::find($request->manager);
+
+            if(!$manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Manager not found in our database.'
+                ]); 
+            }
+
+            $assist_manager = User::find($request->assist_manager);
+
+            if(!$assist_manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Assistant Manager not found in our database.'
+                ]); 
+            }
+
+            if($request->weight == 'bag')
+            {
+                if($request->bag_pounds == null)
+                {
+                    $bag_pounds = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_pounds' => ['required', 'numeric', 'max:69'],
+                    ]);
+
+                    $bag_pounds = $request->bag_pounds;
+                }
+
+                $this->validate($request, [
+                    'bags' => ['required', 'numeric'],
+                ]);
+
+                if($bag_pounds < pound_rate)
+                {
+                    $price_pound = $berating->unit_price;
+
+                    $price_bag = $berating->price;
+
+                    $equivalentPriceForBag = $request->bags * $price_bag;
+                    $equivalentPriceForPound = $bag_pounds * $price_pound;
+                    $total_in_pounds = ($request->bags * pound_rate) + $bag_pounds;
+
+                    $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
+
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                    $tinPayment = PaymentReceiptTin::create([
+                        'type' => $request->type,
+                        'user_id' => $assist_manager->id,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => $request->bags,
+                        'pound' => $bag_pounds,
+                        'total_in_pound' => $total_in_pounds,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
+                    ]);
+            
+                    Transaction::create([
+                        'user_id' => $assist_manager->id,
+                        'accountant_process_id' => $tinPayment->id,
+                        'amount' => $tinPayment->price,
+                        'reference' => config('app.name'),
+                        'status' => 'Payment Receipt'
+                    ]);
+
+                    Notification::create([
+                        'to' => $assist_manager->id,
+                        'admin_id' => Auth::user()->id,
+                        'title' => config('app.name'),
+                        'body' => 'Admin has added a payment receipt, with Receipt No:'.$tinPayment->receipt_no.' on your behalf.'
+                    ]);
+
+                    return redirect()->route('admin.payment.receipt.tin.add', 'pound')->with([
+                        'alertType' => 'success',
+                        'back' => route('admin.payment.receipt.tin.view'),
+                        'message' => 'Payment Receipt created successfully'
+                    ]);
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Pound should not be greater or equal to '.pound_rate
+                    ]);
+                }
+            } 
+
+            if($request->weight == 'pound')
+            {
+                $this->validate($request, [
+                    'pounds' => ['required', 'numeric']
+                ]);
+
+                $price_pound = $berating->unit_price;
+
+                $equivalentPriceForPound = $request->pounds * $price_pound;
+                $total_in_pounds = $request->pounds;
+
+                $totalPrice = $equivalentPriceForPound;
+
+                $filename = request()->receipt_image->getClientOriginalName();
+                request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                $tinPayment = PaymentReceiptTin::create([
+                    'type' => $request->type,
+                    'user_id' => $assist_manager->id,
+                    'supplier' => $request->supplier,
+                    'staff' => $manager->id,
+                    'grade' => $request->grade,
+                    'pound' => $request->pounds,
+                    'total_in_pound' => $total_in_pounds,
+                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'date_of_purchase' => $request->date_of_purchase,
+                    'receipt_no' => $request->receipt_no,
+                    'receipt_image' => '/storage/payment_analysis/'.$filename
+                ]);
+        
+                Transaction::create([
+                    'user_id' => $assist_manager->id,
+                    'accountant_process_id' => $tinPayment->id,
+                    'amount' => $tinPayment->price,
+                    'reference' => config('app.name'),
+                    'status' => 'Payment Receipt'
+                ]);
+
+                Notification::create([
+                    'to' => $assist_manager->id,
+                    'admin_id' => Auth::user()->id,
+                    'title' => config('app.name'),
+                    'body' => 'Admin has added a payment receipt, with Receipt No:'.$tinPayment->receipt_no.' on your behalf.'
+                ]);
+
+                return redirect()->route('admin.payment.receipt.tin.add', 'pound')->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.payment.receipt.tin.view'),
+                    'message' => 'Payment Receipt created successfully'
+                ]);
+            } 
+
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Please select weight type.'
+            ]);
+        }
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+        ]);
+
+        $berating = BeratingCalculation::find($request->grade);
+
+        if(!$berating)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Admin yet to add this berating value, try again later.'
+            ]); 
+        }
+       
+        if($request->weight == 'bag')
+        {
+            if($request->bag_pounds == null)
+            {
+                $bag_pounds = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_pounds' => ['required', 'numeric', 'max:69'],
+                ]);
+
+                $bag_pounds = $request->bag_pounds;
+            }
+
+            $this->validate($request, [
+                'bags' => ['required', 'numeric'],
+            ]);
+
+            if($bag_pounds < pound_rate)
+            {
+                $price_pound = $berating->unit_price;
+                $price_bag = $berating->price;
+
+                $equivalentPriceForBag = $request->bags * $price_bag;
+                $equivalentPriceForPound = $request->bag_pounds * $price_pound;
+
+                $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
+
+                return redirect()->route('admin.payment.receipt.tin.add', 'pound')->with([
+                    'previewPrice' => 'success',
+                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                ]);
+            } else {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Pound should not be greater or equal to '.pound_rate
+                ]);
+            }
+        } 
+
+        if($request->weight == 'pound')
+        {
+            $this->validate($request, [
+                'pounds' => ['required', 'numeric']
+            ]);
+
+            $price_pound = $berating->unit_price;
+
+            $equivalentPriceForPound = $request->pounds * $price_pound;
+
+            $totalPrice = $equivalentPriceForPound;
+
+            return redirect()->route('admin.payment.receipt.tin.add', 'pound')->with([
+                'previewPrice' => 'success',
+                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+            ]);
+        } 
+
+        return back()->with([
+            'type' => 'danger',
+            'message' => 'Please select weight type.'
+        ]);
+    }
+
+    public function payment_receipt_tin_kg_post(Request $request)
+    {
+        if($request->save) 
+        {
+            $this->validate($request, [
+                'assist_manager' => ['required', 'string', 'max:255'],
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
+                'manager' => ['required', 'numeric'],
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+                'receipt_image' => 'required|mimes:jpeg,png,jpg'
+            ]);
+
+            $berating = BeratingCalculation::find($request->grade);
+
+            if(!$berating)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Admin yet to add this berating value, try again later.'
+                ]); 
+            }
+
+            $manager = User::find($request->manager);
+
+            if(!$manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Manager not found in our database.'
+                ]); 
+            }
+
+            $assist_manager = User::find($request->assist_manager);
+
+            if(!$assist_manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Assistant Manager not found in our database.'
+                ]); 
+            }
+
+            if($request->kgweight == 'bag')
+            {
+                if($request->bag_kg == null)
+                {
+                    $bag_kgs = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_kg' => ['required', 'numeric', 'max:49'],
+                    ]);
+
+                    $bag_kgs = $request->bag_kg;
+                }
+
+                $this->validate($request, [
+                    'bags' => ['required', 'numeric'],
+                    'percentage' => ['required', 'numeric', 'min:25'],
+                ]);
+
+                $analysis = AnalysisCalculation::get();
+
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+
+                if($bag_kgs < rate)
+                {
+                    $per = $request->percentage / 100;
+
+                    $rateCalculation = $dollarRate * $exchangeRate;
+
+                    $subTotal = $per * $rateCalculation * fixed_rate;
+
+                    $subPrice = $request->bags * rate + $request->bag_kg;
+                    
+                    $total = $subTotal * $subPrice;
+
+                    $totalPrice = number_format((float)$total, 0, '.', '');
+                    
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                    $tinPayment = PaymentReceiptTin::create([
+                        'type' => $request->type,
+                        'user_id' => $assist_manager->id,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => $request->bags,
+                        'kg' => $bag_kgs,
+                        'total_in_kg' => $subPrice,
+                        'percentage_analysis' => $request->percentage,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
+                    ]);
+
+                    Transaction::create([
+                        'user_id' => $assist_manager->id,
+                        'accountant_process_id' => $tinPayment->id,
+                        'amount' => $tinPayment->price,
+                        'reference' => config('app.name'),
+                        'status' => 'Payment Receipt'
+                    ]);
+
+                    Notification::create([
+                        'to' => $assist_manager->id,
+                        'admin_id' => Auth::user()->id,
+                        'title' => config('app.name'),
+                        'body' => 'Admin has added a payment receipt, with Receipt No:'.$tinPayment->receipt_no.' on your behalf.'
+                    ]);
+    
+                    return redirect()->route('admin.payment.receipt.tin.add', 'kg')->with([
+                        'alertType' => 'success',
+                        'back' => route('admin.payment.receipt.tin.view'),
+                        'message' => 'Payment Receipt created successfully'
+                    ]);
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'kg should not be greater or equal to '.rate
+                    ]);
+                }
+            } 
+
+            if($request->kgweight == 'kg')
+            {
+                $this->validate($request, [
+                    'kg' => ['required', 'numeric']
+                ]);
+    
+                $analysis = AnalysisCalculation::get();
+    
+
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+
+                $per = $request->percentage / 100;
+    
+                $rateCalculation = $dollarRate * $exchangeRate;
+    
+                $subTotal = $per * $rateCalculation * fixed_rate;
+    
+                $total = $subTotal * $request->kg;
+    
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                $filename = request()->receipt_image->getClientOriginalName();
+                request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                $tinPayment = PaymentReceiptTin::create([
+                    'type' => $request->type,
+                    'user_id' => $assist_manager->id,
+                    'supplier' => $request->supplier,
+                    'staff' => $manager->id,
+                    'grade' => $request->grade,
+                    'kg' => $request->kg,
+                    'total_in_kg' => $request->kg,
+                    'percentage_analysis' => $request->percentage,
+                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'date_of_purchase' => $request->date_of_purchase,
+                    'receipt_no' => $request->receipt_no,
+                    'receipt_image' => '/storage/payment_analysis/'.$filename
+                ]);
+        
+                Transaction::create([
+                    'user_id' => $assist_manager->id,
+                    'accountant_process_id' => $tinPayment->id,
+                    'amount' => $tinPayment->price,
+                    'reference' => config('app.name'),
+                    'status' => 'Payment Receipt'
+                ]);
+
+                Notification::create([
+                    'to' => $assist_manager->id,
+                    'admin_id' => Auth::user()->id,
+                    'title' => config('app.name'),
+                    'body' => 'Admin has added a payment receipt, with Receipt No:'.$tinPayment->receipt_no.' on your behalf.'
+                ]);
+
+                return redirect()->route('admin.payment.receipt.tin.add', 'kg')->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.payment.receipt.tin.view'),
+                    'message' => 'Payment Receipt created successfully'
+                ]);
+            } 
+
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Please select weight type.'
+            ]);
+        }
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+        ]);
+
+        $berating = BeratingCalculation::find($request->grade);
+
+        if(!$berating)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Admin yet to add this berating value, try again later.'
+            ]); 
+        }
+       
+        if($request->kgweight == 'bag')
+        {
+            if($request->bag_kg == null)
+            {
+                $bag_kgs = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_kg' => ['required', 'numeric', 'max:49'],
+                ]);
+
+                $bag_kgs = $request->bag_kg;
+            }
+
+            $this->validate($request, [
+                'bags' => ['required', 'numeric'],
+                'percentage' => ['required', 'numeric', 'min:25'],
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            if($bag_kgs < rate)
+            {
+                $per = $request->percentage / 100;
+
+                $rateCalculation = $dollarRate * $exchangeRate;
+
+                $subTotal = $per * $rateCalculation * fixed_rate;
+
+                $subPrice = $request->bags * rate + $request->bag_kg;
+                
+                $total = $subTotal * $subPrice;
+
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                return redirect()->route('admin.payment.receipt.tin.add', 'kg')->with([
+                    'previewPrice' => 'success',
+                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                ]);
+            } else {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'kg should not be greater or equal to '.rate
+                ]);
+            }
+            
+        } 
+
+        if($request->kgweight == 'kg')
+        {
+            $this->validate($request, [
+                'kg' => ['required', 'numeric']
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            $per = $request->percentage / 100;
+
+            $rateCalculation = $dollarRate * $exchangeRate;
+
+            $subTotal = $per * $rateCalculation * fixed_rate;
+
+            $total = $subTotal * $request->kg;
+
+            $totalPrice = number_format((float)$total, 0, '.', '');
+
+            return redirect()->route('admin.payment.receipt.tin.add', 'kg')->with([
+                'previewPrice' => 'success',
+                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+            ]);
+        } 
+
+        return back()->with([
+            'type' => 'danger',
+            'message' => 'Please select weight type.'
+        ]);
+    }
+
+    public function payment_receipt_tin_edit($id)
     {
         $finder = Crypt::decrypt($id);
 
-        $tinPayment = TinPaymentAnalysis::find($finder);
+        $tinPayment = PaymentReceiptTin::find($finder);
 
-        return view('admin.payment-voucher.edit_tin', [
+        return view('admin.payment-receipt.edit_tin', [
             'tinPayment' => $tinPayment
         ]);
-
     }
 
-    public function payment_voucher_columbite_view()
+    public function payment_receipt_tin_pound_update($id, Request $request)
     {
-        return view('admin.payment-voucher.view_columbite');
+        $finder = Crypt::decrypt($id);
+
+        $tinPayment = PaymentReceiptTin::find($finder);
+        
+        if($request->save) 
+        {
+            $this->validate($request, [
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
+                'manager' => ['required', 'numeric'],
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+            ]);
+
+            $berating = BeratingCalculation::find($request->grade);
+
+            if(!$berating)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Admin yet to add this berating value, try again later.'
+                ]); 
+            }
+
+            $manager = User::find($request->manager);
+
+            if(!$manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Manager not found in our database.'
+                ]); 
+            }
+
+            if($request->weight == 'bag')
+            {
+                if($request->bag_pounds == null)
+                {
+                    $bag_pounds = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_pounds' => ['required', 'numeric', 'max:69'],
+                    ]);
+
+                    $bag_pounds = $request->bag_pounds;
+                }
+
+                $this->validate($request, [
+                    'bags' => ['required', 'numeric'],
+                ]);
+
+                if($bag_pounds < pound_rate)
+                {
+                    $price_pound = $berating->unit_price;
+
+                    $price_bag = $berating->price;
+
+                    $equivalentPriceForBag = $request->bags * $price_bag;
+                    $equivalentPriceForPound = $bag_pounds * $price_pound;
+                    $total_in_pounds = ($request->bags * pound_rate) + $bag_pounds;
+
+                    $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
+
+                    if (request()->hasFile('receipt_image')) 
+                    {
+                        $this->validate($request, [
+                            'receipt_image' => 'required|mimes:jpeg,png,jpg'
+                        ]);
+
+                        $filename = request()->receipt_image->getClientOriginalName();
+                        if($tinPayment->receipt_image) {
+                            Storage::delete(str_replace("storage", "public", $tinPayment->receipt_image));
+                        }
+                        request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                        $tinPayment->update([
+                            'type' => $request->type,
+                            'supplier' => $request->supplier,
+                            'staff' => $manager->id,
+                            'grade' => $request->grade,
+                            'bag' => $request->bags,
+                            'pound' => $bag_pounds,
+                            'total_in_pound' => $total_in_pounds,
+                            'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                            'date_of_purchase' => $request->date_of_purchase,
+                            'receipt_no' => $request->receipt_no,
+                            'receipt_image' => '/storage/payment_analysis/'.$filename
+                        ]);
+                    } else {
+                        $tinPayment->update([
+                            'type' => $request->type,
+                            'supplier' => $request->supplier,
+                            'staff' => $manager->id,
+                            'grade' => $request->grade,
+                            'bag' => $request->bags,
+                            'pound' => $bag_pounds,
+                            'total_in_pound' => $total_in_pounds,
+                            'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                            'date_of_purchase' => $request->date_of_purchase,
+                            'receipt_no' => $request->receipt_no,
+                        ]);
+                    }
+
+                    $transaction = Transaction::where('accountant_process_id', $tinPayment->id)->first();
+
+                    if($transaction)
+                    {
+                        $transaction->update([
+                            'amount' => $tinPayment->price
+                        ]);
+                    }
+
+                    Notification::create([
+                        'to' => $tinPayment->user_id,
+                        'admin_id' => Auth::user()->id,
+                        'title' => config('app.name'),
+                        'body' => 'Admin has updated a payment receipt, with Receipt No:'.$tinPayment->receipt_no
+                    ]);
+
+                    return back()->with([
+                        'alertType' => 'success',
+                        'back' => route('admin.payment.receipt.tin.view'),
+                        'message' => 'Payment Receipt updated successfully'
+                    ]);
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Pound should not be greater or equal to '.pound_rate
+                    ]);
+                }
+            } 
+
+            if($request->weight == 'pound')
+            {
+                $this->validate($request, [
+                    'pounds' => ['required', 'numeric']
+                ]);
+
+                $price_pound = $berating->unit_price;
+
+                $equivalentPriceForPound = $request->pounds * $price_pound;
+                $total_in_pounds = $request->pounds;
+
+                $totalPrice = $equivalentPriceForPound;
+
+                if (request()->hasFile('receipt_image')) 
+                {
+                    $this->validate($request, [
+                        'receipt_image' => 'required|mimes:jpeg,png,jpg'
+                    ]);
+
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    if($tinPayment->receipt_image) {
+                        Storage::delete(str_replace("storage", "public", $tinPayment->receipt_image));
+                    }
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                    $tinPayment->update([
+                        'type' => $request->type,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => 0,
+                        'pound' => $request->pounds,
+                        'total_in_pound' => $total_in_pounds,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
+                    ]);
+
+                } else {
+                    $tinPayment->update([
+                        'type' => $request->type,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => 0,
+                        'pound' => $request->pounds,
+                        'total_in_pound' => $total_in_pounds,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no
+                    ]);
+                }
+
+                $transaction = Transaction::where('accountant_process_id', $tinPayment->id)->first();
+
+                if($transaction)
+                {
+                    $transaction->update([
+                        'amount' => $tinPayment->price
+                    ]);
+                }
+
+                Notification::create([
+                    'to' => $tinPayment->user_id,
+                    'admin_id' => Auth::user()->id,
+                    'title' => config('app.name'),
+                    'body' => 'Admin has updated a payment receipt, with Receipt No:'.$tinPayment->receipt_no
+                ]);
+
+                return back()->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.payment.receipt.tin.view'),
+                    'message' => 'Payment Receipt updated successfully'
+                ]);
+            } 
+
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Please select weight type.'
+            ]);
+        }
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+        ]);
+
+        $berating = BeratingCalculation::find($request->grade);
+
+        if(!$berating)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Admin yet to add this berating value, try again later.'
+            ]); 
+        }
+       
+        if($request->weight == 'bag')
+        {
+            if($request->bag_pounds == null)
+            {
+                $bag_pounds = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_pounds' => ['required', 'numeric', 'max:69'],
+                ]);
+
+                $bag_pounds = $request->bag_pounds;
+            }
+
+            $this->validate($request, [
+                'bags' => ['required', 'numeric'],
+            ]);
+
+            if($bag_pounds < pound_rate)
+            {
+                $price_pound = $berating->unit_price;
+                $price_bag = $berating->price;
+
+                $equivalentPriceForBag = $request->bags * $price_bag;
+                $equivalentPriceForPound = $request->bag_pounds * $price_pound;
+
+                $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
+
+                return back()->with([
+                    'previewPrice' => 'success',
+                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                ]);
+            } else {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Pound should not be greater or equal to '.pound_rate
+                ]);
+            }
+        } 
+
+        if($request->weight == 'pound')
+        {
+            $this->validate($request, [
+                'pounds' => ['required', 'numeric']
+            ]);
+
+            $price_pound = $berating->unit_price;
+
+            $equivalentPriceForPound = $request->pounds * $price_pound;
+
+            $totalPrice = $equivalentPriceForPound;
+
+            return back()->with([
+                'previewPrice' => 'success',
+                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+            ]);
+        } 
+
+        return back()->with([
+            'type' => 'danger',
+            'message' => 'Please select weight type.'
+        ]);
+    }
+
+    public function payment_receipt_tin_kg_update($id, Request $request)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $tinPayment = PaymentReceiptTin::find($finder);
+        
+        if($request->save) 
+        {
+            $this->validate($request, [
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
+                'manager' => ['required', 'numeric'],
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+            ]);
+
+            $berating = BeratingCalculation::find($request->grade);
+
+            if(!$berating)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Admin yet to add this berating value, try again later.'
+                ]); 
+            }
+
+            $manager = User::find($request->manager);
+
+            if(!$manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Manager not found in our database.'
+                ]); 
+            }
+
+            if($request->kgweight == 'bag')
+            {
+                if($request->bag_kg == null)
+                {
+                    $bag_kgs = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_kg' => ['required', 'numeric', 'max:49'],
+                    ]);
+
+                    $bag_kgs = $request->bag_kg;
+                }
+
+                $this->validate($request, [
+                    'bags' => ['required', 'numeric'],
+                    'percentage' => ['required', 'numeric', 'min:25'],
+                ]);
+
+                $analysis = AnalysisCalculation::get();
+
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+
+                if($bag_kgs < rate)
+                {
+                    $per = $request->percentage / 100;
+
+                    $rateCalculation = $dollarRate * $exchangeRate;
+
+                    $subTotal = $per * $rateCalculation * fixed_rate;
+
+                    $subPrice = $request->bags * rate + $request->bag_kg;
+                    
+                    $total = $subTotal * $subPrice;
+
+                    $totalPrice = number_format((float)$total, 0, '.', '');
+                    
+                    if (request()->hasFile('receipt_image')) 
+                    {
+                        $this->validate($request, [
+                            'receipt_image' => 'required|mimes:jpeg,png,jpg'
+                        ]);
+
+                        $filename = request()->receipt_image->getClientOriginalName();
+                        if($tinPayment->receipt_image) {
+                            Storage::delete(str_replace("storage", "public", $tinPayment->receipt_image));
+                        }
+                        request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                        $tinPayment->update([
+                            'type' => $request->type,
+                            'supplier' => $request->supplier,
+                            'staff' => $manager->id,
+                            'grade' => $request->grade,
+                            'bag' => $request->bags,
+                            'kg' => $bag_kgs,
+                            'total_in_kg' => $subPrice,
+                            'percentage_analysis' => $request->percentage,
+                            'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                            'date_of_purchase' => $request->date_of_purchase,
+                            'receipt_no' => $request->receipt_no,
+                            'receipt_image' => '/storage/payment_analysis/'.$filename
+                        ]);
+    
+                    } else {
+                        $tinPayment->update([
+                            'type' => $request->type,
+                            'supplier' => $request->supplier,
+                            'staff' => $manager->id,
+                            'grade' => $request->grade,
+                            'bag' => $request->bags,
+                            'kg' => $bag_kgs,
+                            'total_in_kg' => $subPrice,
+                            'percentage_analysis' => $request->percentage,
+                            'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                            'date_of_purchase' => $request->date_of_purchase,
+                            'receipt_no' => $request->receipt_no,
+                        ]);
+                    }
+
+                   
+                    $transaction = Transaction::where('accountant_process_id', $tinPayment->id)->first();
+
+                    if($transaction)
+                    {
+                        $transaction->update([
+                            'amount' => $tinPayment->price
+                        ]);
+                    }
+
+                    Notification::create([
+                        'to' => $tinPayment->user_id,
+                        'admin_id' => Auth::user()->id,
+                        'title' => config('app.name'),
+                        'body' => 'Admin has updated a payment receipt, with Receipt No:'.$tinPayment->receipt_no
+                    ]);
+    
+                    return back()->with([
+                        'alertType' => 'success',
+                        'back' => route('admin.payment.receipt.tin.view'),
+                        'message' => 'Payment Receipt updated successfully'
+                    ]);
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'kg should not be greater or equal to '.rate
+                    ]);
+                }
+            } 
+
+            if($request->kgweight == 'kg')
+            {
+                $this->validate($request, [
+                    'kg' => ['required', 'numeric']
+                ]);
+    
+                $analysis = AnalysisCalculation::get();
+
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+
+                $per = $request->percentage / 100;
+    
+                $rateCalculation = $dollarRate * $exchangeRate;
+    
+                $subTotal = $per * $rateCalculation * fixed_rate;
+    
+                $total = $subTotal * $request->kg;
+    
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                if (request()->hasFile('receipt_image')) 
+                {
+                    $this->validate($request, [
+                        'receipt_image' => 'required|mimes:jpeg,png,jpg'
+                    ]);
+
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    if($tinPayment->receipt_image) {
+                        Storage::delete(str_replace("storage", "public", $tinPayment->receipt_image));
+                    }
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                    $tinPayment->update([
+                        'type' => $request->type,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => 0,
+                        'kg' => $request->kg,
+                        'total_in_kg' => $request->kg,
+                        'percentage_analysis' => $request->percentage,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
+                    ]);
+                } else {
+                    $tinPayment->update([
+                        'type' => $request->type,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => 0,
+                        'kg' => $request->kg,
+                        'total_in_kg' => $request->kg,
+                        'percentage_analysis' => $request->percentage,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                    ]);
+                }
+        
+                $transaction = Transaction::where('accountant_process_id', $tinPayment->id)->first();
+
+                if($transaction)
+                {
+                    $transaction->update([
+                        'amount' => $tinPayment->price
+                    ]);
+                }
+
+                Notification::create([
+                    'to' => $tinPayment->user_id,
+                    'admin_id' => Auth::user()->id,
+                    'title' => config('app.name'),
+                    'body' => 'Admin has updated a payment receipt, with Receipt No:'.$tinPayment->receipt_no
+                ]);
+
+                return back()->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.payment.receipt.tin.view'),
+                    'message' => 'Payment Receipt updated successfully'
+                ]);
+            } 
+
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Please select weight type.'
+            ]);
+        }
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+        ]);
+
+        $berating = BeratingCalculation::find($request->grade);
+
+        if(!$berating)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Admin yet to add this berating value, try again later.'
+            ]); 
+        }
+       
+        if($request->kgweight == 'bag')
+        {
+            if($request->bag_kg == null)
+            {
+                $bag_kgs = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_kg' => ['required', 'numeric', 'max:49'],
+                ]);
+
+                $bag_kgs = $request->bag_kg;
+            }
+
+            $this->validate($request, [
+                'bags' => ['required', 'numeric'],
+                'percentage' => ['required', 'numeric', 'min:25'],
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            if($bag_kgs < rate)
+            {
+                $per = $request->percentage / 100;
+
+                $rateCalculation = $dollarRate * $exchangeRate;
+
+                $subTotal = $per * $rateCalculation * fixed_rate;
+
+                $subPrice = $request->bags * rate + $request->bag_kg;
+                
+                $total = $subTotal * $subPrice;
+
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                return back()->with([
+                    'previewPrice' => 'success',
+                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                ]);
+            } else {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'kg should not be greater or equal to '.rate
+                ]);
+            }
+        } 
+
+        if($request->kgweight == 'kg')
+        {
+            $this->validate($request, [
+                'kg' => ['required', 'numeric']
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            $per = $request->percentage / 100;
+
+            $rateCalculation = $dollarRate * $exchangeRate;
+
+            $subTotal = $per * $rateCalculation * fixed_rate;
+
+            $total = $subTotal * $request->kg;
+
+            $totalPrice = number_format((float)$total, 0, '.', '');
+
+            return back()->with([
+                'previewPrice' => 'success',
+                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+            ]);
+        } 
+
+        return back()->with([
+            'type' => 'danger',
+            'message' => 'Please select weight type.'
+        ]);
+    }
+
+    public function payment_receipt_tin_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $tinPayment = PaymentReceiptTin::find($finder);
+
+        $transaction = Transaction::where('accountant_process_id', $tinPayment->id)->first();
+
+        if($transaction)
+        {
+            $transaction->delete();
+        }
+
+        if($tinPayment->receipt_image) {
+            Storage::delete(str_replace("storage", "public", $tinPayment->receipt_image));
+        }
+
+        $tinPayment->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Payment receipt deleted successfully!'
+        ]);
+    }
+
+    public function payment_receipt_columbite_view()
+    {
+        return view('admin.payment-receipt.view_columbite');
+    }
+
+    public function payment_receipt_columbite_add()
+    {
+        return view('admin.payment-receipt.add_columbite');
+    }
+
+    public function payment_receipt_columbite_post(Request $request)
+    {
+        if($request->save) 
+        {
+            $this->validate($request, [
+                'assist_manager' => ['required', 'string', 'max:255'],
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
+                'manager' => ['required', 'numeric'],
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+                'receipt_image' => 'required|mimes:jpeg,png,jpg'
+            ]);
+
+            $berating = BeratingCalculation::find($request->grade);
+    
+            if(!$berating)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Admin yet to add this berating value, try again later.'
+                ]); 
+            }
+
+            $manager = User::find($request->manager);
+
+            if(!$manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Manager not found in our database.'
+                ]); 
+            }
+
+            $assist_manager = User::find($request->assist_manager);
+
+            if(!$assist_manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Assistant Manager not found in our database.'
+                ]); 
+            }
+
+            if($request->poundweight == 'bag')
+            {
+                if($request->bag_pound == null)
+                {
+                    $bag_pounds = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_pound' => ['required', 'numeric', 'max:79'],
+                    ]);
+
+                    $bag_pounds = $request->bag_pound;
+                }
+
+                $this->validate($request, [
+                    'bags' => ['required', 'numeric'],
+                    'percentage' => ['required', 'numeric', 'min:25'],
+                ]);
+
+                $analysis = AnalysisCalculation::get();
+
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+
+                if($bag_pounds < columbite_rate)
+                {
+                    $per = $request->percentage / 100;
+
+                    $rateCalculation = $dollarRate * $exchangeRate;
+
+                    $subTotal = $per * $rateCalculation;
+
+                    $subPrice = $request->bags * columbite_rate + $request->bag_pound;
+                    
+                    $total = $subTotal * $subPrice;
+
+                    $totalPrice = number_format((float)$total, 0, '.', '');
+                    
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                    $columbitePayment = PaymentReceiptColumbite::create([
+                        'type' => $request->type,
+                        'user_id' => $assist_manager->id,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => $request->bags,
+                        'pound' => $bag_pounds,
+                        'total_in_pound' => $subPrice,
+                        'percentage_analysis' => $request->percentage,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
+                    ]);
+            
+                    Transaction::create([
+                        'user_id' => $assist_manager->id,
+                        'accountant_process_id' => $columbitePayment->id,
+                        'amount' => $columbitePayment->price,
+                        'reference' => config('app.name'),
+                        'status' => 'Payment Receipt'
+                    ]);
+
+                    Notification::create([
+                        'to' => $assist_manager->id,
+                        'admin_id' => Auth::user()->id,
+                        'title' => config('app.name'),
+                        'body' => 'Admin has added a payment receipt, with Receipt No:'.$columbitePayment->receipt_no.' on your behalf.'
+                    ]);
+
+                    return back()->with([
+                        'alertType' => 'success',
+                        'back' => route('admin.payment.receipt.columbite.view'),
+                        'message' => 'Payment Receipt created successfully'
+                    ]);
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'kg should not be greater or equal to '.columbite_rate
+                    ]);
+                }
+            } 
+
+            if($request->poundweight == 'pound')
+            {
+                $this->validate($request, [
+                    'pounds' => ['required', 'numeric']
+                ]);
+    
+                $analysis = AnalysisCalculation::get();
+    
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+    
+                $per = $request->percentage / 100;
+    
+                $rateCalculation = $dollarRate * $exchangeRate;
+    
+                $subTotal = $per * $rateCalculation;
+    
+                $total = $subTotal * $request->pounds;
+    
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                $filename = request()->receipt_image->getClientOriginalName();
+                request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                $columbitePayment = PaymentReceiptColumbite::create([
+                    'type' => $request->type,
+                    'user_id' => $assist_manager->id,
+                    'supplier' => $request->supplier,
+                    'staff' => $manager->id,
+                    'grade' => $request->grade,
+                    'pound' => $request->pounds,
+                    'total_in_pound' => $request->pounds,
+                    'percentage_analysis' => $request->percentage,
+                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'date_of_purchase' => $request->date_of_purchase,
+                    'receipt_no' => $request->receipt_no,
+                    'receipt_image' => '/storage/payment_analysis/'.$filename
+                ]);
+        
+                Transaction::create([
+                    'user_id' => $assist_manager->id,
+                    'accountant_process_id' => $columbitePayment->id,
+                    'amount' => $columbitePayment->price,
+                    'reference' => config('app.name'),
+                    'status' => 'Payment Receipt'
+                ]);
+
+                Notification::create([
+                    'to' => $assist_manager->id,
+                    'admin_id' => Auth::user()->id,
+                    'title' => config('app.name'),
+                    'body' => 'Admin has added a payment receipt, with Receipt No:'.$columbitePayment->receipt_no.' on your behalf.'
+                ]);
+
+
+                return back()->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.payment.receipt.columbite.view'),
+                    'message' => 'Payment Receipt created successfully'
+                ]);
+            } 
+
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Please select weight type.'
+            ]);
+        }
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+        ]);
+
+        $berating = BeratingCalculation::find($request->grade);
+
+        if(!$berating)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Admin yet to add this berating value, try again later.'
+            ]); 
+        }
+       
+        if($request->poundweight == 'bag')
+        {
+            if($request->bag_pound == null)
+            {
+                $bag_pounds = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_pound' => ['required', 'numeric', 'max:79'],
+                ]);
+
+                $bag_pounds = $request->bag_pound;
+            }
+
+            $this->validate($request, [
+                'bags' => ['required', 'numeric'],
+                'percentage' => ['required', 'numeric', 'min:25'],
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            if($bag_pounds < columbite_rate)
+            {
+                $per = $request->percentage / 100;
+
+                $rateCalculation = $dollarRate * $exchangeRate;
+
+                $subTotal = $per * $rateCalculation;
+
+                $subPrice = $request->bags * columbite_rate + $request->bag_pound;
+                
+                $total = $subTotal * $subPrice;
+
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                return back()->with([
+                    'previewPrice' => 'success',
+                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                ]);
+            } else {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'pound should not be greater or equal to '.columbite_rate
+                ]);
+            }
+            
+        } 
+
+        if($request->poundweight == 'pound')
+        {
+            $this->validate($request, [
+                'pounds' => ['required', 'numeric']
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            $per = $request->percentage / 100;
+
+            $rateCalculation = $dollarRate * $exchangeRate;
+
+            $subTotal = $per * $rateCalculation;
+
+            $total = $subTotal * $request->pounds;
+
+            $totalPrice = number_format((float)$total, 0, '.', '');
+
+            return back()->with([
+                'previewPrice' => 'success',
+                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+            ]);
+        } 
+
+        return back()->with([
+            'type' => 'danger',
+            'message' => 'Please select weight type.'
+        ]);
+    }
+
+    public function payment_receipt_columbite_edit($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $columbitePayment = PaymentReceiptColumbite::find($finder);
+
+        return view('admin.payment-receipt.edit_columbite', [
+            'columbitePayment' => $columbitePayment
+        ]);
+    }
+
+    public function payment_receipt_columbite_update($id, Request $request)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $columbitePayment = PaymentReceiptColumbite::find($finder);
+
+        if($request->save) 
+        {
+            $this->validate($request, [
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
+                'manager' => ['required', 'numeric'],
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+            ]);
+
+            $berating = BeratingCalculation::find($request->grade);
+    
+            if(!$berating)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Admin yet to add this berating value, try again later.'
+                ]); 
+            }
+
+            $manager = User::find($request->manager);
+
+            if(!$manager)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Manager not found in our database.'
+                ]); 
+            }
+
+            if($request->poundweight == 'bag')
+            {
+                if($request->bag_pound == null)
+                {
+                    $bag_pounds = 0;
+                } else {
+                    $this->validate($request, [
+                        'bag_pound' => ['required', 'numeric', 'max:79'],
+                    ]);
+
+                    $bag_pounds = $request->bag_pound;
+                }
+
+                $this->validate($request, [
+                    'bags' => ['required', 'numeric'],
+                    'percentage' => ['required', 'numeric', 'min:25'],
+                ]);
+
+                $analysis = AnalysisCalculation::get();
+
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+
+                if($bag_pounds < columbite_rate)
+                {
+                    $per = $request->percentage / 100;
+
+                    $rateCalculation = $dollarRate * $exchangeRate;
+
+                    $subTotal = $per * $rateCalculation;
+
+                    $subPrice = $request->bags * columbite_rate + $request->bag_pound;
+                    
+                    $total = $subTotal * $subPrice;
+
+                    $totalPrice = number_format((float)$total, 0, '.', '');
+                    
+                    if (request()->hasFile('receipt_image')) 
+                    {
+                        $this->validate($request, [
+                            'receipt_image' => 'required|mimes:jpeg,png,jpg'
+                        ]);
+
+                        $filename = request()->receipt_image->getClientOriginalName();
+                        if($columbitePayment->receipt_image) {
+                            Storage::delete(str_replace("storage", "public", $columbitePayment->receipt_image));
+                        }
+                        request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                        $columbitePayment->update([
+                            'type' => $request->type,
+                            'supplier' => $request->supplier,
+                            'staff' => $manager->id,
+                            'grade' => $request->grade,
+                            'bag' => $request->bags,
+                            'pound' => $bag_pounds,
+                            'total_in_pound' => $subPrice,
+                            'percentage_analysis' => $request->percentage,
+                            'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                            'date_of_purchase' => $request->date_of_purchase,
+                            'receipt_no' => $request->receipt_no,
+                            'receipt_image' => '/storage/payment_analysis/'.$filename
+                        ]);
+                    } else {
+                        $columbitePayment->update([
+                            'type' => $request->type,
+                            'supplier' => $request->supplier,
+                            'staff' => $manager->id,
+                            'grade' => $request->grade,
+                            'bag' => $request->bags,
+                            'pound' => $bag_pounds,
+                            'total_in_pound' => $subPrice,
+                            'percentage_analysis' => $request->percentage,
+                            'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                            'date_of_purchase' => $request->date_of_purchase,
+                            'receipt_no' => $request->receipt_no,
+                        ]);
+                    }
+
+                    $transaction = Transaction::where('accountant_process_id', $columbitePayment->id)->first();
+
+                    if($transaction)
+                    {
+                        $transaction->update([
+                            'amount' => $columbitePayment->price
+                        ]);
+                    }
+
+                    Notification::create([
+                        'to' => $columbitePayment->user_id,
+                        'admin_id' => Auth::user()->id,
+                        'title' => config('app.name'),
+                        'body' => 'Admin has updated a payment receipt, with Receipt No:'.$columbitePayment->receipt_no
+                    ]);
+            
+                    return back()->with([
+                        'alertType' => 'success',
+                        'back' => route('admin.payment.receipt.columbite.view'),
+                        'message' => 'Payment Receipt updated successfully'
+                    ]);
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'kg should not be greater or equal to '.columbite_rate
+                    ]);
+                }
+            } 
+
+            if($request->poundweight == 'pound')
+            {
+                $this->validate($request, [
+                    'pounds' => ['required', 'numeric']
+                ]);
+    
+                $analysis = AnalysisCalculation::get();
+    
+                foreach($analysis as $analyses)
+                {
+                    if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                    {
+                        $dollarRate = $analyses->dollar_rate;
+                        $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
+                    }
+                }
+    
+                $per = $request->percentage / 100;
+    
+                $rateCalculation = $dollarRate * $exchangeRate;
+    
+                $subTotal = $per * $rateCalculation;
+    
+                $total = $subTotal * $request->pounds;
+    
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                if (request()->hasFile('receipt_image')) 
+                {
+                    $this->validate($request, [
+                        'receipt_image' => 'required|mimes:jpeg,png,jpg'
+                    ]);
+
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    if($columbitePayment->receipt_image) {
+                        Storage::delete(str_replace("storage", "public", $columbitePayment->receipt_image));
+                    }
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
+
+                    $columbitePayment->update([
+                        'type' => $request->type,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => 0,
+                        'pound' => $request->pounds,
+                        'total_in_pound' => $request->pounds,
+                        'percentage_analysis' => $request->percentage,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
+                    ]);
+                } else {
+                    $columbitePayment->update([
+                        'type' => $request->type,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => 0,
+                        'pound' => $request->pounds,
+                        'total_in_pound' => $request->pounds,
+                        'percentage_analysis' => $request->percentage,
+                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no
+                    ]);
+                }
+
+                $transaction = Transaction::where('accountant_process_id', $columbitePayment->id)->first();
+
+                if($transaction)
+                {
+                    $transaction->update([
+                        'amount' => $columbitePayment->price
+                    ]);
+                }
+
+                Notification::create([
+                    'to' => $columbitePayment->user_id,
+                    'admin_id' => Auth::user()->id,
+                    'title' => config('app.name'),
+                    'body' => 'Admin has updated a payment receipt, with Receipt No:'.$columbitePayment->receipt_no
+                ]);
+            
+                return back()->with([
+                    'alertType' => 'success',
+                    'back' => route('admin.payment.receipt.columbite.view'),
+                    'message' => 'Payment Receipt updated successfully'
+                ]);
+            } 
+
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Please select weight type.'
+            ]);
+        }
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric'],
+        ]);
+
+        $berating = BeratingCalculation::find($request->grade);
+
+        if(!$berating)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Admin yet to add this berating value, try again later.'
+            ]); 
+        }
+       
+        if($request->poundweight == 'bag')
+        {
+            if($request->bag_pound == null)
+            {
+                $bag_pounds = 0;
+            } else {
+                $this->validate($request, [
+                    'bag_pound' => ['required', 'numeric', 'max:79'],
+                ]);
+
+                $bag_pounds = $request->bag_pound;
+            }
+
+            $this->validate($request, [
+                'bags' => ['required', 'numeric'],
+                'percentage' => ['required', 'numeric', 'min:25'],
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            if($bag_pounds < columbite_rate)
+            {
+                $per = $request->percentage / 100;
+
+                $rateCalculation = $dollarRate * $exchangeRate;
+
+                $subTotal = $per * $rateCalculation;
+
+                $subPrice = $request->bags * columbite_rate + $request->bag_pound;
+                
+                $total = $subTotal * $subPrice;
+
+                $totalPrice = number_format((float)$total, 0, '.', '');
+
+                return back()->with([
+                    'previewPrice' => 'success',
+                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                ]);
+            } else {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'pound should not be greater or equal to '.columbite_rate
+                ]);
+            }
+            
+        } 
+
+        if($request->poundweight == 'pound')
+        {
+            $this->validate($request, [
+                'pounds' => ['required', 'numeric']
+            ]);
+
+            $analysis = AnalysisCalculation::get();
+
+            foreach($analysis as $analyses)
+            {
+                if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
+                {
+                    $dollarRate = $analyses->dollar_rate;
+                    $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
+                }
+            }
+
+            $per = $request->percentage / 100;
+
+            $rateCalculation = $dollarRate * $exchangeRate;
+
+            $subTotal = $per * $rateCalculation;
+
+            $total = $subTotal * $request->pounds;
+
+            $totalPrice = number_format((float)$total, 0, '.', '');
+
+            return back()->with([
+                'previewPrice' => 'success',
+                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+            ]);
+        } 
+
+        return back()->with([
+            'type' => 'danger',
+            'message' => 'Please select weight type.'
+        ]);
+    }
+
+    public function payment_receipt_columbite_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $columbitePayment = PaymentReceiptColumbite::find($finder);
+
+        $transaction = Transaction::where('accountant_process_id', $columbitePayment->id)->first();
+
+        if($transaction)
+        {
+            $transaction->delete();
+        }
+
+        if($columbitePayment->receipt_image) {
+            Storage::delete(str_replace("storage", "public", $columbitePayment->receipt_image));
+        }
+
+        $columbitePayment->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Payment receipt deleted successfully!'
+        ]);
     }
 
     // Expenses
@@ -993,7 +2862,7 @@ class AdminController extends Controller
                 'to' => $expense->user_id,
                 'admin_id' => Auth::user()->id,
                 'title' => config('app.name'),
-                'body' => 'Admin has update an expense added by you with title - '.$expense->title
+                'body' => 'Admin has updated an expense added by you with title - '.$expense->title
             ]);
 
             return back()->with([
@@ -1109,67 +2978,14 @@ class AdminController extends Controller
         ]);
     }
 
-    public function post_material_columbite(Request $request)
-    {
-        $this->validate($request, [
-            'grade' => ['required', 'numeric'],
-            'material' => ['required', 'numeric'],
-        ]);
-        
-       ColumbiteMaterial::create([
-            'grade' => $request->grade,
-            'material' => $request->material,
-        ]);
-
-        return back()->with([
-            'alertType' => 'success',
-            'back' => route('admin.material.columbite'),
-            'message' => 'Added successfully!'
-        ]);
-    }
-
-    public function material_columbite_update($id, Request $request)
-    {
-        $this->validate($request, [
-            'grade' => ['required', 'numeric'],
-            'material' => ['required', 'numeric'],
-        ]);
-
-        $finder = Crypt::decrypt($id);
-
-        $columbiteMaterial = ColumbiteMaterial::find($finder);
-        
-        $columbiteMaterial->update([
-            'grade' => $request->grade,
-            'material' => $request->material,
-        ]);
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => 'Updated successfully!'
-        ]);
-    }
-
-    public function material_columbite_delete($id)
-    {
-        $finder = Crypt::decrypt($id);
-
-        ColumbiteMaterial::find($finder)->delete();
-
-        return back()->with([
-            'alertType' => 'success',
-            'message' => 'Deleted successfully!'
-        ]);
-    }
-
     // Weekly Analysis Tin (Pounds)
     public function weekly_analysis_tin_pound(Request $request)
     {
         if($request->start_date == null && $request->end_date == null)
         {
-            $tinPayment = TinPaymentAnalysis::latest()->where('type', 'pound')->get();
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'pound')->get();
         } else {
-            $tinPayment = TinPaymentAnalysis::latest()->where('type', 'pound')->whereBetween('date', [$request->start_date, $request->end_date])->get();
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'pound')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
         }
 
         if($tinPayment->isEmpty())
@@ -1182,13 +2998,13 @@ class AdminController extends Controller
 
             foreach($tinPayment as $tinpound)
             {
-                $beratingpayment = BeratingCalculation::find($tinpound->berating);
+                $beratingpayment = BeratingCalculation::find($tinpound->grade);
 
                 foreach($beratingCalculation as $berating)
                 {
                     if($berating->grade == $beratingpayment->grade)
                     {
-                        $data[] = ['date' => $tinpound->date, 'berating' => $berating->grade, 'total' => $tinpound->total_in_pounds];
+                        $data[] = ['date' => $tinpound->date_of_purchase, 'berating' => $berating->grade, 'total' => $tinpound->total_in_pound];
 
                         $analysis = array_values(array_unique($data, 0));
                                     
@@ -1201,12 +3017,12 @@ class AdminController extends Controller
         // Calculation Starts
         if($request->start_date == null && $request->end_date == null)
         {
-            $result =  TinPaymentAnalysis::join('berating_calculations', 'berating_calculations.id', '=', 'tin_payment_analyses.berating')->latest()->where('tin_payment_analyses.type', 'pound')  
-                                ->get(['tin_payment_analyses.date', 'tin_payment_analyses.total_in_pounds', 'berating_calculations.grade', 'tin_payment_analyses.created_at', 'tin_payment_analyses.updated_at']);
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } else {
-            $result =  TinPaymentAnalysis::join('berating_calculations', 'berating_calculations.id', '=', 'tin_payment_analyses.berating')->latest()->where('tin_payment_analyses.type', 'pound')  
-                                ->whereBetween('tin_payment_analyses.date', [$request->start_date, $request->end_date])
-                                ->get(['tin_payment_analyses.date', 'tin_payment_analyses.total_in_pounds', 'berating_calculations.grade', 'tin_payment_analyses.created_at', 'tin_payment_analyses.updated_at']);
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
+                                ->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         }
         
         if($result->isEmpty())
@@ -1236,24 +3052,24 @@ class AdminController extends Controller
             $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage];
 
         } else {
-            $sum188 = $result->where('grade', '18.8')->sum('total_in_pounds');
-            $sum189 = $result->where('grade', '18.9')->sum('total_in_pounds');
-            $sum190 = $result->where('grade', '19.0')->sum('total_in_pounds');
-            $sum191 = $result->where('grade', '19.1')->sum('total_in_pounds');
-            $sum192 = $result->where('grade', '19.2')->sum('total_in_pounds');
-            $sum193 = $result->where('grade', '19.3')->sum('total_in_pounds');
-            $sum194 = $result->where('grade', '19.4')->sum('total_in_pounds');
-            $sum195 = $result->where('grade', '19.5')->sum('total_in_pounds');
-            $sum196 = $result->where('grade', '19.6')->sum('total_in_pounds');
-            $sum197 = $result->where('grade', '19.7')->sum('total_in_pounds');
-            $sum198 = $result->where('grade', '19.8')->sum('total_in_pounds');
-            $sum199 = $result->where('grade', '19.9')->sum('total_in_pounds');
-            $sum200 = $result->where('grade', '20.0')->sum('total_in_pounds');
-            $sum201 = $result->where('grade', '20.1')->sum('total_in_pounds');
-            $sum202 = $result->where('grade', '20.2')->sum('total_in_pounds');
-            $sum203 = $result->where('grade', '20.3')->sum('total_in_pounds');
-            $sum204 = $result->where('grade', '20.4')->sum('total_in_pounds');
-            $sum205 = $result->where('grade', '20.5')->sum('total_in_pounds');
+            $sum188 = $result->where('grade', '18.8')->sum('total_in_pound');
+            $sum189 = $result->where('grade', '18.9')->sum('total_in_pound');
+            $sum190 = $result->where('grade', '19.0')->sum('total_in_pound');
+            $sum191 = $result->where('grade', '19.1')->sum('total_in_pound');
+            $sum192 = $result->where('grade', '19.2')->sum('total_in_pound');
+            $sum193 = $result->where('grade', '19.3')->sum('total_in_pound');
+            $sum194 = $result->where('grade', '19.4')->sum('total_in_pound');
+            $sum195 = $result->where('grade', '19.5')->sum('total_in_pound');
+            $sum196 = $result->where('grade', '19.6')->sum('total_in_pound');
+            $sum197 = $result->where('grade', '19.7')->sum('total_in_pound');
+            $sum198 = $result->where('grade', '19.8')->sum('total_in_pound');
+            $sum199 = $result->where('grade', '19.9')->sum('total_in_pound');
+            $sum200 = $result->where('grade', '20.0')->sum('total_in_pound');
+            $sum201 = $result->where('grade', '20.1')->sum('total_in_pound');
+            $sum202 = $result->where('grade', '20.2')->sum('total_in_pound');
+            $sum203 = $result->where('grade', '20.3')->sum('total_in_pound');
+            $sum204 = $result->where('grade', '20.4')->sum('total_in_pound');
+            $sum205 = $result->where('grade', '20.5')->sum('total_in_pound');
 
             $totalPound = $sum188 + $sum189 + $sum190 + $sum191 + $sum192 + $sum193 + $sum194 + $sum195 + $sum196 + $sum197 + $sum198 + $sum199 + $sum200 + $sum201 + $sum202 + $sum203 + $sum204 + $sum205;
 
@@ -1356,9 +3172,9 @@ class AdminController extends Controller
     {
         if($request->start_date == null && $request->end_date == null)
         {
-            $tinPayment = TinPaymentAnalysis::latest()->where('type', 'kg')->get();
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'kg')->get();
         } else {
-            $tinPayment = TinPaymentAnalysis::latest()->where('type', 'kg')->whereBetween('date', [$request->start_date, $request->end_date])->get();
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'kg')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
         }
 
         if($tinPayment->isEmpty())
@@ -1371,13 +3187,13 @@ class AdminController extends Controller
 
             foreach($tinPayment as $tinpound)
             {
-                $beratingpayment = BeratingCalculation::find($tinpound->berating);
+                $beratingpayment = BeratingCalculation::find($tinpound->grade);
 
                 foreach($beratingCalculation as $berating)
                 {
                     if($berating->grade == $beratingpayment->grade)
                     {
-                        $data[] = ['date' => $tinpound->date, 'berating' => $berating->grade, 'total' => $tinpound->total_in_kg];
+                        $data[] = ['date' => $tinpound->date_of_purchase, 'berating' => $berating->grade, 'total' => $tinpound->total_in_kg];
 
                         $analysis = array_values(array_unique($data, 0));
                                     
@@ -1390,12 +3206,12 @@ class AdminController extends Controller
         // Calculation Starts
         if($request->start_date == null && $request->end_date == null)
         {
-            $result =  TinPaymentAnalysis::join('berating_calculations', 'berating_calculations.id', '=', 'tin_payment_analyses.berating')->latest()->where('tin_payment_analyses.type', 'kg')  
-                                ->get(['tin_payment_analyses.date', 'tin_payment_analyses.total_in_kg', 'tin_payment_analyses.percentage_analysis', 'berating_calculations.grade', 'tin_payment_analyses.created_at', 'tin_payment_analyses.updated_at']);
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } else {
-            $result =  TinPaymentAnalysis::join('berating_calculations', 'berating_calculations.id', '=', 'tin_payment_analyses.berating')->latest()->where('tin_payment_analyses.type', 'kg')  
-                                ->whereBetween('tin_payment_analyses.date', [$request->start_date, $request->end_date])
-                                ->get(['tin_payment_analyses.date', 'tin_payment_analyses.total_in_kg', 'tin_payment_analyses.percentage_analysis', 'berating_calculations.grade', 'tin_payment_analyses.created_at', 'tin_payment_analyses.updated_at']);
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
+                                ->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         }
         
         if($result->isEmpty())
@@ -1578,9 +3394,9 @@ class AdminController extends Controller
     {
         if($request->start_date == null && $request->end_date == null)
         {
-            $tinPayment = ColumbitePaymentAnalysis::latest()->where('type', 'pound')->get();
+            $tinPayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->get();
         } else {
-            $tinPayment = ColumbitePaymentAnalysis::latest()->where('type', 'pound')->whereBetween('date', [$request->start_date, $request->end_date])->get();
+            $tinPayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
         }
 
         if($tinPayment->isEmpty())
@@ -1593,13 +3409,13 @@ class AdminController extends Controller
 
             foreach($tinPayment as $tinpound)
             {
-                $beratingpayment = BeratingCalculation::find($tinpound->berating);
+                $beratingpayment = BeratingCalculation::find($tinpound->grade);
 
                 foreach($beratingCalculation as $berating)
                 {
                     if($berating->grade == $beratingpayment->grade)
                     {
-                        $data[] = ['date' => $tinpound->date, 'berating' => $berating->grade, 'total' => $tinpound->total_in_pounds];
+                        $data[] = ['date' => $tinpound->date_of_purchase, 'berating' => $berating->grade, 'total' => $tinpound->total_in_pound];
 
                         $analysis = array_values(array_unique($data, 0));
                                     
@@ -1612,12 +3428,12 @@ class AdminController extends Controller
         // Calculation Starts
         if($request->start_date == null && $request->end_date == null)
         {
-            $result =  ColumbitePaymentAnalysis::join('berating_calculations', 'berating_calculations.id', '=', 'columbite_payment_analyses.berating')->latest()->where('columbite_payment_analyses.type', 'pound')  
-                                ->get(['columbite_payment_analyses.date', 'columbite_payment_analyses.total_in_pounds', 'columbite_payment_analyses.percentage_analysis', 'berating_calculations.grade', 'columbite_payment_analyses.created_at', 'columbite_payment_analyses.updated_at']);
+            $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } else {
-            $result =  ColumbitePaymentAnalysis::join('berating_calculations', 'berating_calculations.id', '=', 'columbite_payment_analyses.berating')->latest()->where('columbite_payment_analyses.type', 'pound')  
-                                ->whereBetween('columbite_payment_analyses.date', [$request->start_date, $request->end_date])
-                                ->get(['columbite_payment_analyses.date', 'columbite_payment_analyses.total_in_pounds', 'columbite_payment_analyses.percentage_analysis', 'berating_calculations.grade', 'columbite_payment_analyses.created_at', 'columbite_payment_analyses.updated_at']);
+            $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
+                                ->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         }
         
         if($result->isEmpty())
@@ -1650,31 +3466,31 @@ class AdminController extends Controller
 
         } else {
             // Total Kg and Total Average Berating
-            $sum185 = $result->where('grade', '18.5')->sum('total_in_pounds');
-            $sum186 = $result->where('grade', '18.6')->sum('total_in_pounds');
-            $sum187 = $result->where('grade', '18.7')->sum('total_in_pounds');
-            $sum188 = $result->where('grade', '18.8')->sum('total_in_pounds');
-            $sum189 = $result->where('grade', '18.9')->sum('total_in_pounds');
-            $sum190 = $result->where('grade', '19.0')->sum('total_in_pounds');
-            $sum191 = $result->where('grade', '19.1')->sum('total_in_pounds');
-            $sum192 = $result->where('grade', '19.2')->sum('total_in_pounds');
-            $sum193 = $result->where('grade', '19.3')->sum('total_in_pounds');
-            $sum194 = $result->where('grade', '19.4')->sum('total_in_pounds');
-            $sum195 = $result->where('grade', '19.5')->sum('total_in_pounds');
-            $sum196 = $result->where('grade', '19.6')->sum('total_in_pounds');
-            $sum197 = $result->where('grade', '19.7')->sum('total_in_pounds');
-            $sum198 = $result->where('grade', '19.8')->sum('total_in_pounds');
-            $sum199 = $result->where('grade', '19.9')->sum('total_in_pounds');
-            $sum200 = $result->where('grade', '20.0')->sum('total_in_pounds');
-            $sum201 = $result->where('grade', '20.1')->sum('total_in_pounds');
-            $sum202 = $result->where('grade', '20.2')->sum('total_in_pounds');
-            $sum203 = $result->where('grade', '20.3')->sum('total_in_pounds');
-            $sum204 = $result->where('grade', '20.4')->sum('total_in_pounds');
-            $sum205 = $result->where('grade', '20.5')->sum('total_in_pounds');
-            $sum206 = $result->where('grade', '20.6')->sum('total_in_pounds');
-            $sum207 = $result->where('grade', '20.7')->sum('total_in_pounds');
-            $sum208 = $result->where('grade', '20.8')->sum('total_in_pounds');
-            $sum209 = $result->where('grade', '20.9')->sum('total_in_pounds');
+            $sum185 = $result->where('grade', '18.5')->sum('total_in_pound');
+            $sum186 = $result->where('grade', '18.6')->sum('total_in_pound');
+            $sum187 = $result->where('grade', '18.7')->sum('total_in_pound');
+            $sum188 = $result->where('grade', '18.8')->sum('total_in_pound');
+            $sum189 = $result->where('grade', '18.9')->sum('total_in_pound');
+            $sum190 = $result->where('grade', '19.0')->sum('total_in_pound');
+            $sum191 = $result->where('grade', '19.1')->sum('total_in_pound');
+            $sum192 = $result->where('grade', '19.2')->sum('total_in_pound');
+            $sum193 = $result->where('grade', '19.3')->sum('total_in_pound');
+            $sum194 = $result->where('grade', '19.4')->sum('total_in_pound');
+            $sum195 = $result->where('grade', '19.5')->sum('total_in_pound');
+            $sum196 = $result->where('grade', '19.6')->sum('total_in_pound');
+            $sum197 = $result->where('grade', '19.7')->sum('total_in_pound');
+            $sum198 = $result->where('grade', '19.8')->sum('total_in_pound');
+            $sum199 = $result->where('grade', '19.9')->sum('total_in_pound');
+            $sum200 = $result->where('grade', '20.0')->sum('total_in_pound');
+            $sum201 = $result->where('grade', '20.1')->sum('total_in_pound');
+            $sum202 = $result->where('grade', '20.2')->sum('total_in_pound');
+            $sum203 = $result->where('grade', '20.3')->sum('total_in_pound');
+            $sum204 = $result->where('grade', '20.4')->sum('total_in_pound');
+            $sum205 = $result->where('grade', '20.5')->sum('total_in_pound');
+            $sum206 = $result->where('grade', '20.6')->sum('total_in_pound');
+            $sum207 = $result->where('grade', '20.7')->sum('total_in_pound');
+            $sum208 = $result->where('grade', '20.8')->sum('total_in_pound');
+            $sum209 = $result->where('grade', '20.9')->sum('total_in_pound');
 
             $totalPound = $sum185 + $sum186 + $sum187 + $sum188 + $sum189 + $sum190 + $sum191 + $sum192 + $sum193 + $sum194 + $sum195 + $sum196 + $sum197 + $sum198 + $sum199 + $sum200 + $sum201 + $sum202 + $sum203 + $sum204 + $sum205 + $sum206 + $sum207 + $sum208 + $sum209;
 

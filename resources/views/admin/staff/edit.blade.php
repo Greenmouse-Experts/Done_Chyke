@@ -2,6 +2,21 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Edit Staff</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.staff')}}">Staff</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-4 col-lg-4">
@@ -117,6 +132,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Update {{$user->name}} Account</button>
                             </form>
+                            @if($user->account_type == 'Accountant' || $user->account_type == 'Assistant Manager')
                             <hr>
                             <h5 class="mb-3">Security</h5>
                             <form action="{{ route('admin.update.staff.password', Crypt::encrypt($user->id))}}" method="post">
@@ -139,6 +155,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Change {{$user->name}} Password</button>
                             </form>
+                            @endif
                         </div>
                     </div>
                 </div>

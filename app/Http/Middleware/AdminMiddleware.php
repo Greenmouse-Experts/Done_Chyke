@@ -20,7 +20,10 @@ class AdminMiddleware
         if (Auth::user()->account_type == 'Administrator'){
             return $next($request);
         } else {
-            return redirect('/home');
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Unauthorized!'
+            ]);
         }
     }
 }

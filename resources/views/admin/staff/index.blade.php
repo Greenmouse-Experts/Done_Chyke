@@ -2,19 +2,49 @@
 
 @section('page-content')
 <div class="content-page">
-     <div class="container-fluid add-form-list">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Add Staff</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.staff')}}">Staff</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="container-fluid add-form-list">
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Add Assistant Manager</h4>
+                            <h5 class="card-title">Provide the informations below.</h5>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{route('admin.post.manager.assistance')}}" method="POST" data-toggle="validator">
+                        <form action="{{route('admin.post.staff')}}" method="POST" data-toggle="validator">
                             @csrf
                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Account Type *</label>
+                                        <select name="account_type" class="selectpicker form-control" onchange="showDiv(this)" data-style="py-0">
+                                            <option value="">-- Select Account Type --</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="Accountant">Accountant</option>
+                                            <option value="Assistant Manager">Assistant Manager</option>
+                                            <option value="Store Personnel">Store Personnel</option>
+                                            <option value="Warehouse Personnel">Warehouse Personnel</option>
+                                            <option value="Driver">Driver</option>
+                                        </select>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Name *</label>
@@ -29,7 +59,7 @@
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Email *</label>
                                         <input type="email" class="form-control" placeholder="Enter Email" name="email" required>
@@ -44,19 +74,20 @@
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Password *</label>
-                                        <input type="password" class="form-control" placeholder="Enter Password" name="password" required>
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="password" style="display:none;">
+                                    <div class="form-group">
+                                        <label>Password *</label>
+                                        <input type="password" class="form-control" placeholder="Enter Password" name="password">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="comfirm-password" style="display:none;">
                                     <div class="form-group">
                                         <label>Confirm Password *</label>
-                                        <input type="password" class="form-control" placeholder="Enter Confirm Password" name="password_confirmation" required>
+                                        <input type="password" class="form-control" placeholder="Enter Confirm Password" name="password_confirmation">
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
@@ -71,7 +102,7 @@
                                         <span class="text-red">If blank, System will automatically make user <code>Active</code></span>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12" id="notify" style="display:none;">
                                     <div class="checkbox d-inline-block mb-3">
                                         <input type="checkbox" name="notify" class="checkbox-input mr-2" id="checkbox1" checked="">
                                         <label for="checkbox1">Notify User by Email</label>
@@ -89,5 +120,23 @@
         </div>
         <!-- Page end  -->
     </div>
-      </div>
+</div>
+
+<script type="text/javascript">
+    function showDiv(select) {
+        if (select.value == 'Accountant') {
+            document.getElementById('password').style.display = "block";
+            document.getElementById('comfirm-password').style.display = "block";
+            document.getElementById('notify').style.display = "block";
+        } else if (select.value == 'Assistant Manager') {
+            document.getElementById('password').style.display = "block";
+            document.getElementById('comfirm-password').style.display = "block";
+            document.getElementById('notify').style.display = "block";
+        } else {
+            document.getElementById('password').style.display = "none";
+            document.getElementById('comfirm-password').style.display = "none";
+            document.getElementById('notify').style.display = "none";
+        }
+    }
+</script>
 @endsection

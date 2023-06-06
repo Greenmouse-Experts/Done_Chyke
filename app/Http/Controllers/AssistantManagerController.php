@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AnalysisCalculation;
 use App\Models\BeratingCalculation;
-use App\Models\ColumbitePaymentAnalysis;
-use App\Models\Manager;
-use App\Models\TinPaymentAnalysis;
+use App\Models\PaymentReceiptColumbite;
+use App\Models\PaymentReceiptTin;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,40 +28,41 @@ class AssistantManagerController extends Controller
         return substr((string) $num, 0, -strlen($chars)) . $chars;
     }
 
-    public function payment_analysis_tin_view()
+    public function payment_receipt_tin_view()
     {
-        return view('assistant_managers.payment_analysis_tin_view');
+        return view('assistant_managers.payment_receipt_tin_view');
     }
 
-    public function payment_analysis_tin_add($id)
+    public function payment_receipt_tin_add($id)
     {
         $active_tab = $id;
 
         if($active_tab == 'pound') {
-            return view ('assistant_managers.payment_analysis_tin_add', compact('active_tab'));
+            return view ('assistant_managers.payment_receipt_tin_add', compact('active_tab'));
         } elseif($active_tab == 'kg') {
-            return view ('assistant_managers.payment_analysis_tin_add', compact('active_tab'));
+            return view ('assistant_managers.payment_receipt_tin_add', compact('active_tab'));
         } else {
             $active_tab == 'kg';
-            return view ('assistant_managers.payment_analysis_tin_add', compact('active_tab'));
+            return view ('assistant_managers.payment_receipt_tin_add', compact('active_tab'));
         }
     }
 
-    public function payment_analysis_tin_pound_post(Request $request)
+    public function payment_receipt_tin_pound_post(Request $request)
     {
         define("pound_rate", 70);
         
         if($request->save) 
         {
             $this->validate($request, [
-                'customer' => ['required', 'string', 'max:255'],
-                'berating' => ['required', 'numeric'],
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
                 'manager' => ['required', 'numeric'],
-                'date' => ['required', 'date'],
-                'receipt' => 'required|mimes:jpeg,png,jpg'
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+                'receipt_image' => 'required|mimes:jpeg,png,jpg'
             ]);
 
-            $berating = BeratingCalculation::find($request->berating);
+            $berating = BeratingCalculation::find($request->grade);
 
             if(!$berating)
             {
@@ -72,7 +72,7 @@ class AssistantManagerController extends Controller
                 ]); 
             }
 
-            $manager = Manager::find($request->manager);
+            $manager = User::find($request->manager);
 
             if(!$manager)
             {
@@ -111,23 +111,22 @@ class AssistantManagerController extends Controller
 
                     $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
 
-                    $filename = request()->receipt->getClientOriginalName();
-                    request()->receipt->storeAs('payment_analysis', $filename, 'public');
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
-                    $tinPayment = TinPaymentAnalysis::create([
+                    $tinPayment = PaymentReceiptTin::create([
                         'type' => $request->type,
                         'user_id' => Auth::user()->id,
-                        'customer' => $request->customer,
-                        'manager_id' => $manager->id,
-                        'berating' => $request->berating,
-                        'bags' => $request->bags,
-                        'pounds' => $bag_pounds,
-                        'bag_equivalent' => $equivalentPriceForBag,
-                        'pound_equivalent' => $equivalentPriceForPound,
-                        'total_in_pounds' => $total_in_pounds,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => $request->bags,
+                        'pound' => $bag_pounds,
+                        'total_in_pound' => $total_in_pounds,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
-                        'date' => $request->date,
-                        'receipt' => '/storage/payment_analysis/'.$filename
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
                     ]);
             
                     Transaction::create([
@@ -135,13 +134,13 @@ class AssistantManagerController extends Controller
                         'accountant_process_id' => $tinPayment->id,
                         'amount' => $tinPayment->price,
                         'reference' => config('app.name'),
-                        'status' => 'Payment Voucher'
+                        'status' => 'Payment Receipt'
                     ]);
 
-                    return redirect()->route('payment.analysis.tin.add', 'pound')->with([
+                    return redirect()->route('payment.receipt.tin.add', 'pound')->with([
                         'alertType' => 'success',
-                        'back' => route('payment.analysis.tin.view'),
-                        'message' => 'Payment Voucher created successfully'
+                        'back' => route('payment.receipt.tin.view'),
+                        'message' => 'Payment Receipt created successfully'
                     ]);
                 } else {
                     return back()->with([
@@ -164,21 +163,21 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = $equivalentPriceForPound;
 
-                $filename = request()->receipt->getClientOriginalName();
-                request()->receipt->storeAs('payment_analysis', $filename, 'public');
+                $filename = request()->receipt_image->getClientOriginalName();
+                request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
-                $tinPayment = TinPaymentAnalysis::create([
+                $tinPayment = PaymentReceiptTin::create([
                     'type' => $request->type,
                     'user_id' => Auth::user()->id,
-                    'customer' => $request->customer,
-                    'manager_id' => $manager->id,
-                    'berating' => $request->berating,
-                    'pounds' => $request->pounds,
-                    'pound_equivalent' => $equivalentPriceForPound,
-                    'total_in_pounds' => $total_in_pounds,
+                    'supplier' => $request->supplier,
+                    'staff' => $manager->id,
+                    'grade' => $request->grade,
+                    'pound' => $request->pounds,
+                    'total_in_pound' => $total_in_pounds,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
-                    'date' => $request->date,
-                    'receipt' => '/storage/payment_analysis/'.$filename
+                    'date_of_purchase' => $request->date_of_purchase,
+                    'receipt_no' => $request->receipt_no,
+                    'receipt_image' => '/storage/payment_analysis/'.$filename
                 ]);
         
                 Transaction::create([
@@ -186,13 +185,13 @@ class AssistantManagerController extends Controller
                     'accountant_process_id' => $tinPayment->id,
                     'amount' => $tinPayment->price,
                     'reference' => config('app.name'),
-                    'status' => 'Payment Voucher'
+                    'status' => 'Payment Receipt'
                 ]);
 
-                return redirect()->route('payment.analysis.tin.add', 'pound')->with([
+                return redirect()->route('payment.receipt.tin.add', 'pound')->with([
                     'alertType' => 'success',
-                    'back' => route('payment.analysis.tin.view'),
-                    'message' => 'Payment Voucher created successfully'
+                    'back' => route('payment.receipt.tin.view'),
+                    'message' => 'Payment Receipt created successfully'
                 ]);
             } 
 
@@ -203,10 +202,10 @@ class AssistantManagerController extends Controller
         }
 
         $this->validate($request, [
-            'berating' => ['required', 'numeric'],
+            'grade' => ['required', 'numeric'],
         ]);
 
-        $berating = BeratingCalculation::find($request->berating);
+        $berating = BeratingCalculation::find($request->grade);
 
         if(!$berating)
         {
@@ -243,7 +242,7 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = $equivalentPriceForBag + $equivalentPriceForPound;
 
-                return redirect()->route('payment.analysis.tin.add', 'pound')->with([
+                return redirect()->route('payment.receipt.tin.add', 'pound')->with([
                     'previewPrice' => 'success',
                     'message' => $this->replaceCharsInNumber($totalPrice, '0')
                 ]);
@@ -267,7 +266,7 @@ class AssistantManagerController extends Controller
 
             $totalPrice = $equivalentPriceForPound;
 
-            return redirect()->route('payment.analysis.tin.add', 'pound')->with([
+            return redirect()->route('payment.receipt.tin.add', 'pound')->with([
                 'previewPrice' => 'success',
                 'message' => $this->replaceCharsInNumber($totalPrice, '0')
             ]);
@@ -279,7 +278,7 @@ class AssistantManagerController extends Controller
         ]);
     }
 
-    public function payment_analysis_tin_kg_post(Request $request)
+    public function payment_receipt_tin_kg_post(Request $request)
     {
         define("rate", 50);
         define("fixed_rate", 2.20462);
@@ -287,15 +286,15 @@ class AssistantManagerController extends Controller
         if($request->save) 
         {
             $this->validate($request, [
-                'customer' => ['required', 'string', 'max:255'],
-                'berating' => ['required', 'numeric'],
-                'percentage' => ['required', 'numeric'],
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
                 'manager' => ['required', 'numeric'],
-                'date' => ['required', 'date'],
-                'receipt' => 'required|mimes:jpeg,png,jpg'
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+                'receipt_image' => 'required|mimes:jpeg,png,jpg'
             ]);
 
-            $berating = BeratingCalculation::find($request->berating);
+            $berating = BeratingCalculation::find($request->grade);
 
             if(!$berating)
             {
@@ -305,7 +304,7 @@ class AssistantManagerController extends Controller
                 ]); 
             }
 
-            $manager = Manager::find($request->manager);
+            $manager = User::find($request->manager);
 
             if(!$manager)
             {
@@ -341,6 +340,11 @@ class AssistantManagerController extends Controller
                     {
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
                     }
                 }
 
@@ -358,22 +362,23 @@ class AssistantManagerController extends Controller
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
-                    $filename = request()->receipt->getClientOriginalName();
-                    request()->receipt->storeAs('payment_analysis', $filename, 'public');
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
-                    $tinPayment = TinPaymentAnalysis::create([
+                    $tinPayment = PaymentReceiptTin::create([
                         'type' => $request->type,
                         'user_id' => Auth::user()->id,
-                        'customer' => $request->customer,
-                        'manager_id' => $manager->id,
-                        'berating' => $request->berating,
-                        'bags' => $request->bags,
-                        'kgs' => $bag_kgs,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => $request->bags,
+                        'kg' => $bag_kgs,
                         'total_in_kg' => $subPrice,
                         'percentage_analysis' => $request->percentage,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
-                        'date' => $request->date,
-                        'receipt' => '/storage/payment_analysis/'.$filename
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
                     ]);
 
                     Transaction::create([
@@ -381,13 +386,13 @@ class AssistantManagerController extends Controller
                         'accountant_process_id' => $tinPayment->id,
                         'amount' => $tinPayment->price,
                         'reference' => config('app.name'),
-                        'status' => 'Payment Voucher'
+                        'status' => 'Payment Receipt'
                     ]);
     
-                    return redirect()->route('payment.analysis.tin.add', 'kg')->with([
+                    return redirect()->route('payment.receipt.tin.add', 'kg')->with([
                         'alertType' => 'success',
-                        'back' => route('payment.analysis.tin.view'),
-                        'message' => 'Payment Voucher created successfully'
+                        'back' => route('payment.receipt.tin.view'),
+                        'message' => 'Payment Receipt created successfully'
                     ]);
                 } else {
                     return back()->with([
@@ -405,15 +410,21 @@ class AssistantManagerController extends Controller
     
                 $analysis = AnalysisCalculation::get();
     
+
                 foreach($analysis as $analyses)
                 {
                     if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                     {
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
                     }
                 }
-    
+
                 $per = $request->percentage / 100;
     
                 $rateCalculation = $dollarRate * $exchangeRate;
@@ -424,21 +435,22 @@ class AssistantManagerController extends Controller
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                $filename = request()->receipt->getClientOriginalName();
-                request()->receipt->storeAs('payment_analysis', $filename, 'public');
+                $filename = request()->receipt_image->getClientOriginalName();
+                request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
-                $tinPayment = TinPaymentAnalysis::create([
+                $tinPayment = PaymentReceiptTin::create([
                     'type' => $request->type,
                     'user_id' => Auth::user()->id,
-                    'customer' => $request->customer,
-                    'manager_id' => $manager->id,
-                    'berating' => $request->berating,
-                    'kgs' => $request->kg,
+                    'supplier' => $request->supplier,
+                    'staff' => $manager->id,
+                    'grade' => $request->grade,
+                    'kg' => $request->kg,
                     'total_in_kg' => $request->kg,
                     'percentage_analysis' => $request->percentage,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
-                    'date' => $request->date,
-                    'receipt' => '/storage/payment_analysis/'.$filename
+                    'date_of_purchase' => $request->date_of_purchase,
+                    'receipt_no' => $request->receipt_no,
+                    'receipt_image' => '/storage/payment_analysis/'.$filename
                 ]);
         
                 Transaction::create([
@@ -446,13 +458,13 @@ class AssistantManagerController extends Controller
                     'accountant_process_id' => $tinPayment->id,
                     'amount' => $tinPayment->price,
                     'reference' => config('app.name'),
-                    'status' => 'Payment Voucher'
+                    'status' => 'Payment Receipt'
                 ]);
 
-                return redirect()->route('payment.analysis.tin.add', 'kg')->with([
+                return redirect()->route('payment.receipt.tin.add', 'kg')->with([
                     'alertType' => 'success',
-                    'back' => route('payment.analysis.tin.view'),
-                    'message' => 'Payment Voucher created successfully'
+                    'back' => route('payment.receipt.tin.view'),
+                    'message' => 'Payment Receipt created successfully'
                 ]);
             } 
 
@@ -463,10 +475,10 @@ class AssistantManagerController extends Controller
         }
 
         $this->validate($request, [
-            'berating' => ['required', 'numeric'],
+            'grade' => ['required', 'numeric'],
         ]);
 
-        $berating = BeratingCalculation::find($request->berating);
+        $berating = BeratingCalculation::find($request->grade);
 
         if(!$berating)
         {
@@ -502,6 +514,11 @@ class AssistantManagerController extends Controller
                 {
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
             }
 
@@ -519,7 +536,7 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                return redirect()->route('payment.analysis.tin.add', 'kg')->with([
+                return redirect()->route('payment.receipt.tin.add', 'kg')->with([
                     'previewPrice' => 'success',
                     'message' => $this->replaceCharsInNumber($totalPrice, '0')
                 ]);
@@ -546,6 +563,11 @@ class AssistantManagerController extends Controller
                 {
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
             }
 
@@ -559,7 +581,7 @@ class AssistantManagerController extends Controller
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
-            return redirect()->route('payment.analysis.tin.add', 'kg')->with([
+            return redirect()->route('payment.receipt.tin.add', 'kg')->with([
                 'previewPrice' => 'success',
                 'message' => $this->replaceCharsInNumber($totalPrice, '0')
             ]);
@@ -571,41 +593,41 @@ class AssistantManagerController extends Controller
         ]);
     }
 
-    public function payment_analysis_columbite_view()
+    public function payment_receipt_columbite_view()
     {
-        return view('assistant_managers.payment_analysis_columbite_view');
+        return view('assistant_managers.payment_receipt_columbite_view');
     }
 
-    public function payment_analysis_columbite_add($id)
+    public function payment_receipt_columbite_add($id)
     {
         $active_tab = $id;
 
         if($active_tab == 'pound') {
-            return view ('assistant_managers.payment_analysis_columbite_add', compact('active_tab'));
+            return view ('assistant_managers.payment_receipt_columbite_add', compact('active_tab'));
         } elseif($active_tab == 'kg') {
-            return view ('assistant_managers.payment_analysis_columbite_add', compact('active_tab'));
+            return view ('assistant_managers.payment_receipt_columbite_add', compact('active_tab'));
         } else {
             $active_tab == 'kg';
-            return view ('assistant_managers.payment_analysis_columbite_add', compact('active_tab'));
+            return view ('assistant_managers.payment_receipt_columbite_add', compact('active_tab'));
         }
     }
 
-    public function payment_analysis_columbite_pound_post(Request $request)
+    public function payment_receipt_columbite_pound_post(Request $request)
     {
         define("columbite_rate", 80);
         
         if($request->save) 
         {
             $this->validate($request, [
-                'customer' => ['required', 'string', 'max:255'],
-                'berating' => ['required', 'numeric'],
-                'percentage' => ['required', 'numeric'],
+                'supplier' => ['required', 'string', 'max:255'],
+                'grade' => ['required', 'numeric'],
                 'manager' => ['required', 'numeric'],
-                'date' => ['required', 'date'],
-                'receipt' => 'required|mimes:jpeg,png,jpg'
+                'date_of_purchase' => ['required', 'date'],
+                'receipt_no' => 'required|string',
+                'receipt_image' => 'required|mimes:jpeg,png,jpg'
             ]);
 
-            $berating = BeratingCalculation::find($request->berating);
+            $berating = BeratingCalculation::find($request->grade);
     
             if(!$berating)
             {
@@ -615,7 +637,7 @@ class AssistantManagerController extends Controller
                 ]); 
             }
 
-            $manager = Manager::find($request->manager);
+            $manager = User::find($request->manager);
 
             if(!$manager)
             {
@@ -651,6 +673,11 @@ class AssistantManagerController extends Controller
                     {
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
                     }
                 }
 
@@ -668,22 +695,23 @@ class AssistantManagerController extends Controller
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
-                    $filename = request()->receipt->getClientOriginalName();
-                    request()->receipt->storeAs('payment_analysis', $filename, 'public');
+                    $filename = request()->receipt_image->getClientOriginalName();
+                    request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
-                    $columbitePayment = ColumbitePaymentAnalysis::create([
+                    $columbitePayment = PaymentReceiptColumbite::create([
                         'type' => $request->type,
                         'user_id' => Auth::user()->id,
-                        'customer' => $request->customer,
-                        'manager_id' => $manager->id,
-                        'berating' => $request->berating,
-                        'bags' => $request->bags,
-                        'pounds' => $bag_pounds,
-                        'total_in_pounds' => $subPrice,
+                        'supplier' => $request->supplier,
+                        'staff' => $manager->id,
+                        'grade' => $request->grade,
+                        'bag' => $request->bags,
+                        'pound' => $bag_pounds,
+                        'total_in_pound' => $subPrice,
                         'percentage_analysis' => $request->percentage,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
-                        'date' => $request->date,
-                        'receipt' => '/storage/payment_analysis/'.$filename
+                        'date_of_purchase' => $request->date_of_purchase,
+                        'receipt_no' => $request->receipt_no,
+                        'receipt_image' => '/storage/payment_analysis/'.$filename
                     ]);
             
                     Transaction::create([
@@ -691,13 +719,13 @@ class AssistantManagerController extends Controller
                         'accountant_process_id' => $columbitePayment->id,
                         'amount' => $columbitePayment->price,
                         'reference' => config('app.name'),
-                        'status' => 'Payment Voucher'
+                        'status' => 'Payment Receipt'
                     ]);
 
-                    return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
+                    return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
                         'alertType' => 'success',
-                        'back' => route('payment.analysis.columbite.view'),
-                        'message' => 'Payment Voucher created successfully'
+                        'back' => route('payment.receipt.columbite.view'),
+                        'message' => 'Payment Receipt created successfully'
                     ]);
                 } else {
                     return back()->with([
@@ -721,6 +749,11 @@ class AssistantManagerController extends Controller
                     {
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
+                    } else {
+                        return back()->with([
+                            'type' => 'danger',
+                            'message' => 'Percentage Analysis entered not found in our database, try again.'
+                        ]);
                     }
                 }
     
@@ -734,21 +767,22 @@ class AssistantManagerController extends Controller
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                $filename = request()->receipt->getClientOriginalName();
-                request()->receipt->storeAs('payment_analysis', $filename, 'public');
+                $filename = request()->receipt_image->getClientOriginalName();
+                request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
-                $columbitePayment = ColumbitePaymentAnalysis::create([
+                $columbitePayment = PaymentReceiptColumbite::create([
                     'type' => $request->type,
                     'user_id' => Auth::user()->id,
-                    'customer' => $request->customer,
-                    'manager_id' => $manager->id,
-                    'berating' => $request->berating,
-                    'pounds' => $request->pounds,
-                    'total_in_pounds' => $request->pounds,
+                    'supplier' => $request->supplier,
+                    'staff' => $manager->id,
+                    'grade' => $request->grade,
+                    'pound' => $request->pounds,
+                    'total_in_pound' => $request->pounds,
                     'percentage_analysis' => $request->percentage,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
-                    'date' => $request->date,
-                    'receipt' => '/storage/payment_analysis/'.$filename
+                    'date_of_purchase' => $request->date_of_purchase,
+                    'receipt_no' => $request->receipt_no,
+                    'receipt_image' => '/storage/payment_analysis/'.$filename
                 ]);
         
                 Transaction::create([
@@ -756,13 +790,13 @@ class AssistantManagerController extends Controller
                     'accountant_process_id' => $columbitePayment->id,
                     'amount' => $columbitePayment->price,
                     'reference' => config('app.name'),
-                    'status' => 'Payment Voucher'
+                    'status' => 'Payment Receipt'
                 ]);
 
-                return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
+                return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
                     'alertType' => 'success',
-                    'back' => route('payment.analysis.columbite.view'),
-                    'message' => 'Payment Voucher created successfully'
+                    'back' => route('payment.receipt.columbite.view'),
+                    'message' => 'Payment Receipt created successfully'
                 ]);
             } 
 
@@ -773,10 +807,10 @@ class AssistantManagerController extends Controller
         }
 
         $this->validate($request, [
-            'berating' => ['required', 'numeric'],
+            'grade' => ['required', 'numeric'],
         ]);
 
-        $berating = BeratingCalculation::find($request->berating);
+        $berating = BeratingCalculation::find($request->grade);
 
         if(!$berating)
         {
@@ -812,6 +846,11 @@ class AssistantManagerController extends Controller
                 {
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
             }
 
@@ -829,7 +868,7 @@ class AssistantManagerController extends Controller
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
-                return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
+                return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
                     'previewPrice' => 'success',
                     'message' => $this->replaceCharsInNumber($totalPrice, '0')
                 ]);
@@ -856,6 +895,11 @@ class AssistantManagerController extends Controller
                 {
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
+                } else {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
             }
 
@@ -869,7 +913,7 @@ class AssistantManagerController extends Controller
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
-            return redirect()->route('payment.analysis.columbite.add', 'pound')->with([
+            return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
                 'previewPrice' => 'success',
                 'message' => $this->replaceCharsInNumber($totalPrice, '0')
             ]);

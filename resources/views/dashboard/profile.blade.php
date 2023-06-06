@@ -2,6 +2,20 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Profile</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-3 col-lg-4">
@@ -74,8 +88,21 @@
                                         <input type="text" class="form-control" id="name" name="name" value="{{Auth::user()->name}}" placeholder="Name">
                                     </div>
                                     <div class="form-group col-md-6">
+                                        <label>Phone Number</label>
+                                        <input type="tel" class="form-control" placeholder="Enter Phone No" value="{{Auth::user()->phone}}" name="phone">
+                                    </div>
+                                    <div class="form-group col-md-6">
                                         <label for="add1">Email:</label>
                                         <input type="email" class="form-control" id="email" name="email" value="{{Auth::user()->email}}" placeholder="Email Address">
+                                    </div>
+                                    <div class="col-md-6 form-group">
+                                        <label>Gender</label>
+                                        <select name="gender" class="selectpicker form-control" data-style="py-0">
+                                            <option value="{{Auth::user()->gender}}">{{Auth::user()->gender}}</option>
+                                            <option value="">-- Select Gender --</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Update Account</button>

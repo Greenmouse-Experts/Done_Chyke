@@ -62,14 +62,14 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
     Route::prefix('/assistant-manager')->group(
         function () {
             //Tin
-            Route::get('/payment/analysis/tin/view', [AssistantManagerController::class, 'payment_analysis_tin_view'])->name('payment.analysis.tin.view');
-            Route::get('/payment/analysis/tin/add/{id}', [AssistantManagerController::class, 'payment_analysis_tin_add'])->name('payment.analysis.tin.add');
-            Route::any('/payment/analysis/tin/pound/post', [AssistantManagerController::class, 'payment_analysis_tin_pound_post'])->name('payment.analysis.tin.pound.post');
-            Route::any('/payment/analysis/tin/kg/post', [AssistantManagerController::class, 'payment_analysis_tin_kg_post'])->name('payment.analysis.tin.kg.post');
+            Route::get('/payment/receipt/tin/view', [AssistantManagerController::class, 'payment_receipt_tin_view'])->name('payment.receipt.tin.view');
+            Route::get('/payment/receipt/tin/add/{id}', [AssistantManagerController::class, 'payment_receipt_tin_add'])->name('payment.receipt.tin.add');
+            Route::any('/payment/receipt/tin/pound/post', [AssistantManagerController::class, 'payment_receipt_tin_pound_post'])->name('payment.receipt.tin.pound.post');
+            Route::any('/payment/receipt/tin/kg/post', [AssistantManagerController::class, 'payment_receipt_tin_kg_post'])->name('payment.receipt.tin.kg.post');
             // Columbite
-            Route::get('/payment/analysis/columbite/view', [AssistantManagerController::class, 'payment_analysis_columbite_view'])->name('payment.analysis.columbite.view');
-            Route::get('/payment/analysis/columbite/add/{id}', [AssistantManagerController::class, 'payment_analysis_columbite_add'])->name('payment.analysis.columbite.add');
-            Route::any('/payment/analysis/columbite/pound/post', [AssistantManagerController::class, 'payment_analysis_columbite_pound_post'])->name('payment.analysis.columbite.pound.post');
+            Route::get('/payment/receipt/columbite/view', [AssistantManagerController::class, 'payment_receipt_columbite_view'])->name('payment.receipt.columbite.view');
+            Route::get('/payment/receipt/columbite/add/{id}', [AssistantManagerController::class, 'payment_receipt_columbite_add'])->name('payment.receipt.columbite.add');
+            Route::any('/payment/receipt/columbite/pound/post', [AssistantManagerController::class, 'payment_receipt_columbite_pound_post'])->name('payment.receipt.columbite.pound.post');
         }
     );
 });
@@ -84,29 +84,11 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     // Fund Account
     Route::get('/admin/account/funding/confirm/{response}/{amount}', [AdminController::class, 'account_funding_confirm'])->name('admin.account.funding.confirm');
 
-    // Manager
-    Route::get('/admin/staff/managers', [AdminController::class, 'managers'])->name('admin.managers');
-    Route::get('/admin/staff/manager/add', [AdminController::class, 'manager_add'])->name('admin.add.manager');
-    Route::post('/admin/staff/manager/post', [AdminController::class, 'manager_post'])->name('admin.post.manager');
-    Route::get('/admin/staff/manager/edit/{id}', [AdminController::class, 'manager_edit'])->name('admin.edit.manager');
-    Route::post('/admin/staff/manager/update/{id}', [AdminController::class, 'manager_update'])->name('admin.update.manager');
-    Route::get('/admin/staff/manager/activate/{id}', [AdminController::class, 'manager_activate'])->name('admin.activate.manager');
-    Route::get('/admin/staff/manager/deactivate/{id}', [AdminController::class, 'manager_deactivate'])->name('admin.deactivate.manager');
-    Route::post('/admin/staff/manager/delete/{id}', [AdminController::class, 'manager_delete'])->name('admin.delete.manager');
-
-    // Accountant
-    Route::get('/admin/staff/accountants', [AdminController::class, 'accountants'])->name('admin.accountants');
-    Route::get('/admin/staff/accountant/add', [AdminController::class, 'accountant_add'])->name('admin.add.accountant');
-    Route::post('/admin/staff/accountant/post', [AdminController::class, 'accountant_post'])->name('admin.post.accountant');
-    Route::get('/admin/staff/accountant/edit/{id}', [AdminController::class, 'accountant_edit'])->name('admin.edit.accountant');
-
-    // Assistant Manager
-    Route::get('/admin/staff/assistance/manager', [AdminController::class, 'manager_assistances'])->name('admin.manager.assistances');
-    Route::get('/admin/staff/assistance/manager/add', [AdminController::class, 'manager_assistance_add'])->name('admin.add.manager.assistance');
-    Route::post('/admin/staff/assistance/manager/post', [AdminController::class, 'manager_assistance_post'])->name('admin.post.manager.assistance');
-    Route::get('/admin/staff/assistance/manager/edit/{id}', [AdminController::class, 'assistance_manager_edit'])->name('admin.edit.manager.assistance');
-    
-    // General Settings
+    // Staff
+    Route::get('/admin/staff', [AdminController::class, 'staff'])->name('admin.staff');
+    Route::get('/admin/staff/add', [AdminController::class, 'staff_add'])->name('admin.add.staff');
+    Route::post('/admin/staff/post', [AdminController::class, 'staff_post'])->name('admin.post.staff');
+    Route::get('/admin/staff/edit/{id}', [AdminController::class, 'staff_edit'])->name('admin.edit.staff');
     Route::post('/admin/staff/update/profile{id}', [AdminController::class, 'staff_update_profile'])->name('admin.update.staff.profile');
     Route::post('/admin/staff/update/password/{id}', [AdminController::class, 'staff_update_password'])->name('admin.update.staff.password');
     Route::post('/admin/staff/update/profile-picture/{id}', [AdminController::class, 'staff_update_profile_picture'])->name('admin.update.staff.profile.picture');
@@ -127,32 +109,39 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/admin/expenses/delete/{id}', [AdminController::class, 'delete_expense'])->name('admin.expense.delete');
 
     // Rates
-    Route::get('/admin/rates/berating', [AdminController::class, 'rates_berating'])->name('admin.rates.berating');
-    Route::get('/admin/rates/berating/add', [AdminController::class, 'add_rate_berating'])->name('admin.add.rate.berating');
-    Route::post('/admin/rates/berating/post', [AdminController::class, 'post_rate_berating'])->name('admin.post.rate.berating');
-    Route::post('/admin/rates/berating/update/{id}', [AdminController::class, 'rate_berating_update'])->name('admin.update.rate.berating');
-    Route::get('/admin/rates/berating/activate/{id}', [AdminController::class, 'rate_berating_activate'])->name('admin.activate.rate.berating');
-    Route::get('/admin/rates/berating/deactivate/{id}', [AdminController::class, 'rate_berating_deactivate'])->name('admin.deactivate.rate.berating');
-    Route::post('/admin/rates/berating/delete/{id}', [AdminController::class, 'rate_berating_delete'])->name('admin.delete.rate.berating');
+    Route::get('/admin/rates/list/berating', [AdminController::class, 'rates_berating'])->name('admin.rates.berating');
+    Route::get('/admin/rates/list/berating/add', [AdminController::class, 'add_rate_berating'])->name('admin.add.rate.berating');
+    Route::post('/admin/rates/list/berating/post', [AdminController::class, 'post_rate_berating'])->name('admin.post.rate.berating');
+    Route::post('/admin/rates/list/berating/update/{id}', [AdminController::class, 'rate_berating_update'])->name('admin.update.rate.berating');
+    Route::get('/admin/rates/list/berating/activate/{id}', [AdminController::class, 'rate_berating_activate'])->name('admin.activate.rate.berating');
+    Route::get('/admin/rates/list/berating/deactivate/{id}', [AdminController::class, 'rate_berating_deactivate'])->name('admin.deactivate.rate.berating');
+    Route::post('/admin/rates/list/berating/delete/{id}', [AdminController::class, 'rate_berating_delete'])->name('admin.delete.rate.berating');
 
-    Route::get('/admin/rates/analysis', [AdminController::class, 'rates_analysis'])->name('admin.rates.analysis');
-    Route::get('/admin/rates/analysis/add', [AdminController::class, 'add_rate_analysis'])->name('admin.add.rate.analysis');
-    Route::post('/admin/rates/analysis/post', [AdminController::class, 'post_rate_analysis'])->name('admin.post.rate.analysis');
-    Route::post('/admin/rates/analysis/update/{id}', [AdminController::class, 'rate_analysis_update'])->name('admin.update.rate.analysis');
-    Route::get('/admin/rates/analysis/activate/{id}', [AdminController::class, 'rate_analysis_activate'])->name('admin.activate.rate.analysis');
-    Route::get('/admin/rates/analysis/deactivate/{id}', [AdminController::class, 'rate_analysis_deactivate'])->name('admin.deactivate.rate.analysis');
-    Route::post('/admin/rates/analysis/delete/{id}', [AdminController::class, 'rate_analysis_delete'])->name('admin.delete.rate.analysis');
+    Route::get('/admin/rates/list/analysis', [AdminController::class, 'rates_analysis'])->name('admin.rates.analysis');
+    Route::get('/admin/rates/list/analysis/add', [AdminController::class, 'add_rate_analysis'])->name('admin.add.rate.analysis');
+    Route::post('/admin/rates/list/analysis/post', [AdminController::class, 'post_rate_analysis'])->name('admin.post.rate.analysis');
+    Route::post('/admin/rates/list/analysis/update/{id}', [AdminController::class, 'rate_analysis_update'])->name('admin.update.rate.analysis');
+    Route::get('/admin/rates/list/analysis/activate/{id}', [AdminController::class, 'rate_analysis_activate'])->name('admin.activate.rate.analysis');
+    Route::get('/admin/rates/list/analysis/deactivate/{id}', [AdminController::class, 'rate_analysis_deactivate'])->name('admin.deactivate.rate.analysis');
+    Route::post('/admin/rates/list/analysis/delete/{id}', [AdminController::class, 'rate_analysis_delete'])->name('admin.delete.rate.analysis');
 
-    // Payment Voucher
+    // Payment Receipts
     //Tin
-    Route::get('/admin/payment/voucher/tin/view', [AdminController::class, 'payment_voucher_tin_view'])->name('admin.payment.voucher.tin.view');
-    Route::get('/admin/payment/voucher/tin/pound/edit/{id}', [AdminController::class, 'payment_voucher_tin_pound_edit'])->name('admin.payment.voucher.tin.pound.edit');
-    Route::post('/admin/payment/voucher/tin/pound/update/{id}', [AdminController::class, 'payment_voucher_tin_pound_edit'])->name('admin.payment.voucher.tin.pound.edit');
-    Route::get('/admin/payment/voucher/tin/kg/edit/{id}', [AdminController::class, 'payment_voucher_tin_kg_edit'])->name('admin.payment.voucher.tin.kg.edit');
-    Route::post('/admin/payment/voucher/tin/kg/update/{id}', [AdminController::class, 'payment_voucher_tin_kg_edit'])->name('admin.payment.voucher.tin.kg.edit');
-    Route::post('/admin/payment/voucher/tin/delete/{id}', [AdminController::class, 'payment_voucher_tin_delete'])->name('admin.payment.voucher.tin.delete');
+    Route::get('/admin/payment/receipt/tin/view', [AdminController::class, 'payment_receipt_tin_view'])->name('admin.payment.receipt.tin.view');
+    Route::get('/admin/payment/receipt/tin/add/{id}', [AdminController::class, 'payment_receipt_tin_add'])->name('admin.payment.receipt.tin.add');
+    Route::any('/admin/payment/receipt/tin/pound/post', [AdminController::class, 'payment_receipt_tin_pound_post'])->name('admin.payment.receipt.tin.pound.post');
+    Route::any('/admin/payment/receipt/tin/kg/post', [AdminController::class, 'payment_receipt_tin_kg_post'])->name('admin.payment.receipt.tin.kg.post');
+    Route::get('/admin/payment/receipt/tin/edit/{id}', [AdminController::class, 'payment_receipt_tin_edit'])->name('admin.payment.receipt.tin.edit');
+    Route::post('/admin/payment/receipt/tin/pound/update/{id}', [AdminController::class, 'payment_receipt_tin_pound_update'])->name('admin.payment.receipt.tin.pound.update');
+    Route::post('/admin/payment/receipt/tin/kg/update/{id}', [AdminController::class, 'payment_receipt_tin_kg_update'])->name('admin.payment.receipt.tin.kg.update');
+    Route::post('/admin/payment/receipt/tin/delete/{id}', [AdminController::class, 'payment_receipt_tin_delete'])->name('admin.payment.receipt.tin.delete');
     // Columbite
-    Route::get('/admin/payment/voucher/columbite/view', [AdminController::class, 'payment_voucher_columbite_view'])->name('admin.payment.voucher.columbite.view');
+    Route::get('/admin/payment/receipt/columbite/view', [AdminController::class, 'payment_receipt_columbite_view'])->name('admin.payment.receipt.columbite.view');
+    Route::get('/admin/payment/receipt/columbite/add', [AdminController::class, 'payment_receipt_columbite_add'])->name('admin.payment.receipt.columbite.add');
+    Route::any('/admin/payment/receipt/columbite/post', [AdminController::class, 'payment_receipt_columbite_post'])->name('admin.payment.receipt.columbite.post');
+    Route::get('/admin/payment/receipt/columbite/edit/{id}', [AdminController::class, 'payment_receipt_columbite_edit'])->name('admin.payment.receipt.columbite.edit');
+    Route::post('/admin/payment/receipt/columbite/update/{id}', [AdminController::class, 'payment_receipt_columbite_update'])->name('admin.payment.receipt.columbite.update');
+    Route::post('/admin/payment/receipt/columbite/delete/{id}', [AdminController::class, 'payment_receipt_columbite_delete'])->name('admin.payment.receipt.columbite.delete');
 
     // Weekly Analysis
     Route::any('/admin/weekly/analysis/tin/pound', [AdminController::class, 'weekly_analysis_tin_pound'])->name('admin.weekly.analysis.tin.pound');

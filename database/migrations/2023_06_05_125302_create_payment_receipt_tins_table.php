@@ -13,24 +13,23 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tin_payment_analyses', function (Blueprint $table) {
+        Schema::create('payment_receipt_tins', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['pound', 'kg'])->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->string('customer')->nullable();
-            $table->string('manager_id')->nullable();
-            $table->double('berating')->default(0.00);
-            $table->double('bags')->default(0.00);
-            $table->double('pounds')->default(0.00);
-            $table->double('kgs')->default(0.00);
+            $table->string('supplier')->nullable();
+            $table->string('staff')->nullable();
+            $table->double('grade')->default(0.00);
+            $table->double('bag')->default(0.00);
+            $table->double('pound')->default(0.00);
+            $table->double('kg')->default(0.00);
             $table->double('percentage_analysis')->default(0.00);
-            $table->double('bag_equivalent')->default(0.00);
-            $table->double('pound_equivalent')->default(0.00);
-            $table->double('total_in_pounds')->default(0.00);
+            $table->double('total_in_pound')->default(0.00);
             $table->double('total_in_kg')->default(0.00);
             $table->double('price')->default(0.00);
-            $table->longText('receipt')->nullable();
-            $table->date('date')->nullable();
+            $table->string('receipt_no')->nullable();
+            $table->longText('receipt_image')->nullable();
+            $table->date('date_of_purchase')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -44,6 +43,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tin_payment_analyses');
+        Schema::dropIfExists('payment_receipt_tins');
     }
 };

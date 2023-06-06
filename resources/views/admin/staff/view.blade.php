@@ -2,15 +2,25 @@
 
 @section('page-content')
 <div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">All Staff</h4>
+            </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Staff</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-                    <div>
-                        <h4 class="mb-3">Managers List</h4>
-                        <p class="mb-0">All your Managers List in one Place </p>
-                    </div>
-                    <a href="{{route('admin.add.manager')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Manager</a>
+                <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                    <a href="{{route('admin.add.staff')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Staff</a>
                 </div>
             </div>
             <div class="col-lg-12">
@@ -19,6 +29,8 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>S/N</th>
+                                <th>Photo</th>
+                                <th>Account Type</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone Number</th>
@@ -29,33 +41,45 @@
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
-                            @foreach(App\Models\Manager::latest()->get() as $manager)
+                            @foreach(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->get() as $staff)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                <td>{{$manager->name}}</td>
-                                <td>{{$manager->email}}</td>
-                                <td>{{$manager->phone}}</td>
-                                <td>{{$manager->gender}}</td>
                                 <td>
-                                    @if($manager->status == '1')
+                                @if($staff->avatar)
+                                    <img class="rounded" width="50" src="{{$staff->avatar}}" alt="{{$staff->first_name}}">
+                                @else
+                                <div class="avatar-xs" style="display: inline-block; vertical-align: middle;">
+                                    <span class="img-fluid rounded" style="background: #c56963; padding: 0.5rem; color: #fff;">
+                                        {{ ucfirst(substr($staff->name, 0, 1)) }} {{ ucfirst(substr($staff->name, 1, 1)) }}
+                                    </span>
+                                </div>
+                                @endif
+                                </td>
+                                <td>{{$staff->account_type}}</td>
+                                <td>{{$staff->name}}</td>
+                                <td>{{$staff->email}}</td>
+                                <td>{{$staff->phone}}</td>
+                                <td>{{$staff->gender}}</td>
+                                <td>
+                                    @if($staff->status == '1')
                                     <span class="badge bg-success">Active</span>
                                     @else
                                     <span class="badge bg-danger">Inactive</span>
                                     @endif
                                 </td>
-                                <td>{{$manager->created_at->toDayDateTimeString()}}</td>
+                                <td>{{$staff->created_at->toDayDateTimeString()}}</td>
                                 <td>
                                     <div class="d-flex align-items-center list-action">
-                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Edit" data-original-title="Edit" href="{{route('admin.edit.manager', Crypt::encrypt($manager->id))}}"><i class="ri-pencil-line mr-0"></i></a>
-                                        @if($manager->status == '1')
-                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="Deactivate" data-original-title="Deactivate"href="{{route('admin.deactivate.manager', Crypt::encrypt($manager->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
+                                        <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="{{route('admin.edit.staff', Crypt::encrypt($staff->id))}}"><i class="ri-eye-line mr-0"></i></a>
+                                        @if($staff->status == '1')
+                                        <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="Deactivate" data-original-title="Deactivate"href="{{route('admin.deactivate.staff', Crypt::encrypt($staff->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
                                         @else
-                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Active" data-original-title="Active" href="{{route('admin.activate.manager', Crypt::encrypt($manager->id))}}"><i class="ri-play-line mr-0"></i></a>
+                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Active" data-original-title="Active" href="{{route('admin.activate.staff', Crypt::encrypt($staff->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
-                                        <span data-toggle="modal" data-target="#delete-{{$manager->id}}">
+                                        <span data-toggle="modal" data-target="#delete-{{$staff->id}}">
                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                         </span>
-                                        <div class="modal fade" id="delete-{{$manager->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal fade" id="delete-{{$staff->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -68,7 +92,7 @@
                                                         <div class="popup text-left">
                                                             <h4 class="mb-3">Are you sure, you want to delete this user?</h4>
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('admin.delete.manager', Crypt::encrypt($manager->id))}}" method="post">
+                                                                <form action="{{route('admin.delete.staff', Crypt::encrypt($staff->id))}}" method="post">
                                                                     @csrf
                                                                     <div class="col-lg-12 mt-4">
                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">
