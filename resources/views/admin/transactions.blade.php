@@ -24,7 +24,7 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>S/N</th>
-                                <th>User</th>
+                                <th>Staff</th>
                                 <th>Amount</th>
                                 <th>Reference</th>
                                 <th>Date</th>
