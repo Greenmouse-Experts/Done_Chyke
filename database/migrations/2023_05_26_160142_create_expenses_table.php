@@ -16,15 +16,18 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('supplier')->nullable();
             $table->string('payment_source')->nullable();
-            $table->string('title')->nullable();
+            $table->string('category')->nullable();
             $table->string('description')->nullable();
             $table->double('amount',15,2)->nullable();
             $table->date('date')->nullable();
             $table->string('receipt')->nullable();
+            $table->string('recurring_expense')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('supplier')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

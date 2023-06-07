@@ -177,6 +177,19 @@
 @endif
 @if(Auth::user()->account_type == 'Accountant')
     <div class="content-page">
+        <div class="col-lg-12">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                <div>
+                    <h4 class="mb-3">Dashboard</h4>
+                </div>
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-5">

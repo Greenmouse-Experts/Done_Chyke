@@ -60,13 +60,6 @@
                             <a href="{{route('expenses.view')}}">
                                 <i class="las la-minus"></i><span>View</span>
                             </a>
-                            <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                                <li class="{{ (request()->is('accountant/expenses/add')) ? 'active' : '' }}">
-                                    <a href="{{route('expenses.add')}}">
-                                        <i class="las la-minus"></i><span>Add</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                     </ul>
                 </li>

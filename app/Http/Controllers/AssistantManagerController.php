@@ -338,13 +338,14 @@ class AssistantManagerController extends Controller
                 {
                     if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                     {
-                        $dollarRate = $analyses->dollar_rate;
-                        $exchangeRate = $analyses->exchange_rate;
-                    } else {
-                        $dollarRate = 0;
-                        $exchangeRate = 0;
+                        $myDollarRate = $analyses->dollar_rate;
+                        $myExchangeRate = $analyses->exchange_rate;
                     }
                 }
+
+                $dollarRate = $myDollarRate ?? 0;
+                $exchangeRate = $myExchangeRate ?? 0;
+                
                 if($dollarRate == 0 && $exchangeRate == 0)
                 {
                     return back()->with([
@@ -415,18 +416,18 @@ class AssistantManagerController extends Controller
     
                 $analysis = AnalysisCalculation::get();
     
-
                 foreach($analysis as $analyses)
                 {
                     if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                     {
-                        $dollarRate = $analyses->dollar_rate;
-                        $exchangeRate = $analyses->exchange_rate;
-                    } else {
-                        $dollarRate = 0;
-                        $exchangeRate = 0;
+                        $myDollarRate = $analyses->dollar_rate;
+                        $myExchangeRate = $analyses->exchange_rate;
                     }
                 }
+
+                $dollarRate = $myDollarRate ?? 0;
+                $exchangeRate = $myExchangeRate ?? 0;
+
                 if($dollarRate == 0 && $exchangeRate == 0)
                 {
                     return back()->with([
@@ -522,13 +523,14 @@ class AssistantManagerController extends Controller
             {
                 if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                 {
-                    $dollarRate = $analyses->dollar_rate;
-                    $exchangeRate = $analyses->exchange_rate;
-                } else {
-                    $dollarRate = 0;
-                    $exchangeRate = 0;
+                    $myDollarRate = $analyses->dollar_rate;
+                    $myExchangeRate = $analyses->exchange_rate;
                 }
             }
+
+            $dollarRate = $myDollarRate ?? 0;
+            $exchangeRate = $myExchangeRate ?? 0;
+
             if($dollarRate == 0 && $exchangeRate == 0)
             {
                 return back()->with([
@@ -576,13 +578,14 @@ class AssistantManagerController extends Controller
             {
                 if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                 {
-                    $dollarRate = $analyses->dollar_rate;
-                    $exchangeRate = $analyses->exchange_rate;
-                } else {
-                    $dollarRate = 0;
-                    $exchangeRate = 0;
+                    $myDollarRate = $analyses->dollar_rate;
+                    $myExchangeRate = $analyses->exchange_rate;
                 }
             }
+
+            $dollarRate = $myDollarRate ?? 0;
+            $exchangeRate = $myExchangeRate ?? 0;
+
             if($dollarRate == 0 && $exchangeRate == 0)
             {
                 return back()->with([
@@ -691,13 +694,14 @@ class AssistantManagerController extends Controller
                 {
                     if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                     {
-                        $dollarRate = $analyses->dollar_rate;
-                        $exchangeRate = $analyses->exchange_rate;
-                    } else {
-                        $dollarRate = 0;
-                        $exchangeRate = 0;
+                        $myDollarRate = $analyses->dollar_rate;
+                        $myExchangeRate = $analyses->exchange_rate;
                     }
                 }
+
+                $dollarRate = $myDollarRate ?? 0;
+                $exchangeRate = $myExchangeRate ?? 0;
+
                 if($dollarRate == 0 && $exchangeRate == 0)
                 {
                     return back()->with([
@@ -772,13 +776,14 @@ class AssistantManagerController extends Controller
                 {
                     if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                     {
-                        $dollarRate = $analyses->dollar_rate;
-                        $exchangeRate = $analyses->exchange_rate;
-                    } else {
-                        $dollarRate = 0;
-                        $exchangeRate = 0;
+                        $myDollarRate = $analyses->dollar_rate;
+                        $myExchangeRate = $analyses->exchange_rate;
                     }
                 }
+
+                $dollarRate = $myDollarRate ?? 0;
+                $exchangeRate = $myExchangeRate ?? 0;
+
                 if($dollarRate == 0 && $exchangeRate == 0)
                 {
                     return back()->with([
@@ -874,13 +879,14 @@ class AssistantManagerController extends Controller
             {
                 if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                 {
-                    $dollarRate = $analyses->dollar_rate;
-                    $exchangeRate = $analyses->exchange_rate;
-                } else {
-                    $dollarRate = 0;
-                    $exchangeRate = 0;
+                    $myDollarRate = $analyses->dollar_rate;
+                    $myExchangeRate = $analyses->exchange_rate;
                 }
             }
+
+            $dollarRate = $myDollarRate ?? 0;
+            $exchangeRate = $myExchangeRate ?? 0;
+
             if($dollarRate == 0 && $exchangeRate == 0)
             {
                 return back()->with([
@@ -928,13 +934,14 @@ class AssistantManagerController extends Controller
             {
                 if($request->percentage >= $analyses->percentage_min && $request->percentage <= $analyses->percentage_max)
                 {
-                    $dollarRate = $analyses->dollar_rate;
-                    $exchangeRate = $analyses->exchange_rate;
-                } else {
-                    $dollarRate = 0;
-                    $exchangeRate = 0;
+                    $myDollarRate = $analyses->dollar_rate;
+                    $myExchangeRate = $analyses->exchange_rate;
                 }
             }
+
+            $dollarRate = $myDollarRate ?? 0;
+            $exchangeRate = $myExchangeRate ?? 0;
+
             if($dollarRate == 0 && $exchangeRate == 0)
             {
                 return back()->with([
