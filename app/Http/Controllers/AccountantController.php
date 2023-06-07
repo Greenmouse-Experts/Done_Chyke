@@ -20,9 +20,18 @@ class AccountantController extends Controller
         $this->middleware(['auth','verified']);
     }
 
-    public function expenses_view()
+    public function expenses_view(Request $request)
     {
-        return view('accountant.view_expenses');
+        if($request->start_date == null && $request->end_date == null)
+        {
+            $expenses = Expenses::latest()->where('user_id', Auth::user()->id)->get();
+        } else {
+            $expenses = Expenses::latest()->where('user_id', Auth::user()->id)->whereBetween('date', [$request->start_date, $request->end_date])->get();
+        }
+
+        return view('accountant.view_expenses', [
+            'expenses' => $expenses
+        ]);
     }
 
     public function expenses_add()
@@ -33,11 +42,23 @@ class AccountantController extends Controller
     public function expenses_post(Request $request)
     {
         $this->validate($request, [
-            'title' => ['required', 'string', 'max:255'],
+            'payment_source' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric'],
+            'supplier' => ['required', 'numeric'],
             'date' => ['required', 'date'],
         ]);
+
+        $supplier = User::find($request->supplier);
+
+        if(!$supplier)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Supplier not found in our database.'
+            ]);
+        }
 
         if (request()->hasFile('receipt')) 
         {
@@ -50,21 +71,26 @@ class AccountantController extends Controller
 
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
-                'title' => $request->title,
+                'supplier' => $supplier->id,
+                'payment_source' => $request->payment_source,
+                'category' => $request->category,
                 'description' => $request->description,
                 'amount' => $request->amount,
                 'date' => $request->date,
+                'recurring_expense' => $request->recurring_expense,
                 'receipt' => '/storage/expenses_receipts/'.$filename
             ]);
 
         } else {
-
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
-                'title' => $request->title,
+                'supplier' => $supplier->id,
+                'payment_source' => $request->payment_source,
+                'category' => $request->category,
                 'description' => $request->description,
                 'amount' => $request->amount,
-                'date' => $request->date
+                'date' => $request->date,
+                'recurring_expense' => $request->recurring_expense
             ]);
         }
 

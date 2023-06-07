@@ -50,7 +50,7 @@ Route::middleware(['auth', 'isAccountant'])->group(function () {
     Route::prefix('/accountant')->group(
         function () {
             // Expenses
-            Route::get('/expenses/view', [AccountantController::class, 'expenses_view'])->name('expenses.view');
+            Route::any('/expenses/view', [AccountantController::class, 'expenses_view'])->name('expenses.view');
             Route::get('/expenses/add', [AccountantController::class, 'expenses_add'])->name('expenses.add');
             Route::post('/expenses/post', [AccountantController::class, 'expenses_post'])->name('expenses.post');
         }
@@ -104,7 +104,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
 
     // Expenses
-    Route::get('/admin/expenses', [AdminController::class, 'expenses'])->name('admin.expenses');
+    Route::any('/admin/expenses', [AdminController::class, 'expenses'])->name('admin.expenses');
     Route::post('/admin/expenses/update/{id}', [AdminController::class, 'update_expense'])->name('admin.expense.update');
     Route::post('/admin/expenses/delete/{id}', [AdminController::class, 'delete_expense'])->name('admin.expense.delete');
 

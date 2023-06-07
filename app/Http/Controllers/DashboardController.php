@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expenses;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -45,11 +46,16 @@ class DashboardController extends Controller
             $moment = "Good night";
         }
 
+        $month = date('m');
+
+        $monthly_expenses = Expenses::whereMonth('date', $month)->sum('amount');
+
         $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
-            'notifications' => $notifications
+            'notifications' => $notifications,
+            'monthly_expenses' => $monthly_expenses
         ]);
     }
 

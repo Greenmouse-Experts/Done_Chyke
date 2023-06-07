@@ -2,108 +2,108 @@
 
 @section('page-content')
 @if(Auth::user()->account_type == 'Assistant Manager')
-    <div class="content-page">
-        <div class="col-lg-12">
-            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-                <div>
-                    <h4 class="mb-3">Dashboard</h4>
-                </div>
-
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    </ol>
-                </nav>
+<div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Dashboard</h4>
             </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                </ol>
+            </nav>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card card-transparent card-block card-stretch card-height border-none">
-                        <div class="card-body p-0 mt-lg-2 mt-0">
-                            <h3 class="mb-3">Hi {{Auth::user()->name}}, {{$moment}}</h3>
-                            <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business process.</p>
-                        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card card-transparent card-block card-stretch card-height border-none">
+                    <div class="card-body p-0 mt-lg-2 mt-0">
+                        <h3 class="mb-3">Hi {{Auth::user()->name}}, {{$moment}}</h3>
+                        <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business process.</p>
                     </div>
                 </div>
-                <div class="col-lg-8">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4 card-total-sale">
-                                        <div class="icon iq-icon-box-2 bg-info-light">
-                                            <i class="ri-user-fill mr-0"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-2">Tin (Pound)</p>
-                                            <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}</h4>
-                                        </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-info-light">
+                                        <i class="ri-user-fill mr-0"></i>
                                     </div>
-                                    <div class="iq-progress-bar mt-2">
-                                        <span class="bg-info iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
-                                        </span>
+                                    <div>
+                                        <p class="mb-2">Tin (Pound)</p>
+                                        <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}</h4>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4 card-total-sale">
-                                        <div class="icon iq-icon-box-2 bg-success-light">
-                                            <i class="ri-wallet-2-fill mr-0"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-2">Tin (Kg)</p>
-                                            <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get()->count()}}</h4>
-                                        </div>
-                                    </div>
-                                    <div class="iq-progress-bar mt-2">
-                                        <span class="bg-success iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
-                                        </span>
-                                    </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-info iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4 card-total-sale">
-                                        <div class="icon iq-icon-box-2 bg-danger-light">
-                                            <i class="ri-flask-fill mr-0"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-2">Columbite (Pound)</p>
-                                            <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
-                                        </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-success-light">
+                                        <i class="ri-wallet-2-fill mr-0"></i>
                                     </div>
-                                    <div class="iq-progress-bar mt-2">
-                                        <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}">
-                                        </span>
+                                    <div>
+                                        <p class="mb-2">Tin (Kg)</p>
+                                        <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get()->count()}}</h4>
                                     </div>
+                                </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-success iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="card-transparent card-block card-stretch mb-4">
-                        <div class="card-header d-flex align-items-center justify-content-between p-0">
-                            <div class="header-title">
-                                <h4 class="card-title mb-0">Notifications</h4>
-                            </div>
-                            <div class="card-header-toolbar d-flex align-items-center">
-                                <div><a href="{{route('notifications')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+            </div>
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
+                                        <i class="ri-flask-fill mr-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-2">Columbite (Pound)</p>
+                                        <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}">
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card card-block card-stretch card-height-helf">
-                        <div class="card-body card-item-right">
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card-transparent card-block card-stretch mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between p-0">
+                        <div class="header-title">
+                            <h4 class="card-title mb-0">Notifications</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div><a href="{{route('notifications')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-block card-stretch card-height-helf">
+                    <div class="card-body card-item-right">
                         @if($notifications->isEmpty())
                         <p>No Notification</p>
                         @else
@@ -166,143 +166,123 @@
                             </table>
                         </div>
                         @endif
-                        </div>
                     </div>
-
                 </div>
+
             </div>
-            <!-- Page end  -->
         </div>
+        <!-- Page end  -->
     </div>
+</div>
 @endif
 @if(Auth::user()->account_type == 'Accountant')
-    <div class="content-page">
-        <div class="col-lg-12">
-            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-                <div>
-                    <h4 class="mb-3">Dashboard</h4>
-                </div>
-
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    </ol>
-                </nav>
+<div class="content-page">
+    <div class="col-lg-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="mb-3">Dashboard</h4>
             </div>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                </ol>
+            </nav>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-5">
-                    <div class="card card-transparent card-block card-stretch card-height border-none">
-                        <div class="card-body p-0 mt-lg-2 mt-0">
-                            <h3 class="mb-3">Hi {{Auth::user()->name}}, {{$moment}}</h3>
-                            <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business process.</p>
-                        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card card-transparent card-block card-stretch card-height border-none">
+                    <div class="card-body p-0 mt-lg-2 mt-0">
+                        <h3 class="mb-3">Hi {{Auth::user()->name}}, {{$moment}}</h3>
+                        <p class="mb-0 mr-4">Your dashboard gives you views of key performance or business process.</p>
                     </div>
                 </div>
-                <div class="col-lg-7">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4 card-total-sale">
-                                        <div class="icon iq-icon-box-2 bg-info-light">
-                                            <i class="ri-user-fill mr-0"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-2">Expenses</p>
-                                            <h4>{{App\Models\Expenses::get()->count()}}</h4>
-                                        </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-info-light">
+                                        <i class="ri-user-fill mr-0"></i>
                                     </div>
-                                    <div class="iq-progress-bar mt-2">
-                                        <span class="bg-info iq-progress progress-1" data-percent="{{App\Models\Expenses::get()->count()}}">
-                                        </span>
+                                    <div>
+                                        <p class="mb-2">Expenses</p>
+                                        <h4>{{App\Models\Expenses::get()->count()}}</h4>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8 col-md-8">
-                            <div class="card card-block card-stretch card-height">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4 card-total-sale">
-                                        <div class="icon iq-icon-box-2 bg-success-light">
-                                            <i class="ri-wallet-2-fill mr-0"></i>
-                                        </div>
-                                        <div>
-                                            <p class="mb-2">Total Expenditure</p>
-                                            <h4>₦{{number_format(App\Models\Expenses::sum('amount'), 2)}}</h4>
-                                        </div>
-                                    </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-info iq-progress progress-1" data-percent="{{App\Models\Expenses::get()->count()}}">
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="card card-block card-stretch card-height">
-                                    <div class="card-body">
-                                        <div class="card-transparent card-block card-stretch mb-4">
-                                        <div class="card-header d-flex align-items-center justify-content-between p-0">
-                                            <div class="header-title">
-                                                <h4 class="card-title mb-0">Expenses</h4>
-                                            </div>
-                                            <div class="card-header-toolbar d-flex align-items-center">
-                                                <div><a href="{{route('expenses.view')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
-                                            </div>
-                                        </div>
+                    <div class="col-lg-8 col-md-8">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-success-light">
+                                        <i class="ri-wallet-2-fill mr-0"></i>
                                     </div>
-                                    <div class="table-responsive rounded mb-3">
-                                        <table class="table mb-0 tbl-server-info">
-                                            <thead class="bg-white text-uppercase">
-                                                <tr class="ligth ligth-data">
-                                                    <th>S/N</th>
-                                                    <th>Title</th>
-                                                    <th>Description</th>
-                                                    <th>Amount</th>
-                                                    <th>Date</th>
-                                                    <th>Receipt</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="ligth-body">
-                                                @foreach(App\Models\Expenses::latest()->where('user_id', Auth::user()->id)->get()->take(5) as $expense)
-                                                <tr>
-                                                    <td>{{$loop->iteration}}</td>
-                                                    <td>{{$expense->title}}</td>
-                                                    <td>{{$expense->description}}</td>
-                                                    <td>₦{{number_format($expense->amount, 2)}}</td>
-                                                    <td>{{$expense->date}}</td>
-                                                    <td>
-                                                        @if($expense->receipt == null)
-                                                        <p>None</p>
-                                                        @else
-                                                        <a href="{{config('app.url')}}{{$expense->receipt}}" target=”_blank”>
-                                                            <img id="file-ip-1-preview" class="rm-profile-pic rounded avatar-100" src="{{$expense->receipt}}" alt="{{$expense->receipt}}">
-                                                        </a>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                    <div>
+                                        <p class="mb-2">Total Expenditure</p>
+                                        <h4>₦{{number_format(App\Models\Expenses::sum('amount'), 2)}}</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4">  
-                            <div class="card-transparent card-block card-stretch mb-4">
-                                <div class="card-header d-flex align-items-center justify-content-between p-0">
-                                    <div class="header-title">
-                                        <h4 class="card-title mb-0">Notifications</h4>
-                                    </div>
-                                    <div class="card-header-toolbar d-flex align-items-center">
-                                        <div><a href="{{route('notifications')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title">Monthly Summary</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div><a href="{{route('expenses.view')}}" class="btn btn-primary view-btn font-size-14">View Reports</a></div>
+                                </div>
+                            </div>
+                            <div class="card-body pb-5">
+                                <div class="d-flex flex-wrap align-items-center mt-2">
+                                    <div class="d-flex align-items-center ml-5 progress-order-right">
+                                        <div class="progress progress-round m-0 primary conversation-bar" data-percent="200">
+                                            <span class="progress-left">
+                                                <span class="progress-bar"></span>
+                                            </span>
+                                            <span class="progress-right">
+                                                <span class="progress-bar"></span>
+                                            </span>
+                                            <div class="progress-value text-primary">100%</div>
+                                        </div>
+                                        <div class="progress-value ml-3">
+                                            <h5>₦{{number_format($monthly_expenses, 2)}}</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card card-block card-stretch card-height-helf">
-                                <div class="card-body card-item-right">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card-transparent card-block card-stretch mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between p-0">
+                                <div class="header-title">
+                                    <h4 class="card-title mb-0">Notifications</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div><a href="{{route('notifications')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-block card-stretch card-height-helf">
+                            <div class="card-body card-item-right">
                                 @if($notifications->isEmpty())
                                 <p>No Notification</p>
                                 @else
@@ -365,15 +345,86 @@
                                     </table>
                                 </div>
                                 @endif
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Page end  -->
+            <div class="col-lg-12">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-body">
+                        <div class="card-transparent card-block card-stretch mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between p-0">
+                                <div class="header-title">
+                                    <h4 class="card-title mb-0">Expenses</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div><a href="{{route('expenses.view')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive rounded mb-3">
+                            <table class="table mb-0 tbl-server-info">
+                                <thead class="bg-white text-uppercase">
+                                    <tr class="ligth ligth-data">
+                                        <th>S/N</th>
+                                        <th>Supplier</th>
+                                        <th>Payment Source</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="ligth-body">
+                                    @foreach(App\Models\Expenses::latest()->where('user_id', Auth::user()->id)->get()->take(5) as $expense)
+                                    <tr>
+                                        <td>{{$loop->iteration}}</td>
+                                        <td>{{App\Models\User::find($expense->supplier)->name}}</td>
+                                        <td>{{$expense->payment_source}}</td>
+                                        <td>{{$expense->category}}</td>
+                                        <td>₦{{number_format($expense->amount, 2)}}</td>
+                                        <td>{{$expense->date}}</td>
+                                        <td>
+                                            @if($expense->receipt == null)
+                                            <p>None</p>
+                                            @else
+                                            <span data-toggle="modal" data-target="#preview-{{$expense->id}}">
+                                                <a href="#" data-toggle="tooltip" data-placement="top" title="Preview Receipt Attachment" data-original-title="Preview Receipt Attachment"><img id="file-ip-1-preview" class="rm-profile-pic rounded avatar-100" src="{{$expense->receipt}}" alt="{{$expense->receipt}}"></a>
+                                            </span>
+                                            @endif
+                                        </td>
+                                        <div class="modal fade" id="preview-{{$expense->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Prview Receipt Attachment</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <img src="{{$expense->receipt}}" alt="{{$expense->receipt}}" class="img-fluid rounded">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- Page end  -->
     </div>
+</div>
 @endif
 
 @endsection

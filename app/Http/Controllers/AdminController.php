@@ -40,7 +40,7 @@ class AdminController extends Controller
         return substr((string) $num, 0, -strlen($chars)) . $chars;
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         /* This sets the $time variable to the current hour in the 24 hour clock format */
         $time = date("H");
@@ -66,9 +66,32 @@ class AdminController extends Controller
         $user = User::where('account_type', '!=', 'Administrator')->get()->count();
         $staffs = $user;
 
+        $month = date('m');
+        $year = date('Y');
+        $from =  Carbon::now()->startOfWeek()->format('Y-m-d');
+        $to = Carbon::now()->endOfWeek()->format('Y-m-d');
+
+        if($request->expenses_interval == 'yearly')
+        {
+            $expenses = Expenses::whereYear('date', $year)->sum('amount');
+        } elseif($request->expenses_interval == 'monthly')
+        {
+            $expenses = Expenses::whereMonth('date', $month)->sum('amount');
+        } elseif($request->expenses_interval == 'weekly')
+        {
+            $expenses = Expenses::whereBetween('created_at',[$from, $to])->get()->sum('amount');
+        } else {
+            $expenses = Expenses::whereMonth('date', $month)->sum('amount');
+        }
+
+        if (request()->ajax()) {
+            return number_format($expenses, 2);
+        }
+
         return view('admin.dashboard', [
             'moment' => $moment,
-            'staffs' => $staffs
+            'staffs' => $staffs,
+            'expenses' => $expenses
         ]);
     }
 
@@ -1071,7 +1094,7 @@ class AdminController extends Controller
 
                 $dollarRate = $myDollarRate ?? 0;
                 $exchangeRate = $myExchangeRate ?? 0;
-                
+
                 if($dollarRate == 0 && $exchangeRate == 0)
                 {
                     return back()->with([
@@ -2897,9 +2920,14 @@ class AdminController extends Controller
     }
 
     // Expenses
-    public function expenses()
+    public function expenses(Request $request)
     {
-        $expenses = Expenses::latest()->get();
+        if($request->start_date == null && $request->end_date == null)
+        {
+            $expenses = Expenses::latest()->get();
+        } else {
+            $expenses = Expenses::latest()->whereBetween('date', [$request->start_date, $request->end_date])->get();
+        }
 
         return view('admin.expenses', [
             'expenses' => $expenses
@@ -2909,9 +2937,11 @@ class AdminController extends Controller
     public function update_expense($id, Request $request)
     {
         $this->validate($request, [
-            'title' => ['required', 'string', 'max:255'],
+            'payment_source' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric'],
+            'supplier' => ['required', 'numeric'],
             'date' => ['required', 'date'],
         ]);
 
@@ -2920,6 +2950,16 @@ class AdminController extends Controller
         $expense = Expenses::find($finder);
 
         $transaction = Transaction::where('accountant_process_id', $expense->id)->first();
+
+        $supplier = User::find($request->supplier);
+
+        if(!$supplier)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'Supplier not found in our database.'
+            ]);
+        }
 
         if($request->amount == $expense->amount)
         {
@@ -2938,18 +2978,24 @@ class AdminController extends Controller
                 request()->receipt->storeAs('expenses_receipts', $filename, 'public');
 
                 $expense->update([
-                    'title' => $request->title,
+                    'supplier' => $supplier->id,
+                    'payment_source' => $request->payment_source,
+                    'category' => $request->category,
                     'description' => $request->description,
                     'amount' => $request->amount,
                     'date' => $request->date,
+                    'recurring_expense' => $request->recurring_expense,
                     'receipt' => '/storage/expenses_receipts/'.$filename
                 ]);
             } else {
                 $expense->update([
-                    'title' => $request->title,
+                    'supplier' => $supplier->id,
+                    'payment_source' => $request->payment_source,
+                    'category' => $request->category,
                     'description' => $request->description,
                     'amount' => $request->amount,
-                    'date' => $request->date
+                    'date' => $request->date,
+                    'recurring_expense' => $request->recurring_expense
                 ]);
             }
 
@@ -2957,7 +3003,7 @@ class AdminController extends Controller
                 'to' => $expense->user_id,
                 'admin_id' => Auth::user()->id,
                 'title' => config('app.name'),
-                'body' => 'Admin has updated an expense added by you with title - '.$expense->title
+                'body' => 'Admin has updated an expense added by you with catgory - '.$expense->category
             ]);
 
             return back()->with([
@@ -2983,23 +3029,36 @@ class AdminController extends Controller
                 request()->receipt->storeAs('expenses_receipts', $filename, 'public');
                 
                 $expense->update([
-                    'title' => $request->title,
+                    'supplier' => $supplier->id,
+                    'payment_source' => $request->payment_source,
+                    'category' => $request->category,
                     'description' => $request->description,
                     'amount' => $request->amount,
                     'date' => $request->date,
+                    'recurring_expense' => $request->recurring_expense,
                     'receipt' => '/storage/expenses_receipts/'.$filename
                 ]);
             } else {
                 $expense->update([
-                    'title' => $request->title,
+                    'supplier' => $supplier->id,
+                    'payment_source' => $request->payment_source,
+                    'category' => $request->category,
                     'description' => $request->description,
                     'amount' => $request->amount,
-                    'date' => $request->date
+                    'date' => $request->date,
+                    'recurring_expense' => $request->recurring_expense
                 ]);
             }
     
             $transaction->update([
                 'amount' => $expense->amount,
+            ]);
+
+            Notification::create([
+                'to' => $expense->user_id,
+                'admin_id' => Auth::user()->id,
+                'title' => config('app.name'),
+                'body' => 'Admin has updated an expense added by you with catgory - '.$expense->category
             ]);
     
             return back()->with([
@@ -3023,18 +3082,24 @@ class AdminController extends Controller
             request()->receipt->storeAs('expenses_receipts', $filename, 'public');
 
             $expense->update([
-                'title' => $request->title,
+                'supplier' => $supplier->id,
+                'payment_source' => $request->payment_source,
+                'category' => $request->category,
                 'description' => $request->description,
                 'amount' => $request->amount,
                 'date' => $request->date,
+                'recurring_expense' => $request->recurring_expense,
                 'receipt' => '/storage/expenses_receipts/'.$filename
             ]);
         } else {
             $expense->update([
-                'title' => $request->title,
+                'supplier' => $supplier->id,
+                'payment_source' => $request->payment_source,
+                'category' => $request->category,
                 'description' => $request->description,
                 'amount' => $request->amount,
                 'date' => $request->date,
+                'recurring_expense' => $request->recurring_expense
             ]);
         }
 
@@ -3631,7 +3696,7 @@ class AdminController extends Controller
             $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205; $p206 = $sum206 * $percentage206; $p207 = $sum207 * $percentage207; $p208 = $sum208 * $percentage208; $p209 = $sum209 * $percentage209;
 
             $totalPercentage =  $p185 + $p186 + $p187 + $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205 + $p206 + $p207 + $p208 + $p209;
-
+            
             $percentageAverage = $totalPercentage / $totalPound;
 
             $totalPercentageAverage = number_format((float)$percentageAverage, 2, '.', '');
