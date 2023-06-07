@@ -341,11 +341,16 @@ class AssistantManagerController extends Controller
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
                     } else {
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Percentage Analysis entered not found in our database, try again.'
-                        ]);
+                        $dollarRate = 0;
+                        $exchangeRate = 0;
                     }
+                }
+                if($dollarRate == 0 && $exchangeRate == 0)
+                {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
 
                 if($bag_kgs < rate)
@@ -418,11 +423,16 @@ class AssistantManagerController extends Controller
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
                     } else {
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Percentage Analysis entered not found in our database, try again.'
-                        ]);
+                        $dollarRate = 0;
+                        $exchangeRate = 0;
                     }
+                }
+                if($dollarRate == 0 && $exchangeRate == 0)
+                {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
 
                 $per = $request->percentage / 100;
@@ -515,11 +525,16 @@ class AssistantManagerController extends Controller
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
                 } else {
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Percentage Analysis entered not found in our database, try again.'
-                    ]);
+                    $dollarRate = 0;
+                    $exchangeRate = 0;
                 }
+            }
+            if($dollarRate == 0 && $exchangeRate == 0)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Percentage Analysis entered not found in our database, try again.'
+                ]);
             }
 
             if($bag_kgs < rate)
@@ -564,11 +579,16 @@ class AssistantManagerController extends Controller
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
                 } else {
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Percentage Analysis entered not found in our database, try again.'
-                    ]);
+                    $dollarRate = 0;
+                    $exchangeRate = 0;
                 }
+            }
+            if($dollarRate == 0 && $exchangeRate == 0)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Percentage Analysis entered not found in our database, try again.'
+                ]);
             }
 
             $per = $request->percentage / 100;
@@ -674,11 +694,16 @@ class AssistantManagerController extends Controller
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
                     } else {
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Percentage Analysis entered not found in our database, try again.'
-                        ]);
+                        $dollarRate = 0;
+                        $exchangeRate = 0;
                     }
+                }
+                if($dollarRate == 0 && $exchangeRate == 0)
+                {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
 
                 if($bag_pounds < columbite_rate)
@@ -750,11 +775,16 @@ class AssistantManagerController extends Controller
                         $dollarRate = $analyses->dollar_rate;
                         $exchangeRate = $analyses->exchange_rate;
                     } else {
-                        return back()->with([
-                            'type' => 'danger',
-                            'message' => 'Percentage Analysis entered not found in our database, try again.'
-                        ]);
+                        $dollarRate = 0;
+                        $exchangeRate = 0;
                     }
+                }
+                if($dollarRate == 0 && $exchangeRate == 0)
+                {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => 'Percentage Analysis entered not found in our database, try again.'
+                    ]);
                 }
     
                 $per = $request->percentage / 100;
@@ -847,11 +877,16 @@ class AssistantManagerController extends Controller
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
                 } else {
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Percentage Analysis entered not found in our database, try again.'
-                    ]);
+                    $dollarRate = 0;
+                    $exchangeRate = 0;
                 }
+            }
+            if($dollarRate == 0 && $exchangeRate == 0)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Percentage Analysis entered not found in our database, try again.'
+                ]);
             }
 
             if($bag_pounds < columbite_rate)
@@ -896,11 +931,16 @@ class AssistantManagerController extends Controller
                     $dollarRate = $analyses->dollar_rate;
                     $exchangeRate = $analyses->exchange_rate;
                 } else {
-                    return back()->with([
-                        'type' => 'danger',
-                        'message' => 'Percentage Analysis entered not found in our database, try again.'
-                    ]);
+                    $dollarRate = 0;
+                    $exchangeRate = 0;
                 }
+            }
+            if($dollarRate == 0 && $exchangeRate == 0)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Percentage Analysis entered not found in our database, try again.'
+                ]);
             }
 
             $per = $request->percentage / 100;
