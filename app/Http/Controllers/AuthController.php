@@ -50,6 +50,16 @@ class AuthController extends Controller
 
         // authentication attempt
         if (auth()->attempt($input, $request->get('remember'))) {
+            if ($user->status == '0' || $user->access == '0') {
+
+                Auth::logout();
+
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Account disactivated, please contact administrator.'
+                ]);
+            }
+
             if ($user->account_type == 'Administrator') {
                 return redirect()->route('admin.dashboard');
             }

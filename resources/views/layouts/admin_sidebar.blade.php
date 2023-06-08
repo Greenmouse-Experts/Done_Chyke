@@ -142,6 +142,13 @@
                         </svg>
                     </a>
                     <ul id="return" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        @if(Auth::user()->role == 'Master')
+                        <li class="{{ (request()->is('admin/sub/admins')) ? 'active' : '' }}">
+                            <a href="{{route('admin.sub.admins')}}">
+                                <i class="las la-minus"></i><span>Sub Admins</span>
+                            </a>
+                        </li>
+                        @endif
                         <li class="{{ (request()->is('admin/profile')) ? 'active' : '' }}">
                             <a href="{{route('admin.profile')}}">
                                 <i class="las la-minus"></i><span>Profile</span>

@@ -36,7 +36,7 @@
                                         <i class="ri-user-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Tin (Pound)</p>
+                                        <p class="mb-2">Total Tin Payment Receipt (Pound)</p>
                                         <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}</h4>
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@
                                         <i class="ri-wallet-2-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Tin (Kg)</p>
+                                        <p class="mb-2">Total Tin Payment Receipt (Kg)</p>
                                         <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get()->count()}}</h4>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                         <i class="ri-flask-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Columbite (Pound)</p>
+                                        <p class="mb-2">Total Columbite Payment Receipt (Pound)</p>
                                         <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
                                     </div>
                                 </div>

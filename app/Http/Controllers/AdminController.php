@@ -63,13 +63,12 @@ class AdminController extends Controller
             $moment = "Good night";
         }
 
-        $user = User::where('account_type', '!=', 'Administrator')->get()->count();
-        $staffs = $user;
-
+        $staffs = User::where('account_type', '!=', 'Administrator')->get()->count();
         $month = date('m');
         $year = date('Y');
         $from =  Carbon::now()->startOfWeek()->format('Y-m-d');
         $to = Carbon::now()->endOfWeek()->format('Y-m-d');
+        $today = Carbon::now()->format('Y-m-d');
 
         if($request->expenses_interval == 'yearly')
         {
@@ -79,19 +78,68 @@ class AdminController extends Controller
             $expenses = Expenses::whereMonth('date', $month)->sum('amount');
         } elseif($request->expenses_interval == 'weekly')
         {
-            $expenses = Expenses::whereBetween('created_at',[$from, $to])->get()->sum('amount');
+            $expenses = Expenses::whereBetween('date',[$from, $to])->get()->sum('amount');
         } else {
             $expenses = Expenses::whereMonth('date', $month)->sum('amount');
         }
 
+        if($request->receipt_interval == 'weekly')
+        {
+            $receiptTinPound = PaymentReceiptTin::where('type','pound')->whereBetween('date_of_purchase',[$from, $to])->get()->sum('price');
+            $receiptTinPoundCount = PaymentReceiptTin::where('type','pound')->whereBetween('date_of_purchase',[$from, $to])->get()->count();
+            $receiptTinKg = PaymentReceiptTin::where('type','kg')->whereBetween('date_of_purchase',[$from, $to])->get()->sum('price');
+            $receiptTinKgCount = PaymentReceiptTin::where('type','kg')->whereBetween('date_of_purchase',[$from, $to])->get()->count();
+            $receiptColumbitePound = PaymentReceiptColumbite::where('type','pound')->whereBetween('date_of_purchase',[$from, $to])->get()->sum('price');
+            $receiptColumbitePoundCount = PaymentReceiptColumbite::where('type','pound')->whereBetween('date_of_purchase',[$from, $to])->get()->count();
+        } elseif($request->receipt_interval == 'monthly')
+        {
+            $receiptTinPound = PaymentReceiptTin::where('type','pound')->whereMonth('date_of_purchase', $month)->sum('price');
+            $receiptTinPoundCount = PaymentReceiptTin::where('type','pound')->whereMonth('date_of_purchase', $month)->get()->count();
+            $receiptTinKg = PaymentReceiptTin::where('type','kg')->whereMonth('date_of_purchase', $month)->sum('price');
+            $receiptTinKgCount = PaymentReceiptTin::where('type','kg')->whereMonth('date_of_purchase', $month)->get()->count();
+            $receiptColumbitePound = PaymentReceiptColumbite::where('type','pound')->whereMonth('date_of_purchase', $month)->sum('price');
+            $receiptColumbitePoundCount = PaymentReceiptColumbite::where('type','pound')->whereMonth('date_of_purchase', $month)->get()->count();
+        } elseif($request->receipt_interval == 'today')
+        {
+            $receiptTinPound = PaymentReceiptTin::where('type','pound')->whereDate('date_of_purchase', $today)->sum('price');
+            $receiptTinPoundCount = PaymentReceiptTin::where('type','pound')->whereDate('date_of_purchase', $today)->get()->count();
+            $receiptTinKg = PaymentReceiptTin::where('type','kg')->whereDate('date_of_purchase', $today)->sum('price');
+            $receiptTinKgCount = PaymentReceiptTin::where('type','kg')->whereDate('date_of_purchase', $today)->get()->count();
+            $receiptColumbitePound = PaymentReceiptColumbite::where('type','pound')->whereDate('date_of_purchase', $today)->sum('price');
+            $receiptColumbitePoundCount = PaymentReceiptColumbite::where('type','pound')->whereDate('date_of_purchase', $today)->get()->count();
+        } else {
+            $receiptTinPound = PaymentReceiptTin::where('type','pound')->whereDate('date_of_purchase', $today)->sum('price');
+            $receiptTinPoundCount = PaymentReceiptTin::where('type','pound')->whereDate('date_of_purchase', $today)->get()->count();
+            $receiptTinKg = PaymentReceiptTin::where('type','kg')->whereDate('date_of_purchase', $today)->sum('price');
+            $receiptTinKgCount = PaymentReceiptTin::where('type','kg')->whereDate('date_of_purchase', $today)->get()->count();
+            $receiptColumbitePound = PaymentReceiptColumbite::where('type','pound')->whereDate('date_of_purchase', $today)->sum('price');
+            $receiptColumbitePoundCount = PaymentReceiptColumbite::where('type','pound')->whereDate('date_of_purchase', $today)->get()->count();
+        }
+
+        $response = [
+            'expenses' => number_format($expenses, 2),
+            'receiptTinPound' => number_format($receiptTinPound, 2),
+            'receiptTinPoundCount' => $receiptTinPoundCount,
+            'receiptTinKg' => number_format($receiptTinKg, 2),
+            'receiptTinKgCount' => $receiptTinKgCount,
+            'receiptColumbitePound' => number_format($receiptColumbitePound, 2),
+            'receiptColumbitePoundCount' => $receiptColumbitePoundCount
+        ];
+
         if (request()->ajax()) {
-            return number_format($expenses, 2);
+            return response()->json($response);
         }
 
         return view('admin.dashboard', [
             'moment' => $moment,
             'staffs' => $staffs,
-            'expenses' => $expenses
+            'expenses' => $expenses,
+            'receiptTinKg' => $receiptTinKg,
+            'receiptTinKgCount' => $receiptTinKgCount,
+            'receiptTinPound' => $receiptTinPound,
+            'receiptTinPoundCount' => $receiptTinPoundCount,
+            'receiptColumbitePound' => $receiptColumbitePound,
+            'receiptColumbitePoundCount' => $receiptColumbitePoundCount
         ]);
     }
 
@@ -171,6 +219,322 @@ class AdminController extends Controller
         ]);
     }
 
+    public function sub_admins()
+    {
+        return view('admin.sub-admins.view');
+    }
+
+    public function add_sub_admin(Request $request)
+    {
+        $this->validate($request, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed']
+        ]);
+
+  
+        if($request->notify == 'on')
+        {
+            if($request->status !== null && $request->status == 'false')
+            {
+                $user = User::create([
+                    'account_type' => 'Administrator',
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'email_verified_at' => now(),
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'status' => false,
+                    'access' => true,
+                    'role' => 'Sub-admin',
+                    'current_password' => $request->password
+                ]);
+            } else {
+                $user = User::create([
+                    'account_type' => 'Administrator',
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'email_verified_at' => now(),
+                    'password' => Hash::make($request->password),
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'status' => true,
+                    'access' => true,
+                    'role' => 'Sub-admin',
+                    'current_password' => $request->password
+                ]);   
+            }
+            
+            /** Store information to include in mail in $data as an array */
+            $data = array(
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $request->password
+            );
+
+            /** Send message to the user */
+            Mail::send('emails.notifyAdmin', $data, function ($m) use ($data) {
+                $m->to($data['email'])->subject(config('app.name'));
+            });
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => $user->name. ' account created successfully!'
+            ]);
+        }
+    
+        if($request->status !== null && $request->status == 'false')
+        {
+            $user =  User::create([
+                'account_type' => 'Administrator',
+                'name' => $request->name,
+                'email' => $request->email,
+                'email_verified_at' => now(),
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'status' => false,
+                'access' => true,
+                'role' => 'Sub-admin',
+                'current_password' => $request->password
+            ]);
+        } else {
+            $user = User::create([
+                'account_type' => 'Administrator',
+                'name' => $request->name,
+                'email' => $request->email,
+                'email_verified_at' => now(),
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'status' => true,
+                'access' => true,
+                'role' => 'Sub-admin',
+                'current_password' => $request->password
+            ]);
+        }
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => $user->name. ' account created successfully!'
+        ]);
+    }
+
+    public function sub_admin_update($id, Request $request)
+    {
+        $this->validate($request, [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $finder = Crypt::decrypt($id);
+
+        $user = User::find($finder);
+
+        if($request->notify == 'on')
+        {
+            if($request->password == null)
+            {
+                if($user->email == $request->email)
+                {
+                    $user->update([
+                        'name' => $request->name,
+                        'phone' => $request->phone,
+                        'gender' => $request->gender,
+                    ]); 
+                } else {
+                    //Validate Request
+                    $this->validate($request, [
+                        'email' => ['string', 'email', 'max:255', 'unique:users'],
+                    ]);
+
+                    $user->update([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'phone' => $request->phone,
+                        'gender' => $request->gender,
+                    ]); 
+                }
+
+                return back()->with([
+                    'alertType' => 'success',
+                    'message' => $user->name. ' profile updated successfully!'
+                ]);
+            }
+
+            $this->validate($request, [
+                'password' => ['required', 'string', 'min:8', 'confirmed']
+            ]);
+
+            if($user->email == $request->email)
+            {
+                $user->update([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'password' => Hash::make($request->password),
+                    'current_password' => $request->password
+                ]); 
+            } else {
+                //Validate Request
+                $this->validate($request, [
+                    'email' => ['string', 'email', 'max:255', 'unique:users'],
+                ]);
+
+                $user->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'password' => Hash::make($request->password),
+                    'current_password' => $request->password
+                ]); 
+            }
+
+            /** Store information to include in mail in $data as an array */
+            $data = array(
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $request->password
+            );
+
+            /** Send message to the user */
+            Mail::send('emails.notifyAdminUpdate', $data, function ($m) use ($data) {
+                $m->to($data['email'])->subject(config('app.name'));
+            });
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => $user->name. ' profile updated successfully!'
+            ]);
+        }
+
+        if($request->password == null)
+        {
+            if($user->email == $request->email)
+            {
+                $user->update([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                ]); 
+            } else {
+                //Validate Request
+                $this->validate($request, [
+                    'email' => ['string', 'email', 'max:255', 'unique:users'],
+                ]);
+
+                $user->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                ]); 
+            }
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => $user->name. ' profile updated successfully!'
+            ]);
+        }
+
+        $this->validate($request, [
+            'password' => ['required', 'string', 'min:8', 'confirmed']
+        ]);
+
+        if($user->email == $request->email)
+        {
+            $user->update([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'password' => Hash::make($request->password),
+                'current_password' => $request->password
+            ]); 
+        } else {
+            //Validate Request
+            $this->validate($request, [
+                'email' => ['string', 'email', 'max:255', 'unique:users'],
+            ]);
+
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'password' => Hash::make($request->password),
+                'current_password' => $request->password
+            ]); 
+        }
+
+        /** Store information to include in mail in $data as an array */
+        $data = array(
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => $request->password
+        );
+
+        /** Send message to the user */
+        Mail::send('emails.notifyAdminUpdate', $data, function ($m) use ($data) {
+            $m->to($data['email'])->subject(config('app.name'));
+        });
+        
+        return back()->with([
+            'alertType' => 'success',
+            'message' => $user->name. ' profile updated successfully!'
+        ]);
+    }
+
+    public function sub_admin_activate($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $user = User::find($finder);
+
+        $user->update([
+            'status' => true
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => $user->name. ' account activated successfully!'
+        ]);
+    }
+
+    public function sub_admin_deactivate($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $user = User::find($finder);
+
+        $user->update([
+            'status' => false
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => $user->name. ' account deactivated successfully!'
+        ]);
+    }
+
+    public function sub_admin_delete($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $user = User::find($finder);
+
+        if($user->avatar) {
+            Storage::delete(str_replace("storage", "public", $user->avatar));
+        }
+
+        $user->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'User deleted successfully!'
+        ]);
+    }
+
     public function staff()
     {
         return view('admin.staff.view');
@@ -208,7 +572,8 @@ class AdminController extends Controller
                         'phone' => $request->phone,
                         'gender' => $request->gender,
                         'status' => false,
-                        'access' => true
+                        'access' => true,
+                        'current_password' => $request->password
                     ]);
                 } else {
                     $user = User::create([
@@ -220,7 +585,8 @@ class AdminController extends Controller
                         'phone' => $request->phone,
                         'gender' => $request->gender,
                         'status' => true,
-                        'access' => true
+                        'access' => true,
+                        'current_password' => $request->password
                     ]);   
                 }
 
@@ -255,7 +621,8 @@ class AdminController extends Controller
                     'phone' => $request->phone,
                     'gender' => $request->gender,
                     'status' => false,
-                    'access' => true
+                    'access' => true,
+                    'current_password' => $request->password
                 ]);
             } else {
                 $user = User::create([
@@ -267,7 +634,8 @@ class AdminController extends Controller
                     'phone' => $request->phone,
                     'gender' => $request->gender,
                     'status' => true,
-                    'access' => true
+                    'access' => true,
+                    'current_password' => $request->password
                 ]);
             }
 
@@ -355,7 +723,13 @@ class AdminController extends Controller
     {
         $finder = Crypt::decrypt($id);
 
-        User::find($finder)->delete();
+        $user = User::find($finder);
+
+        if($user->avatar) {
+            Storage::delete(str_replace("storage", "public", $user->avatar));
+        }
+
+        $user->delete();
 
         return back()->with([
             'alertType' => 'success',
@@ -3436,30 +3810,215 @@ class AdminController extends Controller
             $totalBeratingAverage = number_format((float)$beratingAverage, 2, '.', '');
 
             // Percentage Average
-            $percentage188 = $result->where('grade', '18.8')->sum('percentage_analysis');
-            $percentage189 = $result->where('grade', '18.9')->sum('percentage_analysis');
-            $percentage190 = $result->where('grade', '19.0')->sum('percentage_analysis');
-            $percentage191 = $result->where('grade', '19.1')->sum('percentage_analysis');
-            $percentage192 = $result->where('grade', '19.2')->sum('percentage_analysis');
-            $percentage193 = $result->where('grade', '19.3')->sum('percentage_analysis');
-            $percentage194 = $result->where('grade', '19.4')->sum('percentage_analysis');
-            $percentage195 = $result->where('grade', '19.5')->sum('percentage_analysis');
-            $percentage196 = $result->where('grade', '19.6')->sum('percentage_analysis');
-            $percentage197 = $result->where('grade', '19.7')->sum('percentage_analysis');
-            $percentage198 = $result->where('grade', '19.8')->sum('percentage_analysis');
-            $percentage199 = $result->where('grade', '19.9')->sum('percentage_analysis');
-            $percentage200 = $result->where('grade', '20.0')->sum('percentage_analysis');
-            $percentage201 = $result->where('grade', '20.1')->sum('percentage_analysis');
-            $percentage202 = $result->where('grade', '20.2')->sum('percentage_analysis');
-            $percentage203 = $result->where('grade', '20.3')->sum('percentage_analysis');
-            $percentage204 = $result->where('grade', '20.4')->sum('percentage_analysis');
-            $percentage205 = $result->where('grade', '20.5')->sum('percentage_analysis');
+            $percentage188 = $result->where('grade', '18.8');
+            if($percentage188->isEmpty())
+            {
+                $sumPercentage188[] = 0;
+            } else {
+                foreach($percentage188 as $per188)
+                {
+                    $sumPercentage188[] = $per188->percentage_analysis * $per188->grade;
+                }
+            }
+            $percentage189 = $result->where('grade', '18.9');
+            if($percentage189->isEmpty())
+            {
+                $sumPercentage189[] = 0;
+            } else {
+                foreach($percentage189 as $per189)
+                {
+                    $sumPercentage189[] = $per189->percentage_analysis * $per189->total_in_kg;
+                }
+            }
+            $percentage190 = $result->where('grade', '19.0');
+            if($percentage190->isEmpty())
+            {
+                $sumPercentage190[] = 0;
+            } else {
+                foreach($percentage190 as $per190)
+                {
+                    $sumPercentage190[] = $per190->percentage_analysis * $per190->total_in_kg;
+                }
+            }
+            $percentage191 = $result->where('grade', '19.1');
+            if($percentage191->isEmpty())
+            {
+                $sumPercentage191[] = 0;
+            } else {
+                foreach($percentage191 as $per191)
+                {
+                    $sumPercentage191[] = $per191->percentage_analysis * $per191->total_in_kg;
+                }
+            }
+            $percentage192 = $result->where('grade', '19.2');
+            if($percentage192->isEmpty())
+            {
+                $sumPercentage192[] = 0;
+            } else {
+                foreach($percentage192 as $per192)
+                {
+                    $sumPercentage192[] = $per192->percentage_analysis * $per192->total_in_kg;
+                }
+            }
+            $percentage193 = $result->where('grade', '19.3');
+            if($percentage193->isEmpty())
+            {
+                $sumPercentage193[] = 0;
+            } else {
+                foreach($percentage193 as $per193)
+                {
+                    $sumPercentage193[] = $per193->percentage_analysis * $per193->total_in_kg;
+                }
+            }
+            $percentage194 = $result->where('grade', '19.4');
+            if($percentage194->isEmpty())
+            {
+                $sumPercentage194[] = 0;
+            } else {
+                foreach($percentage194 as $per194)
+                {
+                    $sumPercentage194[] = $per194->percentage_analysis * $per194->total_in_kg;
+                }
+            }
+            $percentage195 = $result->where('grade', '19.5');
+            if($percentage195->isEmpty())
+            {
+                $sumPercentage195[] = 0;
+            } else {
+                foreach($percentage195 as $per195)
+                {
+                    $sumPercentage195[] = $per195->percentage_analysis * $per195->total_in_kg;
+                }
+            }
+            $percentage196 = $result->where('grade', '19.6');
+            if($percentage196->isEmpty())
+            {
+                $sumPercentage196[] = 0;
+            } else {
+                foreach($percentage196 as $per196)
+                {
+                    $sumPercentage196[] = $per196->percentage_analysis * $per196->total_in_kg;
+                }
+            }
+            $percentage197 = $result->where('grade', '19.7');
+            if($percentage197->isEmpty())
+            {
+                $sumPercentage197[] = 0;
+            } else {
+                foreach($percentage197 as $per197)
+                {
+                    $sumPercentage197[] = $per197->percentage_analysis * $per197->total_in_kg;
+                }
+            }
+            $percentage198 = $result->where('grade', '19.8');
+            if($percentage198->isEmpty())
+            {
+                $sumPercentage198[] = 0;
+            } else {
+                foreach($percentage198 as $per198)
+                {
+                    $sumPercentage198[] = $per198->percentage_analysis * $per198->total_in_kg;
+                }
+            }
+            $percentage199 = $result->where('grade', '19.9');
+            if($percentage199->isEmpty())
+            {
+                $sumPercentage199[] = 0;
+            } else {
+                foreach($percentage199 as $per199)
+                {
+                    $sumPercentage199[] = $per199->percentage_analysis * $per199->total_in_kg;
+                }
+            }
+            $percentage200 = $result->where('grade', '20.0');
+            if($percentage200->isEmpty())
+            {
+                $sumPercentage200[] = 0;
+            } else {
+                foreach($percentage200 as $per200)
+                {
+                    $sumPercentage200[] = $per200->percentage_analysis * $per200->total_in_kg;
+                }
+            }
+            $percentage201 = $result->where('grade', '20.1');
+            if($percentage201->isEmpty())
+            {
+                $sumPercentage201[] = 0;
+            } else {
+                foreach($percentage201 as $per201)
+                {
+                    $sumPercentage201[] = $per201->percentage_analysis * $per201->total_in_kg;
+                }
+            }
+            $percentage202 = $result->where('grade', '20.2');
+            if($percentage202->isEmpty())
+            {
+                $sumPercentage202[] = 0;
+            } else {
+                foreach($percentage202 as $per202)
+                {
+                    $sumPercentage202[] = $per202->percentage_analysis * $per202->total_in_kg;
+                }
+            }
+            $percentage203 = $result->where('grade', '20.3');
+            if($percentage203->isEmpty())
+            {
+                $sumPercentage203[] = 0;
+            } else {
+                foreach($percentage203 as $per203)
+                {
+                    $sumPercentage203[] = $per203->percentage_analysis * $per203->total_in_kg;
+                }
+            }
+            $percentage204 = $result->where('grade', '20.4');
+            if($percentage204->isEmpty())
+            {
+                $sumPercentage204[] = 0;
+            } else {
+                foreach($percentage204 as $per204)
+                {
+                    $sumPercentage204[] = $per204->percentage_analysis * $per204->total_in_kg;
+                }
+            }
+            $percentage205 = $result->where('grade', '20.5');
+            if($percentage205->isEmpty())
+            {
+                $sumPercentage205[] = 0;
+            } else {
+                foreach($percentage205 as $per205)
+                {
+                    $sumPercentage205[] = $per205->percentage_analysis * $per205->total_in_kg;
+                }
+            }
 
-            $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
-            $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
-            $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205;
+            $totalPercentage188 = array_sum($sumPercentage188); 
+            $totalPercentage189 = array_sum($sumPercentage189); 
+            $totalPercentage190 = array_sum($sumPercentage190);
+            $totalPercentage191 = array_sum($sumPercentage191);
+            $totalPercentage192 = array_sum($sumPercentage192);
+            $totalPercentage193 = array_sum($sumPercentage193);
+            $totalPercentage194 = array_sum($sumPercentage194); 
+            $totalPercentage195 = array_sum($sumPercentage195); 
+            $totalPercentage196 = array_sum($sumPercentage196);
+            $totalPercentage197 = array_sum($sumPercentage197);
+            $totalPercentage198 = array_sum($sumPercentage198); 
+            $totalPercentage199 = array_sum($sumPercentage199);
+            $totalPercentage200 = array_sum($sumPercentage200); 
+            $totalPercentage201 = array_sum($sumPercentage201);
+            $totalPercentage202 = array_sum($sumPercentage202);
+            $totalPercentage203 = array_sum($sumPercentage203);
+            $totalPercentage204 = array_sum($sumPercentage204); 
+            $totalPercentage205 = array_sum($sumPercentage205);
 
-            $totalPercentage =  $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205;
+            $totalPercentage = $totalPercentage188 + $totalPercentage189 + $totalPercentage190 + $totalPercentage191 + $totalPercentage192 + $totalPercentage193 + $totalPercentage194 + $totalPercentage195 + $totalPercentage196 + $totalPercentage197 + $totalPercentage198 + $totalPercentage199 + $totalPercentage200 + $totalPercentage201 + $totalPercentage202 + $totalPercentage203 + $totalPercentage204 + $totalPercentage205;
+
+            // return $generalTotalPercentage;
+
+            // $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
+            // $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
+            // $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205;
+
+            // $totalPercentage =  $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205;
 
             $percentageAverage = $totalPercentage / $totalKg;
 

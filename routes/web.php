@@ -81,6 +81,14 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/admin/update/profile', [AdminController::class, 'update_admin_profile'])->name('admin.update.profile');
     Route::post('/admin/upload/profile/picture', [AdminController::class, 'upload_admin_profile_picture'])->name('admin.upload.profile.picture');
     
+    // Sub Admins
+    Route::get('/admin/sub/admins', [AdminController::class, 'sub_admins'])->name('admin.sub.admins');
+    Route::post('/admin/sub/admin/add', [AdminController::class, 'add_sub_admin'])->name('admin.add.sub.admin');
+    Route::post('/admin/sub/admin/update/{id}', [AdminController::class, 'sub_admin_update'])->name('admin.update.sub.admin');
+    Route::get('/admin/sub/admin/activate/{id}', [AdminController::class, 'sub_admin_activate'])->name('admin.activate.sub.admin');
+    Route::get('/admin/sub/admin/deactivate/{id}', [AdminController::class, 'sub_admin_deactivate'])->name('admin.deactivate.sub.admin');
+    Route::post('/admin/sub/admin/delete/{id}', [AdminController::class, 'sub_admin_delete'])->name('admin.delete.sub.admin');
+
     // Fund Account
     Route::get('/admin/account/funding/confirm/{response}/{amount}', [AdminController::class, 'account_funding_confirm'])->name('admin.account.funding.confirm');
 

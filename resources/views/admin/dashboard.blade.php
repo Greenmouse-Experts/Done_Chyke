@@ -73,41 +73,69 @@
                 </div>
             </div>
             <div class="col-lg-12">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-danger-light">
-                                        <i class="ri-flask-fill mr-0"></i>
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Total Tin</p>
-                                        <h4>0</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="70">
-                                    </span>
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Payment Receipt Summary</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div class="dropdown">
+                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton005" data-toggle="dropdown">
+                                    Today<i class="ri-arrow-down-s-line ml-1"></i>
+                                </span>
+                                <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton005">
+                                    <a class="dropdown-item" onclick="showPaymentMonth()" href="#">Month</a>
+                                    <a class="dropdown-item" onclick="showPaymentWeek()" href="#">Week</a>
+                                    <a class="dropdown-item" onclick="showPaymentDay()" href="#">Today</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="card card-block card-stretch card-height">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-success-light">
-                                        <i class="ri-oil-line mr-0"></i>
-                                    </div>
-                                    <div>
-                                        <p class="mb-2">Total Columbite</p>
-                                        <h4>0</h4>
-                                    </div>
-                                </div>
-                                <div class="iq-progress-bar mt-2">
-                                    <span class="bg-success iq-progress progress-1" data-percent="75">
+                    <div class="card-body pb-2">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mt-2">
+                            <div class="d-flex align-items-center progres-order-left">
+                                <div class="progress progress-round m-0 orange conversation-bar" data-percent="46">
+                                    <span class="progress-left">
+                                        <span class="progress-bar"></span>
                                     </span>
+                                    <span class="progress-right">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <div class="progress-value text-secondary" id="showTinPoundPaymentReceiptCount">{{$receiptTinPoundCount}}</div>
+                                </div>
+                                <div class="progress-value ml-3 pr-5 border-right">
+                                    <h5>₦<span id="showTinPoundPaymentReceiptSummary">{{number_format($receiptTinPound, 2)}}</span></h5>
+                                    <p class="mb-0">Total Tin (Pound)</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center ml-5 progress-order-right">
+                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="100">
+                                    <span class="progress-left">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <span class="progress-right">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <div class="progress-value text-primary" id="showTinKgPaymentReceiptCount">{{$receiptTinKgCount}}</div>
+                                </div>
+                                <div class="progress-value ml-3 pr-5 border-right">
+                                    <h5>₦<span id="showTinKgPaymentReceiptSummary">{{number_format($receiptTinKg, 2)}}</span></h5>
+                                    <p class="mb-0">Total Tin (Kg)</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center ml-5 progress-order-right">
+                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="46">
+                                    <span class="progress-left">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <span class="progress-right">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <div class="progress-value text-primary" id="showColumbitePoundPaymentReceiptCount">{{$receiptColumbitePoundCount}}</div>
+                                </div>
+                                <div class="progress-value ml-3">
+                                    <h5>₦<span id="showColumbitePoundPaymentReceiptSummary">{{number_format($receiptColumbitePound, 2)}}</span></h5>
+                                    <p class="mb-0">Total Columbite (Pound)</p>
                                 </div>
                             </div>
                         </div>
@@ -162,112 +190,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="card card-block card-stretch card-height-helf">
-                    <div class="card-body">
-                        <div class="d-flex align-items-top justify-content-between">
-                            <div class="">
-                                <p class="mb-0">Income</p>
-                                <h5>$ 98,7800 K</h5>
-                            </div>
-                            <div class="card-header-toolbar d-flex align-items-center">
-                                <div class="dropdown">
-                                    <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton003" data-toggle="dropdown">
-                                        This Month<i class="ri-arrow-down-s-line ml-1"></i>
-                                    </span>
-                                    <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton003">
-                                        <a class="dropdown-item" href="#">Year</a>
-                                        <a class="dropdown-item" href="#">Month</a>
-                                        <a class="dropdown-item" href="#">Week</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="layout1-chart-3" class="layout-chart-1"></div>
-                    </div>
-                </div>
-                <div class="card card-block card-stretch card-height-helf">
-                    <div class="card-body">
-                        <div class="d-flex align-items-top justify-content-between">
-                            <div class="">
-                                <p class="mb-0">Expenses</p>
-                                <h5>$ 45,8956 K</h5>
-                            </div>
-                            <div class="card-header-toolbar d-flex align-items-center">
-                                <div class="dropdown">
-                                    <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton004" data-toggle="dropdown">
-                                        This Month<i class="ri-arrow-down-s-line ml-1"></i>
-                                    </span>
-                                    <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton004">
-                                        <a class="dropdown-item" onclick="showYear()" href="#">Year</a>
-                                        <a class="dropdown-item" href="#">Month</a>
-                                        <a class="dropdown-item" href="#">Week</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="layout1-chart-4" class="layout-chart-2"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="card card-block card-stretch card-height">
-                    <div class="card-header d-flex justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Order Summary</h4>
-                        </div>
-                        <div class="card-header-toolbar d-flex align-items-center">
-                            <div class="dropdown">
-                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton005" data-toggle="dropdown">
-                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
-                                </span>
-                                <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton005">
-                                    <a class="dropdown-item" href="#">Year</a>
-                                    <a class="dropdown-item" href="#">Month</a>
-                                    <a class="dropdown-item" href="#">Week</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body pb-2">
-                        <div class="d-flex flex-wrap align-items-center mt-2">
-                            <div class="d-flex align-items-center progress-order-left">
-                                <div class="progress progress-round m-0 orange conversation-bar" data-percent="46">
-                                    <span class="progress-left">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <span class="progress-right">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <div class="progress-value text-secondary">46%</div>
-                                </div>
-                                <div class="progress-value ml-3 pr-5 border-right">
-                                    <h5>$12,6598</h5>
-                                    <p class="mb-0">Average Orders</p>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center ml-5 progress-order-right">
-                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="46">
-                                    <span class="progress-left">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <span class="progress-right">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <div class="progress-value text-primary">46%</div>
-                                </div>
-                                <div class="progress-value ml-3">
-                                    <h5>$59,8478</h5>
-                                    <p class="mb-0">Top Orders</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
-                        <div id="layout1-chart-5"></div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
         <!-- Page end  -->
     </div>
@@ -287,8 +210,8 @@
                 expenses_interval: 'yearly',
             },
             success: function(result) {
-                console.log(result);
-                $('#showExpenses').html(result);
+                $('#dropdownMenuButton004').html('This Year');
+                $('#showExpenses').html(result.expenses);
             }
         })
     }
@@ -305,8 +228,8 @@
                 expenses_interval: 'monthly',
             },
             success: function(result) {
-                console.log(result);
-                $('#showExpenses').html(result);
+                $('#dropdownMenuButton004').html('This Month');
+                $('#showExpenses').html(result.expenses);
             }
         })
     }
@@ -323,8 +246,78 @@
                 expenses_interval: 'weekly',
             },
             success: function(result) {
-                console.log(result);
-                $('#showExpenses').html(result);
+                $('#dropdownMenuButton004').html('This Week');
+                $('#showExpenses').html(result.expenses);
+            }
+        })
+    }
+
+    function showPaymentDay(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        $.ajax({
+            url: "{{ route('admin.dashboard') }}",
+            method: "get",
+            data: {
+                receipt_interval: 'daily',
+            },
+            success: function(result) {
+                $('#dropdownMenuButton005').html('Today');
+                $('#showTinPoundPaymentReceiptCount').html(result.receiptTinPoundCount);
+                $('#showTinPoundPaymentReceiptSummary').html(result.receiptTinPound);
+                $('#showTinKgPaymentReceiptCount').html(result.receiptTinKgCount);
+                $('#showTinKgPaymentReceiptSummary').html(result.receiptTinKg);
+                $('#showColumbitePoundPaymentReceiptCount').html(result.receiptColumbitePoundCount);
+                $('#showColumbitePoundPaymentReceiptSummary').html(result.receiptColumbitePound);
+            }
+        })
+    }
+    function showPaymentMonth(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        $.ajax({
+            url: "{{ route('admin.dashboard') }}",
+            method: "get",
+            data: {
+                receipt_interval: 'monthly',
+            },
+            success: function(result) {
+                $('#dropdownMenuButton005').html('This Month');
+                $('#showTinPoundPaymentReceiptCount').html(result.receiptTinPoundCount);
+                $('#showTinPoundPaymentReceiptSummary').html(result.receiptTinPound);
+                $('#showTinKgPaymentReceiptCount').html(result.receiptTinKgCount);
+                $('#showTinKgPaymentReceiptSummary').html(result.receiptTinKg);
+                $('#showColumbitePoundPaymentReceiptCount').html(result.receiptColumbitePoundCount);
+                $('#showColumbitePoundPaymentReceiptSummary').html(result.receiptColumbitePound);
+            }
+        })
+    }
+    function showPaymentWeek(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        $.ajax({
+            url: "{{ route('admin.dashboard') }}",
+            method: "get",
+            data: {
+                receipt_interval: 'weekly',
+            },
+            success: function(result) {
+                $('#dropdownMenuButton005').html('This Week');
+                $('#showTinPoundPaymentReceiptCount').html(result.receiptTinPoundCount);
+                $('#showTinPoundPaymentReceiptSummary').html(result.receiptTinPound);
+                $('#showTinKgPaymentReceiptCount').html(result.receiptTinKgCount);
+                $('#showTinKgPaymentReceiptSummary').html(result.receiptTinKg);
+                $('#showColumbitePoundPaymentReceiptCount').html(result.receiptColumbitePoundCount);
+                $('#showColumbitePoundPaymentReceiptSummary').html(result.receiptColumbitePound);
             }
         })
     }

@@ -24976,4 +24976,24 @@ i {
     }
 }
 
+.dt-buttons {
+    margin-bottom: 1rem;
+}
+.dt-button {
+    display: inline-block;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    background-color: #c56963;
+    border-color: #c56963;
+    box-shadow: unset;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.375rem 0.75rem;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 10px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
 /*# sourceMappingURL=maps/backend.css.map */

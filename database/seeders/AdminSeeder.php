@@ -21,6 +21,7 @@ class AdminSeeder extends Seeder
             'email_verified_at' => now(),
             'access' => true,
             'password' => bcrypt('Password'),
+            'role' => 'Master',
         ]);
     }
 }
