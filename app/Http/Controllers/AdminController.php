@@ -4224,37 +4224,290 @@ class AdminController extends Controller
             $totalBeratingAverage = number_format((float)$beratingAverage, 2, '.', '');
 
             // Percentage Average
-            $percentage185 = $result->where('grade', '18.5')->sum('percentage_analysis');
-            $percentage186 = $result->where('grade', '18.6')->sum('percentage_analysis');
-            $percentage187 = $result->where('grade', '18.7')->sum('percentage_analysis');
-            $percentage188 = $result->where('grade', '18.8')->sum('percentage_analysis');
-            $percentage189 = $result->where('grade', '18.9')->sum('percentage_analysis');
-            $percentage190 = $result->where('grade', '19.0')->sum('percentage_analysis');
-            $percentage191 = $result->where('grade', '19.1')->sum('percentage_analysis');
-            $percentage192 = $result->where('grade', '19.2')->sum('percentage_analysis');
-            $percentage193 = $result->where('grade', '19.3')->sum('percentage_analysis');
-            $percentage194 = $result->where('grade', '19.4')->sum('percentage_analysis');
-            $percentage195 = $result->where('grade', '19.5')->sum('percentage_analysis');
-            $percentage196 = $result->where('grade', '19.6')->sum('percentage_analysis');
-            $percentage197 = $result->where('grade', '19.7')->sum('percentage_analysis');
-            $percentage198 = $result->where('grade', '19.8')->sum('percentage_analysis');
-            $percentage199 = $result->where('grade', '19.9')->sum('percentage_analysis');
-            $percentage200 = $result->where('grade', '20.0')->sum('percentage_analysis');
-            $percentage201 = $result->where('grade', '20.1')->sum('percentage_analysis');
-            $percentage202 = $result->where('grade', '20.2')->sum('percentage_analysis');
-            $percentage203 = $result->where('grade', '20.3')->sum('percentage_analysis');
-            $percentage204 = $result->where('grade', '20.4')->sum('percentage_analysis');
-            $percentage205 = $result->where('grade', '20.5')->sum('percentage_analysis');
-            $percentage206 = $result->where('grade', '20.6')->sum('percentage_analysis');
-            $percentage207 = $result->where('grade', '20.7')->sum('percentage_analysis');
-            $percentage208 = $result->where('grade', '20.8')->sum('percentage_analysis');
-            $percentage209 = $result->where('grade', '20.9')->sum('percentage_analysis');
+            $percentage185 = $result->where('grade', '18.5');
+            if($percentage185->isEmpty())
+            {
+                $sumPercentage185[] = 0;
+            } else {
+                foreach($percentage185 as $per185)
+                {
+                    $sumPercentage185[] = $per185->percentage_analysis * $per185->total_in_pound;
+                }
+            }
+            $percentage186 = $result->where('grade', '18.6');
+            if($percentage186->isEmpty())
+            {
+                $sumPercentage186[] = 0;
+            } else {
+                foreach($percentage186 as $per186)
+                {
+                    $sumPercentage186[] = $per186->percentage_analysis * $per186->total_in_pound;
+                }
+            }
+            $percentage187 = $result->where('grade', '18.7');
+            if($percentage187->isEmpty())
+            {
+                $sumPercentage187[] = 0;
+            } else {
+                foreach($percentage187 as $per187)
+                {
+                    $sumPercentage187[] = $per187->percentage_analysis * $per187->total_in_pound;
+                }
+            }
+            $percentage188 = $result->where('grade', '18.8');
+            if($percentage188->isEmpty())
+            {
+                $sumPercentage188[] = 0;
+            } else {
+                foreach($percentage188 as $per188)
+                {
+                    $sumPercentage188[] = $per188->percentage_analysis * $per188->total_in_pound;
+                }
+            }
+            $percentage189 = $result->where('grade', '18.9');
+            if($percentage189->isEmpty())
+            {
+                $sumPercentage189[] = 0;
+            } else {
+                foreach($percentage189 as $per189)
+                {
+                    $sumPercentage189[] = $per189->percentage_analysis * $per189->total_in_pound;
+                }
+            }
+            $percentage190 = $result->where('grade', '19.0');
+            if($percentage190->isEmpty())
+            {
+                $sumPercentage190[] = 0;
+            } else {
+                foreach($percentage190 as $per190)
+                {
+                    $sumPercentage190[] = $per190->percentage_analysis * $per190->total_in_pound;
+                }
+            }
+            $percentage191 = $result->where('grade', '19.1');
+            if($percentage191->isEmpty())
+            {
+                $sumPercentage191[] = 0;
+            } else {
+                foreach($percentage191 as $per191)
+                {
+                    $sumPercentage191[] = $per191->percentage_analysis * $per191->total_in_pound;
+                }
+            }
+            $percentage192 = $result->where('grade', '19.2');
+            if($percentage192->isEmpty())
+            {
+                $sumPercentage192[] = 0;
+            } else {
+                foreach($percentage192 as $per192)
+                {
+                    $sumPercentage192[] = $per192->percentage_analysis * $per192->total_in_pound;
+                }
+            }
+            $percentage193 = $result->where('grade', '19.3');
+            if($percentage193->isEmpty())
+            {
+                $sumPercentage193[] = 0;
+            } else {
+                foreach($percentage193 as $per193)
+                {
+                    $sumPercentage193[] = $per193->percentage_analysis * $per193->total_in_pound;
+                }
+            }
+            $percentage194 = $result->where('grade', '19.4');
+            if($percentage194->isEmpty())
+            {
+                $sumPercentage194[] = 0;
+            } else {
+                foreach($percentage194 as $per194)
+                {
+                    $sumPercentage194[] = $per194->percentage_analysis * $per194->total_in_pound;
+                }
+            }
+            $percentage195 = $result->where('grade', '19.5');
+            if($percentage195->isEmpty())
+            {
+                $sumPercentage195[] = 0;
+            } else {
+                foreach($percentage195 as $per195)
+                {
+                    $sumPercentage195[] = $per195->percentage_analysis * $per195->total_in_pound;
+                }
+            }
+            $percentage196 = $result->where('grade', '19.6');
+            if($percentage196->isEmpty())
+            {
+                $sumPercentage196[] = 0;
+            } else {
+                foreach($percentage196 as $per196)
+                {
+                    $sumPercentage196[] = $per196->percentage_analysis * $per196->total_in_pound;
+                }
+            }
+            $percentage197 = $result->where('grade', '19.7');
+            if($percentage197->isEmpty())
+            {
+                $sumPercentage197[] = 0;
+            } else {
+                foreach($percentage197 as $per197)
+                {
+                    $sumPercentage197[] = $per197->percentage_analysis * $per197->total_in_pound;
+                }
+            }
+            $percentage198 = $result->where('grade', '19.8');
+            if($percentage198->isEmpty())
+            {
+                $sumPercentage198[] = 0;
+            } else {
+                foreach($percentage198 as $per198)
+                {
+                    $sumPercentage198[] = $per198->percentage_analysis * $per198->total_in_pound;
+                }
+            }
+            $percentage199 = $result->where('grade', '19.9');
+            if($percentage199->isEmpty())
+            {
+                $sumPercentage199[] = 0;
+            } else {
+                foreach($percentage199 as $per199)
+                {
+                    $sumPercentage199[] = $per199->percentage_analysis * $per199->total_in_pound;
+                }
+            }
+            $percentage200 = $result->where('grade', '20.0');
+            if($percentage200->isEmpty())
+            {
+                $sumPercentage200[] = 0;
+            } else {
+                foreach($percentage200 as $per200)
+                {
+                    $sumPercentage200[] = $per200->percentage_analysis * $per200->total_in_pound;
+                }
+            }
+            $percentage201 = $result->where('grade', '20.1');
+            if($percentage201->isEmpty())
+            {
+                $sumPercentage201[] = 0;
+            } else {
+                foreach($percentage201 as $per201)
+                {
+                    $sumPercentage201[] = $per201->percentage_analysis * $per201->total_in_pound;
+                }
+            }
+            $percentage202 = $result->where('grade', '20.2');
+            if($percentage202->isEmpty())
+            {
+                $sumPercentage202[] = 0;
+            } else {
+                foreach($percentage202 as $per202)
+                {
+                    $sumPercentage202[] = $per202->percentage_analysis * $per202->total_in_pound;
+                }
+            }
+            $percentage203 = $result->where('grade', '20.3');
+            if($percentage203->isEmpty())
+            {
+                $sumPercentage203[] = 0;
+            } else {
+                foreach($percentage203 as $per203)
+                {
+                    $sumPercentage203[] = $per203->percentage_analysis * $per203->total_in_pound;
+                }
+            }
+            $percentage204 = $result->where('grade', '20.4');
+            if($percentage204->isEmpty())
+            {
+                $sumPercentage204[] = 0;
+            } else {
+                foreach($percentage204 as $per204)
+                {
+                    $sumPercentage204[] = $per204->percentage_analysis * $per204->total_in_pound;
+                }
+            }
+            $percentage205 = $result->where('grade', '20.5');
+            if($percentage205->isEmpty())
+            {
+                $sumPercentage205[] = 0;
+            } else {
+                foreach($percentage205 as $per205)
+                {
+                    $sumPercentage205[] = $per205->percentage_analysis * $per205->total_in_pound;
+                }
+            }
+            $percentage206 = $result->where('grade', '20.6');
+            if($percentage206->isEmpty())
+            {
+                $sumPercentage206[] = 0;
+            } else {
+                foreach($percentage206 as $per206)
+                {
+                    $sumPercentage206[] = $per206->percentage_analysis * $per206->total_in_pound;
+                }
+            }
+            $percentage207 = $result->where('grade', '20.7');
+            if($percentage207->isEmpty())
+            {
+                $sumPercentage207[] = 0;
+            } else {
+                foreach($percentage207 as $per207)
+                {
+                    $sumPercentage207[] = $per207->percentage_analysis * $per207->total_in_pound;
+                }
+            }
+            $percentage208 = $result->where('grade', '20.8');
+            if($percentage208->isEmpty())
+            {
+                $sumPercentage208[] = 0;
+            } else {
+                foreach($percentage208 as $per208)
+                {
+                    $sumPercentage208[] = $per208->percentage_analysis * $per208->total_in_pound;
+                }
+            }
+            $percentage209 = $result->where('grade', '20.9');
+            if($percentage209->isEmpty())
+            {
+                $sumPercentage209[] = 0;
+            } else {
+                foreach($percentage209 as $per209)
+                {
+                    $sumPercentage209[] = $per209->percentage_analysis * $per209->total_in_pound;
+                }
+            }
 
-            $p185 = $sum185 * $percentage185; $p186 = $sum186 * $percentage186; $p187 = $sum187 * $percentage187; $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
-            $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
-            $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205; $p206 = $sum206 * $percentage206; $p207 = $sum207 * $percentage207; $p208 = $sum208 * $percentage208; $p209 = $sum209 * $percentage209;
+            $totalPercentage185 = array_sum($sumPercentage185); 
+            $totalPercentage186 = array_sum($sumPercentage186); 
+            $totalPercentage187 = array_sum($sumPercentage187); 
+            $totalPercentage188 = array_sum($sumPercentage188); 
+            $totalPercentage189 = array_sum($sumPercentage189); 
+            $totalPercentage190 = array_sum($sumPercentage190);
+            $totalPercentage191 = array_sum($sumPercentage191);
+            $totalPercentage192 = array_sum($sumPercentage192);
+            $totalPercentage193 = array_sum($sumPercentage193);
+            $totalPercentage194 = array_sum($sumPercentage194); 
+            $totalPercentage195 = array_sum($sumPercentage195); 
+            $totalPercentage196 = array_sum($sumPercentage196);
+            $totalPercentage197 = array_sum($sumPercentage197);
+            $totalPercentage198 = array_sum($sumPercentage198); 
+            $totalPercentage199 = array_sum($sumPercentage199);
+            $totalPercentage200 = array_sum($sumPercentage200); 
+            $totalPercentage201 = array_sum($sumPercentage201);
+            $totalPercentage202 = array_sum($sumPercentage202);
+            $totalPercentage203 = array_sum($sumPercentage203);
+            $totalPercentage204 = array_sum($sumPercentage204); 
+            $totalPercentage205 = array_sum($sumPercentage205);
+            $totalPercentage206 = array_sum($sumPercentage206);
+            $totalPercentage207 = array_sum($sumPercentage207);
+            $totalPercentage208 = array_sum($sumPercentage208); 
+            $totalPercentage209 = array_sum($sumPercentage209);
 
-            $totalPercentage =  $p185 + $p186 + $p187 + $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205 + $p206 + $p207 + $p208 + $p209;
+            $totalPercentage = $totalPercentage185 + $totalPercentage186 + $totalPercentage187 + $totalPercentage188 + $totalPercentage189 + $totalPercentage190 + $totalPercentage191 + $totalPercentage192 + $totalPercentage193 + $totalPercentage194 + $totalPercentage195 + $totalPercentage196 + $totalPercentage197 + $totalPercentage198 + $totalPercentage199 + $totalPercentage200 + $totalPercentage201 + $totalPercentage202 + $totalPercentage203 + $totalPercentage204 + $totalPercentage205 + $totalPercentage206 + $totalPercentage207 + $totalPercentage208 + $totalPercentage209;
+
+            // $p185 = $sum185 * $percentage185; $p186 = $sum186 * $percentage186; $p187 = $sum187 * $percentage187; $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
+            // $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
+            // $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205; $p206 = $sum206 * $percentage206; $p207 = $sum207 * $percentage207; $p208 = $sum208 * $percentage208; $p209 = $sum209 * $percentage209;
+
+            // $totalPercentage =  $p185 + $p186 + $p187 + $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205 + $p206 + $p207 + $p208 + $p209;
             
             $percentageAverage = $totalPercentage / $totalPound;
 
