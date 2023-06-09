@@ -26,7 +26,10 @@ return new class extends Migration
             $table->double('percentage_analysis')->default(0.00);
             $table->double('total_in_pound')->default(0.00);
             $table->double('total_in_kg')->default(0.00);
+            $table->string('berating_rate_list')->nullable();
+            $table->string('analysis_rate_list')->nullable();
             $table->double('price')->default(0.00);
+            $table->double('amount_paid')->default(0.00);
             $table->string('receipt_no')->nullable();
             $table->longText('receipt_image')->nullable();
             $table->date('date_of_purchase')->nullable();

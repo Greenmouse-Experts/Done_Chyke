@@ -72,6 +72,14 @@ class AssistantManagerController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -123,6 +131,7 @@ class AssistantManagerController extends Controller
                         'bag' => $request->bags,
                         'pound' => $bag_pounds,
                         'total_in_pound' => $total_in_pounds,
+                        'berating_rate_list' => $berate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -174,6 +183,7 @@ class AssistantManagerController extends Controller
                     'grade' => $request->grade,
                     'pound' => $request->pounds,
                     'total_in_pound' => $total_in_pounds,
+                    'berating_rate_list' => $berate,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
@@ -304,6 +314,14 @@ class AssistantManagerController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -345,7 +363,7 @@ class AssistantManagerController extends Controller
 
                 $dollarRate = $myDollarRate ?? 0;
                 $exchangeRate = $myExchangeRate ?? 0;
-                
+
                 if($dollarRate == 0 && $exchangeRate == 0)
                 {
                     return back()->with([
@@ -353,6 +371,13 @@ class AssistantManagerController extends Controller
                         'message' => 'Percentage Analysis entered not found in our database, try again.'
                     ]);
                 }
+
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
 
                 if($bag_kgs < rate)
                 {
@@ -380,7 +405,9 @@ class AssistantManagerController extends Controller
                         'bag' => $request->bags,
                         'kg' => $bag_kgs,
                         'total_in_kg' => $subPrice,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -436,6 +463,13 @@ class AssistantManagerController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 $per = $request->percentage / 100;
     
                 $rateCalculation = $dollarRate * $exchangeRate;
@@ -457,7 +491,9 @@ class AssistantManagerController extends Controller
                     'grade' => $request->grade,
                     'kg' => $request->kg,
                     'total_in_kg' => $request->kg,
+                    'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
+                    'analysis_rate_list' => $analysisRate,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
@@ -660,6 +696,14 @@ class AssistantManagerController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -710,6 +754,13 @@ class AssistantManagerController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 if($bag_pounds < columbite_rate)
                 {
                     $per = $request->percentage / 100;
@@ -736,7 +787,9 @@ class AssistantManagerController extends Controller
                         'bag' => $request->bags,
                         'pound' => $bag_pounds,
                         'total_in_pound' => $subPrice,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -791,6 +844,13 @@ class AssistantManagerController extends Controller
                         'message' => 'Percentage Analysis entered not found in our database, try again.'
                     ]);
                 }
+
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
     
                 $per = $request->percentage / 100;
     
@@ -813,7 +873,9 @@ class AssistantManagerController extends Controller
                     'grade' => $request->grade,
                     'pound' => $request->pounds,
                     'total_in_pound' => $request->pounds,
+                    'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
+                    'analysis_rate_list' => $analysisRate,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,

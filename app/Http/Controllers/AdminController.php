@@ -885,7 +885,7 @@ class AdminController extends Controller
         $this->validate($request, [
             'grade' => ['required', 'numeric', 'unique:berating_calculations'],
             'price' => ['required', 'numeric'],
-            'unit_price' => ['required', 'numeric'],
+            'unit_price' => ['required', 'numeric'], 
         ]);
         
        BeratingCalculation::create([
@@ -912,37 +912,29 @@ class AdminController extends Controller
         
         $beratingcalculation = BeratingCalculation::find($finder);
 
-        if($beratingcalculation->created_at < \Carbon\Carbon::now()->addDay())
+        if($beratingcalculation->grade == $request->grade)
         {
-            if($beratingcalculation->grade == $request->grade)
-            {
-                $beratingcalculation->update([
-                    'grade' => $request->grade,
-                    'price' => $request->price,
-                    'unit_price' => $request->unit_price
-                ]);
-        
-            } else {
-                $this->validate($request, [
-                    'grade' => ['required', 'numeric', 'unique:berating_calculations'],
-                ]);
+            $beratingcalculation->update([
+                'grade' => $request->grade,
+                'price' => $request->price,
+                'unit_price' => $request->unit_price
+            ]);
+    
+        } else {
+            $this->validate($request, [
+                'grade' => ['required', 'numeric', 'unique:berating_calculations'],
+            ]);
 
-                $beratingcalculation->update([
-                    'grade' => $request->grade,
-                    'price' => $request->price,
-                    'unit_price' => $request->unit_price
-                ]);
-            }
-
-            return back()->with([
-                'alertType' => 'success',
-                'message' => 'Updated successfully!'
+            $beratingcalculation->update([
+                'grade' => $request->grade,
+                'price' => $request->price,
+                'unit_price' => $request->unit_price
             ]);
         }
 
         return back()->with([
-            'type' => 'danger',
-            'message' => "Rate list exceeded 24hours upon creation, can't be editted."
+            'alertType' => 'success',
+            'message' => 'Updated successfully!'
         ]);
     }
 
@@ -982,7 +974,28 @@ class AdminController extends Controller
     {
         $finder = Crypt::decrypt($id);
 
-        BeratingCalculation::find($finder)->delete();
+        $rate = BeratingCalculation::find($finder);
+
+        $payment_analysis_tin = PaymentReceiptTin::where('grade', $rate->id)->get();
+        $payment_analysis_columbite = PaymentReceiptColumbite::where('grade', $rate->id)->get();
+
+        if($payment_analysis_tin->count() > 0)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => "Sorry, rate can't be deleted, it has been used on a payment receipt."
+            ]);
+        }
+
+        if($payment_analysis_columbite->count() > 0)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => "Sorry, rate can't be deleted, it has been used on a payment receipt."
+            ]);
+        }
+
+        $rate->delete();
 
         return back()->with([
             'alertType' => 'success',
@@ -1034,40 +1047,33 @@ class AdminController extends Controller
 
         $analysiscalculation = AnalysisCalculation::find($finder);
         
-        if($analysiscalculation->created_at < \Carbon\Carbon::now()->addDay())
+
+        if($analysiscalculation->grade == $request->grade)
         {
-            if($analysiscalculation->grade == $request->grade)
-            {
-                $analysiscalculation->update([
-                    'percentage_min' => $request->percentage_min,
-                    'percentage_max' => $request->percentage_max,
-                    'dollar_rate' => $request->dollar,
-                    'exchange_rate' => $request->exchange
-                ]);
+            $analysiscalculation->update([
+                'percentage_min' => $request->percentage_min,
+                'percentage_max' => $request->percentage_max,
+                'dollar_rate' => $request->dollar,
+                'exchange_rate' => $request->exchange
+            ]);
 
-            } else {
-                $this->validate($request, [
-                    'percentage_min' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
-                    'percentage_max' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
-                ]);
+        } else {
+            $this->validate($request, [
+                'percentage_min' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+                'percentage_max' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+            ]);
 
-                $analysiscalculation->update([
-                    'percentage_min' => $request->percentage_min,
-                    'percentage_max' => $request->percentage_max,
-                    'dollar_rate' => $request->dollar,
-                    'exchange_rate' => $request->exchange
-                ]);
-            }
-
-            return back()->with([
-                'alertType' => 'success',
-                'message' => 'Updated successfully!'
+            $analysiscalculation->update([
+                'percentage_min' => $request->percentage_min,
+                'percentage_max' => $request->percentage_max,
+                'dollar_rate' => $request->dollar,
+                'exchange_rate' => $request->exchange
             ]);
         }
-        
+
         return back()->with([
-            'type' => 'danger',
-            'message' => "Rate list exceeded 24hours upon creation, can't be editted."
+            'alertType' => 'success',
+            'message' => 'Updated successfully!'
         ]);
     }
 
@@ -1163,6 +1169,14 @@ class AdminController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -1224,6 +1238,7 @@ class AdminController extends Controller
                         'bag' => $request->bags,
                         'pound' => $bag_pounds,
                         'total_in_pound' => $total_in_pounds,
+                        'berating_rate_list' => $berate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -1282,6 +1297,7 @@ class AdminController extends Controller
                     'grade' => $request->grade,
                     'pound' => $request->pounds,
                     'total_in_pound' => $total_in_pounds,
+                    'berating_rate_list' => $berate,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
@@ -1417,6 +1433,14 @@ class AdminController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -1477,6 +1501,13 @@ class AdminController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 if($bag_kgs < rate)
                 {
                     $per = $request->percentage / 100;
@@ -1503,7 +1534,9 @@ class AdminController extends Controller
                         'bag' => $request->bags,
                         'kg' => $bag_kgs,
                         'total_in_kg' => $subPrice,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -1566,6 +1599,13 @@ class AdminController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 $per = $request->percentage / 100;
     
                 $rateCalculation = $dollarRate * $exchangeRate;
@@ -1587,7 +1627,9 @@ class AdminController extends Controller
                     'grade' => $request->grade,
                     'kg' => $request->kg,
                     'total_in_kg' => $request->kg,
+                    'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
+                    'analysis_rate_list' => $analysisRate,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
@@ -1790,6 +1832,14 @@ class AdminController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -1849,6 +1899,7 @@ class AdminController extends Controller
                             'bag' => $request->bags,
                             'pound' => $bag_pounds,
                             'total_in_pound' => $total_in_pounds,
+                            'berating_rate_list' => $berate,
                             'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                             'date_of_purchase' => $request->date_of_purchase,
                             'receipt_no' => $request->receipt_no,
@@ -1863,6 +1914,7 @@ class AdminController extends Controller
                             'bag' => $request->bags,
                             'pound' => $bag_pounds,
                             'total_in_pound' => $total_in_pounds,
+                            'berating_rate_list' => $berate,
                             'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                             'date_of_purchase' => $request->date_of_purchase,
                             'receipt_no' => $request->receipt_no,
@@ -1931,6 +1983,7 @@ class AdminController extends Controller
                         'bag' => 0,
                         'pound' => $request->pounds,
                         'total_in_pound' => $total_in_pounds,
+                        'berating_rate_list' => $berate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -1946,6 +1999,7 @@ class AdminController extends Controller
                         'bag' => 0,
                         'pound' => $request->pounds,
                         'total_in_pound' => $total_in_pounds,
+                        'berating_rate_list' => $berate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no
@@ -2084,6 +2138,14 @@ class AdminController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -2134,6 +2196,13 @@ class AdminController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 if($bag_kgs < rate)
                 {
                     $per = $request->percentage / 100;
@@ -2168,7 +2237,9 @@ class AdminController extends Controller
                             'bag' => $request->bags,
                             'kg' => $bag_kgs,
                             'total_in_kg' => $subPrice,
+                            'berating_rate_list' => $berate,
                             'percentage_analysis' => $request->percentage,
+                            'analysis_rate_list' => $analysisRate,
                             'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                             'date_of_purchase' => $request->date_of_purchase,
                             'receipt_no' => $request->receipt_no,
@@ -2184,7 +2255,9 @@ class AdminController extends Controller
                             'bag' => $request->bags,
                             'kg' => $bag_kgs,
                             'total_in_kg' => $subPrice,
+                            'berating_rate_list' => $berate,
                             'percentage_analysis' => $request->percentage,
+                            'analysis_rate_list' => $analysisRate,
                             'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                             'date_of_purchase' => $request->date_of_purchase,
                             'receipt_no' => $request->receipt_no,
@@ -2249,6 +2322,13 @@ class AdminController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 $per = $request->percentage / 100;
     
                 $rateCalculation = $dollarRate * $exchangeRate;
@@ -2279,7 +2359,9 @@ class AdminController extends Controller
                         'bag' => 0,
                         'kg' => $request->kg,
                         'total_in_kg' => $request->kg,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -2294,7 +2376,9 @@ class AdminController extends Controller
                         'bag' => 0,
                         'kg' => $request->kg,
                         'total_in_kg' => $request->kg,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -2519,6 +2603,14 @@ class AdminController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -2579,6 +2671,13 @@ class AdminController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 if($bag_pounds < columbite_rate)
                 {
                     $per = $request->percentage / 100;
@@ -2605,7 +2704,9 @@ class AdminController extends Controller
                         'bag' => $request->bags,
                         'pound' => $bag_pounds,
                         'total_in_pound' => $subPrice,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -2668,6 +2769,13 @@ class AdminController extends Controller
                     ]);
                 }
     
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 $per = $request->percentage / 100;
     
                 $rateCalculation = $dollarRate * $exchangeRate;
@@ -2689,7 +2797,9 @@ class AdminController extends Controller
                     'grade' => $request->grade,
                     'pound' => $request->pounds,
                     'total_in_pound' => $request->pounds,
+                    'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
+                    'analysis_rate_list' => $analysisRate,
                     'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
@@ -2893,6 +3003,14 @@ class AdminController extends Controller
                 ]); 
             }
 
+            $response = [
+                'grade' => $berating->grade,
+                'price' => $berating->price,
+                'unit_price' => $berating->unit_price
+            ];
+
+            $berate = json_encode($response);
+
             $manager = User::find($request->manager);
 
             if(!$manager)
@@ -2943,6 +3061,13 @@ class AdminController extends Controller
                     ]);
                 }
 
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
+
                 if($bag_pounds < columbite_rate)
                 {
                     $per = $request->percentage / 100;
@@ -2977,7 +3102,9 @@ class AdminController extends Controller
                             'bag' => $request->bags,
                             'pound' => $bag_pounds,
                             'total_in_pound' => $subPrice,
+                            'berating_rate_list' => $berate,
                             'percentage_analysis' => $request->percentage,
+                            'analysis_rate_list' => $analysisRate,
                             'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                             'date_of_purchase' => $request->date_of_purchase,
                             'receipt_no' => $request->receipt_no,
@@ -2992,7 +3119,9 @@ class AdminController extends Controller
                             'bag' => $request->bags,
                             'pound' => $bag_pounds,
                             'total_in_pound' => $subPrice,
+                            'berating_rate_list' => $berate,
                             'percentage_analysis' => $request->percentage,
+                            'analysis_rate_list' => $analysisRate,
                             'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                             'date_of_purchase' => $request->date_of_purchase,
                             'receipt_no' => $request->receipt_no,
@@ -3055,6 +3184,13 @@ class AdminController extends Controller
                         'message' => 'Percentage Analysis entered not found in our database, try again.'
                     ]);
                 }
+
+                $res = [
+                    'dollar_rate' => $dollarRate,
+                    'exchange_rate' => $exchangeRate,
+                ];
+    
+                $analysisRate = json_encode($res);
     
                 $per = $request->percentage / 100;
     
@@ -3086,7 +3222,9 @@ class AdminController extends Controller
                         'bag' => 0,
                         'pound' => $request->pounds,
                         'total_in_pound' => $request->pounds,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
@@ -3101,7 +3239,9 @@ class AdminController extends Controller
                         'bag' => 0,
                         'pound' => $request->pounds,
                         'total_in_pound' => $request->pounds,
+                        'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
+                        'analysis_rate_list' => $analysisRate,
                         'price' => $this->replaceCharsInNumber($totalPrice, '0'),
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no

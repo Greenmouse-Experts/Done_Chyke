@@ -48,6 +48,7 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
+                                                <th>Berating Rate List</th>
                                                 <th>Bags</th>
                                                 <th>Pounds</th>
                                                 <th>Total Quantity In Pound</th>
@@ -67,6 +68,11 @@
                                                 <td>@if($receipt->type == 'kg')TIN (KG) @else TIN (POUND) @endif</td>
                                                 <td>{{App\Models\User::find($receipt->staff)->name}}</td>
                                                 <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
+                                                <td>
+                                                    @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
+                                                        <p>{{ $key }} - {{ $value }}</p>
+                                                    @endforeach
+                                                </td>
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->pound}}</td>
                                                 <td>{{$receipt->total_in_pound}}lbs</td>
@@ -114,9 +120,11 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
+                                                <th>Berating Rate List</th>
                                                 <th>Bags</th>
                                                 <th>Kg</th>
                                                 <th>Percentage (%)</th>
+                                                <th>% Analysis Rate List</th>
                                                 <th>Total Quantity In Kg</th>
                                                 <th>Receipt Image</th>
                                                 <th>Total Amount Payable</th>
@@ -134,9 +142,19 @@
                                                 <td>@if($receipt->type == 'kg')TIN (KG) @else TIN (POUND) @endif</td>
                                                 <td>{{App\Models\User::find($receipt->staff)->name}}</td>
                                                 <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
+                                                <td>
+                                                    @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
+                                                        <p>{{ $key }} - {{ $value }}</p>
+                                                    @endforeach
+                                                </td>
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->kg}}</td>
                                                 <td>{{$receipt->percentage_analysis}}</td>
+                                                <td>
+                                                    @foreach(json_decode($receipt->analysis_rate_list, true) as $key => $value)
+                                                        <p>{{ $key }} - {{ $value }}</p>
+                                                    @endforeach
+                                                </td>
                                                 <td>{{$receipt->total_in_kg}}kg</td>
                                                 <td>
                                                     <span data-toggle="modal" data-target="#preview-{{$receipt->id}}">
