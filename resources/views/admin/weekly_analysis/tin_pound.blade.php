@@ -25,20 +25,25 @@
                             <form action="{{ route('admin.weekly.analysis.tin.pound')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
-                                <input type="date" name="start_date" class="form-control" required>
+                                <input type="date" name="start_date" class="form-control">
                                 </label>&nbsp;&nbsp;
                                 <label class="mr-2"><strong>End Date :</strong>
-                                <input type="date" name="end_date" class="form-control" required>
+                                <input type="date" name="end_date" class="form-control">
                                 </label>
+                                <label> 
+                                    <select class="form-control" name="manager">
+                                        <option value="">-- Select Manager --</option>
+                                        @if(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get()->count() > 0)
+                                        @foreach(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get() as $manager)
+                                        <option value="{{$manager->id}}">{{$manager->name}}</option>
+                                        @endforeach
+                                        @else
+                                        <option value="">No Manager Added</option>
+                                        @endif
+                                    </select>
+                                </label>
+                                
                                 <button type="submit" class="btn btn-primary">Filter</button>
-                            </form>
-                        </div>
-                        <div style="justify-content: flex-end;">
-                            <form action="{{ route('admin.weekly.analysis.tin.pound')}}" method="POST" data-toggle="validator">
-                                @csrf
-                                <select class="form-control">
-                                    <option>-- Select Manager --</option>
-                                </select>
                             </form>
                         </div>
                     </div>

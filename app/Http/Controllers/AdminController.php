@@ -3515,11 +3515,17 @@ class AdminController extends Controller
     // Weekly Analysis Tin (Pounds)
     public function weekly_analysis_tin_pound(Request $request)
     {
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $tinPayment = PaymentReceiptTin::latest()->where('type', 'pound')->get();
-        } else {
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
+        {
             $tinPayment = PaymentReceiptTin::latest()->where('type', 'pound')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+        } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
+        {
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'pound')->where('staff', $request->manager)->get();
+        } else {
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'pound')->where('staff', $request->manager)->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
         }
 
         if($tinPayment->isEmpty())
@@ -3549,16 +3555,26 @@ class AdminController extends Controller
         }
 
         // Calculation Starts
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
                                 ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
-        } else {
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
+        {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
                                 ->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
                                 ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+        } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
+        {
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
+                                ->where('payment_receipt_tins.staff', $request->manager)
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+        } else {
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
+                                ->where('payment_receipt_tins.staff', $request->manager)->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         }
-        
+
         if($result->isEmpty())
         {
             $totalBags = [
@@ -3704,11 +3720,17 @@ class AdminController extends Controller
 
     public function weekly_analysis_tin_kg(Request $request)
     {
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $tinPayment = PaymentReceiptTin::latest()->where('type', 'kg')->get();
-        } else {
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
+        {
             $tinPayment = PaymentReceiptTin::latest()->where('type', 'kg')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+        } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
+        {
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'kg')->where('staff', $request->manager)->get();
+        } else {
+            $tinPayment = PaymentReceiptTin::latest()->where('type', 'kg')->where('staff', $request->manager)->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
         }
 
         if($tinPayment->isEmpty())
@@ -3738,13 +3760,23 @@ class AdminController extends Controller
         }
 
         // Calculation Starts
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
                                 ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
-        } else {
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
+        {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
                                 ->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+        } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
+        { 
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
+                                ->where('payment_receipt_tins.staff', $request->manager)
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+        } else {
+            $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
+                                ->where('payment_receipt_tins.staff', $request->manager)->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
                                 ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         }
         
@@ -4111,14 +4143,20 @@ class AdminController extends Controller
 
     public function weekly_analysis_columbite_pound(Request $request)
     {
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
-            $tinPayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->get();
-        } else {
-            $tinPayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+            $columbitePayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->get();
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
+        {
+            $columbitePayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+        } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
+        { 
+            $columbitePayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->where('staff', $request->manager)->get();
+        }else {
+            $columbitePayment = PaymentReceiptColumbite::latest()->where('type', 'pound')->where('staff', $request->manager)->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
         }
 
-        if($tinPayment->isEmpty())
+        if($columbitePayment->isEmpty())
         {
             $analysis = [];
 
@@ -4126,7 +4164,7 @@ class AdminController extends Controller
             
             $beratingCalculation = BeratingCalculation::latest()->get();
 
-            foreach($tinPayment as $tinpound)
+            foreach($columbitePayment as $tinpound)
             {
                 $beratingpayment = BeratingCalculation::find($tinpound->grade);
 
@@ -4145,13 +4183,23 @@ class AdminController extends Controller
         }
 
         // Calculation Starts
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
-        } else {
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
+        {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+        } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
+        { 
+            $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
+                                ->where('payment_receipt_columbites.staff', $request->manager)
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+        }else {
+            $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
+                                ->where('payment_receipt_columbites.staff', $request->manager)->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
                                 ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         }
         
