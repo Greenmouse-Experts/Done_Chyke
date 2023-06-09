@@ -260,7 +260,7 @@
                                             <span class="progress-right">
                                                 <span class="progress-bar"></span>
                                             </span>
-                                            <div class="progress-value text-primary">100%</div>
+                                            <div class="progress-value text-primary">{{$monthly_expenses_count}}%</div>
                                         </div>
                                         <div class="progress-value ml-3">
                                             <h5>₦{{number_format($monthly_expenses, 2)}}</h5>

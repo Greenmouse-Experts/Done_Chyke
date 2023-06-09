@@ -26,14 +26,18 @@
                             <form action="{{ route('admin.weekly.analysis.columbite.pound')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
-                                <input type="date" name="start_date" class="form-control">
+                                <input type="date" name="start_date" class="form-control" value="{{$start_date}}">
                                 </label>&nbsp;&nbsp;
                                 <label class="mr-2"><strong>End Date :</strong>
-                                <input type="date" name="end_date" class="form-control">
+                                <input type="date" name="end_date" class="form-control" value="{{$end_date}}">
                                 </label>
                                 <label>
                                     <select class="form-control" name="manager">
+                                        @if($manager == null)
                                         <option value="">-- Select Manager --</option>
+                                        @else
+                                        <option value="{{$manager}}">{{App\Models\User::find($manager)->name}}</option>
+                                        @endif
                                         @if(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get()->count() > 0)
                                         @foreach(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get() as $manager)
                                         <option value="{{$manager->id}}">{{$manager->name}}</option>
@@ -140,7 +144,7 @@
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.6') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>

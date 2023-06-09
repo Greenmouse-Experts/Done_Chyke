@@ -49,13 +49,15 @@ class DashboardController extends Controller
         $month = date('m');
 
         $monthly_expenses = Expenses::whereMonth('date', $month)->sum('amount');
+        $monthly_expenses_count = Expenses::whereMonth('date', $month)->get()->count();
 
         $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
             'notifications' => $notifications,
-            'monthly_expenses' => $monthly_expenses
+            'monthly_expenses' => $monthly_expenses,
+            'monthly_expenses_count' => $monthly_expenses_count
         ]);
     }
 

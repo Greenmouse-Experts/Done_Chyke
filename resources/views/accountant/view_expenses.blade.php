@@ -25,10 +25,10 @@
                             <form action="{{ route('expenses.view')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
-                                <input type="date" name="start_date" class="form-control" required>
+                                <input type="date" name="start_date" class="form-control" value="{{$start_date}}" required>
                                 </label>&nbsp;&nbsp;
                                 <label class="mr-2"><strong>End Date :</strong>
-                                <input type="date" name="end_date" class="form-control" required>
+                                <input type="date" name="end_date" class="form-control" value="{{$end_date}}" required>
                                 </label>
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </form>

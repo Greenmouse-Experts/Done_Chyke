@@ -30,7 +30,9 @@ class AccountantController extends Controller
         }
 
         return view('accountant.view_expenses', [
-            'expenses' => $expenses
+            'expenses' => $expenses,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
         ]);
     }
 

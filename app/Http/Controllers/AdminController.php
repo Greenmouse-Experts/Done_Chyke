@@ -3304,7 +3304,9 @@ class AdminController extends Controller
         }
 
         return view('admin.expenses', [
-            'expenses' => $expenses
+            'expenses' => $expenses,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
         ]);
     }
 
@@ -3714,7 +3716,10 @@ class AdminController extends Controller
 
         return view('admin.weekly_analysis.tin_pound', [
             'analysis' => $analysis,
-            'data' => $data
+            'data' => $data,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'manager' => $request->manager
         ]);
     }
 
@@ -4137,7 +4142,10 @@ class AdminController extends Controller
 
         return view('admin.weekly_analysis.tin_kg', [
             'analysis' => $analysis,
-            'data' => $data
+            'data' => $data,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'manager' => $request->manager
         ]);
     }
 
@@ -4197,7 +4205,7 @@ class AdminController extends Controller
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->where('payment_receipt_columbites.staff', $request->manager)
                                 ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
-        }else {
+        } else {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->where('payment_receipt_columbites.staff', $request->manager)->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
                                 ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
@@ -4643,7 +4651,10 @@ class AdminController extends Controller
 
         return view('admin.weekly_analysis.columbite_pound', [
             'analysis' => $analysis,
-            'data' => $data
+            'data' => $data,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'manager' => $request->manager
         ]);
     }
 }

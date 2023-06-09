@@ -25,14 +25,18 @@
                             <form action="{{ route('admin.weekly.analysis.tin.pound')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
-                                <input type="date" name="start_date" class="form-control">
+                                <input type="date" name="start_date" class="form-control" value="{{$start_date}}">
                                 </label>&nbsp;&nbsp;
                                 <label class="mr-2"><strong>End Date :</strong>
-                                <input type="date" name="end_date" class="form-control">
+                                <input type="date" name="end_date" class="form-control" value="{{$end_date}}">
                                 </label>
-                                <label> 
+                                <label>
                                     <select class="form-control" name="manager">
+                                        @if($manager == null)
                                         <option value="">-- Select Manager --</option>
+                                        @else
+                                        <option value="{{$manager}}">{{App\Models\User::find($manager)->name}}</option>
+                                        @endif
                                         @if(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get()->count() > 0)
                                         @foreach(App\Models\User::latest()->where('account_type', 'Manager')->where('status', '1')->get() as $manager)
                                         <option value="{{$manager->id}}">{{$manager->name}}</option>
@@ -42,7 +46,6 @@
                                         @endif
                                     </select>
                                 </label>
-                                
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </form>
                         </div>
@@ -78,92 +81,92 @@
                                 <td>{{$anana['date']}}</td>
                                 <td>
                                     @if ($anana['berating'] == '18.8') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
-                                @if ($anana['berating'] == '18.9') 
-                                    {{$anana['total']}}
+                                    @if ($anana['berating'] == '18.9') 
+                                        {{$anana['total']}}
                                      @endif
                                 </td>
                                 <td> 
                                     @if ($anana['berating'] == '19.0') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td> 
                                     @if ($anana['berating'] == '19.1') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.2') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.3') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.4') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.5') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.6') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.7') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.8') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '19.9') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '20.0') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '20.1') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '20.2') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '20.3') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '20.4') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                                 <td>
                                     @if ($anana['berating'] == '20.5') 
-                                    {{$anana['total']}}
+                                        {{$anana['total']}}
                                     @endif
                                 </td>
                             </tr>
