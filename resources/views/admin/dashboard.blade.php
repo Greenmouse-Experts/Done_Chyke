@@ -47,28 +47,64 @@
                         </div>
                     </div>
                     <div class="col-lg-8">
-                        <div class="card card-block card-stretch card-height-helf">
+                        <div class="card card-block card-stretch card-height">
                             <div class="card-body">
-                                <div class="d-flex align-items-top justify-content-between">
-                                    <div class="">
-                                        <p class="mb-0">Expenses Summary</p>
-                                        <h5>₦<span id="showExpenses">{{number_format($expenses, 2)}}</span></h5>
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-success-light">
+                                        <i class="ri-user-fill mr-0"></i>
                                     </div>
-                                    <div class="card-header-toolbar d-flex align-items-center">
-                                        <div class="dropdown">
-                                            <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton004" data-toggle="dropdown">
-                                                This Month<i class="ri-arrow-down-s-line ml-1"></i>
-                                            </span>
-                                            <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton004">
-                                                <a class="dropdown-item" onclick="showYear()" href="#">Year</a>
-                                                <a class="dropdown-item" onclick="showMonth()" href="#">Month</a>
-                                                <a class="dropdown-item" onclick="showWeek()" href="#">Week</a>
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <p class="mb-2">Total Payment Receipts</p>
+                                        <h4>{{$totalReceipt}}</h4>
                                     </div>
+                                </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-success iq-progress progress-1" data-percent="{{$totalReceipt}}">
+                                    </span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Today Starting Balance</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div class="dropdown">
+                                <div><a href="{{route('admin.daily.balance')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4>₦<span id="">{{number_format($totalStartingBalance, 2)}}</span></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Expenses Summary</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div class="dropdown">
+                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton004" data-toggle="dropdown">
+                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
+                                </span>
+                                <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton004">
+                                    <a class="dropdown-item" onclick="showYear()" href="#">Year</a>
+                                    <a class="dropdown-item" onclick="showMonth()" href="#">Month</a>
+                                    <a class="dropdown-item" onclick="showWeek()" href="#">Week</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4>₦<span id="showExpenses">{{number_format($expenses, 2)}}</span></h4>
                     </div>
                 </div>
             </div>
@@ -142,55 +178,83 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-12">
                 <div class="card card-block card-stretch card-height">
-                    <div class="card-header d-flex justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Overview</h4>
-                        </div>
-                        <div class="card-header-toolbar d-flex align-items-center">
-                            <div class="dropdown">
-                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton001" data-toggle="dropdown">
-                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
-                                </span>
-                                <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton001">
-                                    <a class="dropdown-item" href="#">Year</a>
-                                    <a class="dropdown-item" href="#">Month</a>
-                                    <a class="dropdown-item" href="#">Week</a>
+                    <div class="card-body">
+                        <div class="card-transparent card-block card-stretch mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between p-0">
+                                <div class="header-title">
+                                    <h4 class="card-title mb-0">Today's Expenses</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div><a href="{{route('admin.expenses')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="layout1-chart1"></div>
+                        <div class="table-responsive rounded mb-3">
+                            <table class="table mb-0 tbl-server-info">
+                                <thead class="bg-white text-uppercase">
+                                    <tr class="ligth ligth-data">
+                                        <th>S/N</th>
+                                        <th>Supplier</th>
+                                        <th>Payment Source</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="ligth-body">
+                                    @if(App\Models\Expenses::latest()->where('date', \Carbon\Carbon::now()->format('Y-m-d'))->get()->count() > 0)
+                                        @foreach(App\Models\Expenses::latest()->where('date', \Carbon\Carbon::now()->format('Y-m-d'))->get() as $expense)
+                                        <tr>
+                                            <td>{{$loop->iteration}}</td>
+                                            <td>{{App\Models\User::find($expense->supplier)->name}}</td>
+                                            <td>{{$expense->payment_source}}</td>
+                                            <td>{{$expense->category}}</td>
+                                            <td>₦{{number_format($expense->amount, 2)}}</td>
+                                            <td>{{$expense->date}}</td>
+                                            <td>
+                                                @if($expense->receipt == null)
+                                                <p>None</p>
+                                                @else
+                                                <span data-toggle="modal" data-target="#preview-{{$expense->id}}">
+                                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Preview Receipt Attachment" data-original-title="Preview Receipt Attachment"><img id="file-ip-1-preview" class="rm-profile-pic rounded avatar-100" src="{{$expense->receipt}}" alt="{{$expense->receipt}}"></a>
+                                                </span>
+                                                @endif
+                                            </td>
+                                            <div class="modal fade" id="preview-{{$expense->id}}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Prview Receipt Attachment</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <img src="{{$expense->receipt}}" alt="{{$expense->receipt}}" class="img-fluid rounded">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="7" class="text-center">No Expenses added today</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="card card-block card-stretch card-height">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <div class="header-title">
-                            <h4 class="card-title">Revenue Vs Cost</h4>
-                        </div>
-                        <div class="card-header-toolbar d-flex align-items-center">
-                            <div class="dropdown">
-                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton002" data-toggle="dropdown">
-                                    This Month<i class="ri-arrow-down-s-line ml-1"></i>
-                                </span>
-                                <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton002">
-                                    <a class="dropdown-item" href="#">Yearly</a>
-                                    <a class="dropdown-item" href="#">Monthly</a>
-                                    <a class="dropdown-item" href="#">Weekly</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="layout1-chart-2" style="min-height: 360px;"></div>
-                    </div>
-                </div>
-            </div>
-            
         </div>
         <!-- Page end  -->
     </div>

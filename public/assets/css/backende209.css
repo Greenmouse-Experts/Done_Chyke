@@ -22340,6 +22340,7 @@ fieldset[disabled] .btn {
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
     border-radius: 10px;
+    padding-top: 6.5rem;
 }
 .type {
     position: absolute;

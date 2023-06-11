@@ -46,6 +46,12 @@
                 </li>
                 @endif
                 @if(Auth::user()->account_type == 'Accountant')
+                <li class="{{ (request()->is('daily/balance')) ? 'active' : '' }}">
+                    <a href="{{route('daily.balance')}}" class="svg-icon">
+                        <i class="ri-wallet-line mr-0"></i>
+                        <span class="ml-4">Starting Balance</span>
+                    </a>
+                </li>
                 <li class="{{ (request()->is('accountant/expenses/*')) ? 'active' : '' }}">
                     <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-wallet-2-line mr-0"></i>

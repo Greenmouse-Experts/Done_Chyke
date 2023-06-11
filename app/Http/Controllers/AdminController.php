@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnalysisCalculation;
+use App\Models\Balance;
 use App\Models\BeratingCalculation;
 use App\Models\PaymentReceiptColumbite;
 use App\Models\Expenses;
@@ -116,6 +117,14 @@ class AdminController extends Controller
             $receiptColumbitePoundCount = PaymentReceiptColumbite::where('type','pound')->whereDate('date_of_purchase', $today)->get()->count();
         }
 
+        $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
+        $totalAdditionalIncome = Balance::whereDate('date', $today)->first()->additional_income ?? 0;
+        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('remaining_balance') ?? 0;
+
+        $totalStartingBalance = $totalBalance + $totalAdditionalIncome + $totalRemainingBalance;
+
+        $totalReceipt = PaymentReceiptTin::get()->count() + PaymentReceiptColumbite::get()->count();
+
         $response = [
             'expenses' => number_format($expenses, 2),
             'receiptTinPound' => number_format($receiptTinPound, 2),
@@ -139,7 +148,9 @@ class AdminController extends Controller
             'receiptTinPound' => $receiptTinPound,
             'receiptTinPoundCount' => $receiptTinPoundCount,
             'receiptColumbitePound' => $receiptColumbitePound,
-            'receiptColumbitePoundCount' => $receiptColumbitePoundCount
+            'receiptColumbitePoundCount' => $receiptColumbitePoundCount,
+            'totalStartingBalance' => $totalStartingBalance,
+            'totalReceipt' => $totalReceipt
         ]);
     }
 
@@ -882,13 +893,17 @@ class AdminController extends Controller
 
     public function post_rate_berating(Request $request)
     {
+        $response = [
+            'grade.regex' => 'Grade field requires decimal point.'
+        ];
+
         $this->validate($request, [
-            'grade' => ['required', 'numeric', 'unique:berating_calculations'],
+            'grade' => ['required', 'numeric', 'unique:berating_calculations', 'regex:/^[-+]?[0-9]+\.[0-9]+$/'],
             'price' => ['required', 'numeric'],
             'unit_price' => ['required', 'numeric'], 
-        ]);
-        
-       BeratingCalculation::create([
+        ], $response);
+
+        BeratingCalculation::create([
             'grade' => $request->grade,
             'price' => $request->price,
             'unit_price' => $request->unit_price
@@ -4795,6 +4810,132 @@ class AdminController extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'manager' => $request->manager
+        ]);
+    }
+
+    public function daily_balance(Request $request)
+    {
+        if($request->start_date == null && $request->end_date == null)
+        {
+            $balances = Balance::latest()->get();
+        } else {
+            $balances = Balance::latest()->whereBetween('date', [$request->start_date, $request->end_date])->get();
+        }
+
+        $today = Carbon::now()->format('Y-m-d');
+
+        $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
+        $totalAdditionalIncome = Balance::whereDate('date', $today)->first()->additional_income ?? 0;
+        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('remaining_balance') ?? 0;
+
+        $totalStartingBalance = $totalBalance + $totalAdditionalIncome + $totalRemainingBalance;
+
+        return view('admin.balance')->with([
+            'balances' => $balances,
+            'totalStartingBalance' => $totalStartingBalance,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
+        ]);
+    }
+
+    public function update_daily_balance($id, Request $request)
+    {
+        $this->validate($request, [
+            'starting_balance' => ['required', 'numeric']
+        ]);
+
+        if ($request->additional_income !== null) {
+            $this->validate($request, [
+                'additional_income' => ['numeric']
+            ]); 
+        }   
+
+        if ($request->amount_used !== null) {
+            $this->validate($request, [
+                'amount_used' => ['numeric'],
+            ]); 
+        }
+
+        $response = $request->starting_balance + $request->additional_income;
+
+        if($request->amount_used > $response) 
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => "Amount used can't be greater than the total of starting balance and additional income."
+            ]);
+        }
+        
+        $finder = Crypt::decrypt($id);
+
+        $startBalance = Balance::find($finder);
+
+        if($request->starting_balance == $startBalance->starting_balance)
+        {
+            if($request->additional_income == null && $request->amount_used !== null)
+            {
+                $startBalance->update([
+                    'amount_used' => $request->amount_used,
+                    'remaining_balance' => $startBalance->starting_balance + $startBalance->additional_income - $request->amount_used
+                ]);
+            } elseif($request->additional_income == !null && $request->amount_used == null)
+            {
+                $startBalance->update([
+                    'additional_income' => $request->additional_income,
+                    'remaining_balance' => $startBalance->starting_balance + $request->additional_income - $startBalance->amount_used
+                ]);
+            } else {
+                $startBalance->update([
+                    'additional_income' => $request->additional_income,
+                    'amount_used' => $request->amount_used,
+                    'remaining_balance' => $startBalance->starting_balance + $request->additional_income - $request->amount_used
+                ]);
+            }
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => 'Daily starting balance updated successfully.'
+            ]);
+        } else {
+            if($request->additional_income == null && $request->amount_used !== null)
+            {
+                $startBalance->update([
+                    'starting_balance' => $request->starting_balance,
+                    'amount_used' => $request->amount_used,
+                    'remaining_balance' => $request->starting_balance + $startBalance->additional_income - $request->amount_used
+                ]);
+            } elseif($request->additional_income == !null && $request->amount_used == null)
+            {
+                $startBalance->update([
+                    'starting_balance' => $request->starting_balance,
+                    'additional_income' => $request->additional_income,
+                    'remaining_balance' => $request->starting_balance + $request->additional_income - $startBalance->amount_used
+                ]);
+            } else {
+                $startBalance->update([
+                    'starting_balance' => $request->starting_balance,
+                    'additional_income' => $request->additional_income,
+                    'amount_used' => $request->amount_used,
+                    'remaining_balance' => $request->starting_balance + $request->additional_income - $request->amount_used
+                ]);
+            }
+
+            return back()->with([
+                'alertType' => 'success',
+                'message' => 'Daily starting balance updated successfully.'
+            ]);
+        }
+    }
+
+    public function delete_daily_balance($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        Balance::find($finder)->delete();
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Balance deleted successfully!'
         ]);
     }
 }

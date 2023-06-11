@@ -53,6 +53,9 @@ Route::middleware(['auth', 'isAccountant'])->group(function () {
             Route::any('/expenses/view', [AccountantController::class, 'expenses_view'])->name('expenses.view');
             Route::get('/expenses/add', [AccountantController::class, 'expenses_add'])->name('expenses.add');
             Route::post('/expenses/post', [AccountantController::class, 'expenses_post'])->name('expenses.post');
+            // Balance
+            Route::any('/daily/balance', [AccountantController::class, 'daily_balance'])->name('daily.balance');
+            Route::post('/daily/balance/add', [AccountantController::class, 'daily_balance_add'])->name('daily.balance.add');
         }
     );
 });
@@ -157,4 +160,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
     Route::any('/admin/weekly/analysis/tin/kg', [AdminController::class, 'weekly_analysis_tin_kg'])->name('admin.weekly.analysis.tin.kg');
     Route::any('/admin/weekly/analysis/columbite/pound', [AdminController::class, 'weekly_analysis_columbite_pound'])->name('admin.weekly.analysis.columbite.pound');
+
+    Route::any('/admin/daily/balance', [AdminController::class, 'daily_balance'])->name('admin.daily.balance');
+    Route::post('/admin/daily/balance/update/{id}', [AdminController::class, 'update_daily_balance'])->name('admin.daily.balance.update');
+    Route::post('/admin/daily/balance/delete/{id}', [AdminController::class, 'delete_daily_balance'])->name('admin.daily.balance.delete');
 });

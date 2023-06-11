@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Balance;
 use App\Models\Expenses;
 use App\Models\Notification;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -46,18 +48,25 @@ class DashboardController extends Controller
             $moment = "Good night";
         }
 
-        $month = date('m');
+        $today = Carbon::now()->format('Y-m-d');
 
-        $monthly_expenses = Expenses::whereMonth('date', $month)->sum('amount');
-        $monthly_expenses_count = Expenses::whereMonth('date', $month)->get()->count();
+        $monthly_expenses = Expenses::whereDate('date', $today)->sum('amount');
+        $monthly_expenses_count = Expenses::whereDate('date', $today)->get()->count();
 
         $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
+
+        $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
+        $totalAdditionalIncome = Balance::whereDate('date', $today)->first()->additional_income ?? 0;
+        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('remaining_balance') ?? 0;
+
+        $totalStartingBalance = $totalBalance + $totalAdditionalIncome + $totalRemainingBalance;
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
             'notifications' => $notifications,
             'monthly_expenses' => $monthly_expenses,
-            'monthly_expenses_count' => $monthly_expenses_count
+            'monthly_expenses_count' => $monthly_expenses_count,
+            'totalStartingBalance' => $totalStartingBalance
         ]);
     }
 

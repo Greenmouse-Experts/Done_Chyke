@@ -229,8 +229,8 @@
                                         <i class="ri-wallet-2-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total Expenditure</p>
-                                        <h4>₦{{number_format(App\Models\Expenses::sum('amount'), 2)}}</h4>
+                                        <p class="mb-2">Total Starting Balance - {{\Carbon\Carbon::now()->toFormattedDateString()}}</p>
+                                        <h4>₦{{number_format($totalStartingBalance, 2)}}</h4>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +244,7 @@
                         <div class="card card-block card-stretch card-height">
                             <div class="card-header d-flex justify-content-between">
                                 <div class="header-title">
-                                    <h4 class="card-title">Monthly Summary</h4>
+                                    <h4 class="card-title">Expenses Summary Daily</h4>
                                 </div>
                                 <div class="card-header-toolbar d-flex align-items-center">
                                     <div><a href="{{route('expenses.view')}}" class="btn btn-primary view-btn font-size-14">View Reports</a></div>

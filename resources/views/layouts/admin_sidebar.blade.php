@@ -32,6 +32,12 @@
                         <span class="ml-4">Staff</span>
                     </a>
                 </li>
+                <li class="{{ (request()->is('admin/daily/balance')) ? 'active' : '' }}">
+                    <a href="{{route('admin.daily.balance')}}" class="svg-icon">
+                        <i class="ri-wallet-line mr-0"></i>
+                        <span class="ml-4">Starting Balance</span>
+                    </a>
+                </li>
                 <li class="{{ (request()->is('admin/rates/list*')) ? 'active' : '' }}">
                     <a href="#rates-list" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-calculator-line mr-0"></i>

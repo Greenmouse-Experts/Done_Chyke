@@ -233,7 +233,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
-                                                            <h4 class="mb-3">Are you sure, you want to delete this expenses?</h4>
+                                                            <h4 class="mb-3">Are you sure, you want to delete this expense?</h4>
                                                             <div class="content create-workform bg-body">
                                                                 <form action="{{route('admin.expense.delete', Crypt::encrypt($expense->id))}}" method="post">
                                                                     @csrf

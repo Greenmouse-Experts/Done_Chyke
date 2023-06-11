@@ -18,11 +18,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-list align-items-center">
-                        @if(Auth::user()->account_type == 'Accountant')
-                        <li>
-                            <a href="#" class="btn btn-primary add-btn shadow-none mx-2 d-none d-md-block text-white">Expenditure: ₦{{number_format(App\Models\Expenses::sum('amount'), 2)}}</a>
-                        </li>
-                        @endif
                         <li class="nav-item nav-icon dropdown">
                             <a href="#" class="search-toggle dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
