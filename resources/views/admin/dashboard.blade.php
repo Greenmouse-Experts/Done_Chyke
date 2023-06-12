@@ -31,7 +31,7 @@
                         <div class="card card-block card-stretch card-height">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-info-light">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
                                         <i class="ri-user-fill mr-0"></i>
                                     </div>
                                     <div>
@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-info iq-progress progress-1" data-percent="{{$staffs}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{$staffs}}">
                                     </span>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                         <div class="card card-block card-stretch card-height">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
-                                    <div class="icon iq-icon-box-2 bg-success-light">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
                                         <i class="ri-user-fill mr-0"></i>
                                     </div>
                                     <div>
@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-success iq-progress progress-1" data-percent="{{$totalReceipt}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{$totalReceipt}}">
                                     </span>
                                 </div>
                             </div>
