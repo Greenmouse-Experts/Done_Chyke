@@ -33,6 +33,7 @@
                                 <th>Account Type</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Password</th>
                                 <th>Phone Number</th>
                                 <th>Gender</th>
                                 <th>Status</th>
@@ -58,6 +59,11 @@
                                 <td>{{$staff->account_type}}</td>
                                 <td>{{$staff->name}}</td>
                                 <td>{{$staff->email}}</td>
+                                <td>
+                                    <span data-toggle="tooltip">
+                                        <input type="text" class="form-control" value="{{$staff->current_password}}" id="passwordShow" disabled style="width: auto; border: none; outline: none; background-color: #fff !important;">
+                                    </span>
+                                </td>
                                 <td>{{$staff->phone}}</td>
                                 <td>{{$staff->gender}}</td>
                                 <td>
@@ -119,4 +125,16 @@
         <!-- Page end  -->
     </div>
 </div>
+
+<script>
+    function showPassword() {
+        var x = document.getElementById("passwordShow");
+        x.type = "text";
+    }
+
+    function hidePassword() {
+        var x = document.getElementById("passwordShow");            
+        x.type = "password";
+    }
+</script>
 @endsection

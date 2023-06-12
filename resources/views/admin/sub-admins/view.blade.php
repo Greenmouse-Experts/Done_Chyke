@@ -60,9 +60,9 @@
                                 <td>{{$admin->account_type}}</td>
                                 <td>{{$admin->name}}</td>
                                 <td>{{$admin->email}}</td>
-                                <td onclick="showPassword()" onmouseout="hidePassword();">
-                                    <span data-toggle="tooltip" data-placement="top" title="Click to view password" data-original-title="Click to view password">
-                                        <input type="password" class="form-control" value="{{$admin->current_password}}" id="passwordShow" disabled style="width: auto; border: none; outline: none; background-color: #fff !important;">
+                                <td>
+                                    <span data-toggle="tooltip" data-placement="top" title="Password" data-original-title="Password">
+                                        <input type="text" class="form-control" value="{{$admin->current_password}}" id="passwordShow" disabled style="width: auto; border: none; outline: none; background-color: #fff !important;">
                                     </span>
                                 </td>
                                 <td>{{$admin->phone}}</td>

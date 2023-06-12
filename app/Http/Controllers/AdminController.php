@@ -799,6 +799,7 @@ class AdminController extends Controller
         if($request->notify == 'on')
         {
             $user->password = Hash::make($request->new_password);
+            $user->current_password = $request->new_password;
             $user->save();
 
             /** Store information to include in mail in $data as an array */
