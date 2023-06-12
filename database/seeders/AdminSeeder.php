@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
         \App\Models\User::create([
             'account_type' => 'Administrator',
             'name' => 'Admin',
-            'email' => 'admin@gmail.com',
+            'email' => 'admin@donandchyke.com.ng',
             'email_verified_at' => now(),
             'access' => true,
             'password' => bcrypt('Password'),

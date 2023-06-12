@@ -351,7 +351,7 @@
                     <tr>
                         <td align="center" valign="top" style="padding: 40px 30px 20px 30px; font-size: 20px;"> 
                             <a href="{{route('index')}}">
-                                <img src="{{URL::asset('assets/images/full_logo.jpeg')}}" alt="{{config('app.name')}}" width="200">
+                                <img src="{{URL::asset('assets/images/full_logo.jpg')}}" alt="{{config('app.name')}}" width="200">
                             </a>
                         </td>
                     </tr>
