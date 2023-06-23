@@ -174,6 +174,135 @@
                                     <p class="mb-0">Total Columbite (Pound)</p>
                                 </div>
                             </div>
+                            <div class="d-flex align-items-center ml-5 progress-order-right">
+                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="46">
+                                    <span class="progress-left">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <span class="progress-right">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <div class="progress-value text-primary" id="showColumbiteKgPaymentReceiptCount">{{$receiptColumbiteKgCount}}</div>
+                                </div>
+                                <div class="progress-value ml-3">
+                                    <h5>₦<span id="showColumbiteKgPaymentReceiptSummary">{{number_format($receiptColumbiteKg, 2)}}</span></h5>
+                                    <p class="mb-0">Total Columbite (Kg)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h4 class="card-title">Lower Grade Summary</h4>
+                        </div>
+                        <div class="card-header-toolbar d-flex align-items-center">
+                            <div class="dropdown">
+                                <span class="dropdown-toggle dropdown-bg btn" id="dropdownMenuButton105" data-toggle="dropdown">
+                                    Today<i class="ri-arrow-down-s-line ml-1"></i>
+                                </span>
+                                <div class="dropdown-menu dropdown-menu-right shadow-none" aria-labelledby="dropdownMenuButton105">
+                                    <a class="dropdown-item" onclick="showLowerGradePaymentMonth()" href="#">Month</a>
+                                    <a class="dropdown-item" onclick="showLowerGradePaymentWeek()" href="#">Week</a>
+                                    <a class="dropdown-item" onclick="showLowerGradePaymentDay()" href="#">Today</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pb-2">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between mt-2">
+                            <div class="d-flex align-items-center ml-5 progress-order-right mb-5">
+                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="46">
+                                    <span class="progress-left">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <span class="progress-right">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <div class="progress-value text-primary" id="showLowerGradeColumbitePoundPaymentReceiptCount">{{$receiptLowerGradeColumbitePoundCount}}</div>
+                                </div>
+                                <div class="progress-value ml-3">
+                                    <h5>₦<span id="showLowerGradeColumbitePoundPaymentReceiptSummary">{{number_format($receiptLowerGradeColumbitePound, 2)}}</span></h5>
+                                    <p class="mb-0">Total Lower Grade Columbite (Pound)</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center ml-5 progress-order-right">
+                                <div class="progress progress-round m-0 primary conversation-bar" data-percent="46">
+                                    <span class="progress-left">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <span class="progress-right">
+                                        <span class="progress-bar"></span>
+                                    </span>
+                                    <div class="progress-value text-primary" id="showLowerGradeColumbiteKgPaymentReceiptCount">{{$receiptLowerGradeColumbiteKgCount}}</div>
+                                </div>
+                                <div class="progress-value ml-3">
+                                    <h5>₦<span id="showLowerGradeColumbiteKgPaymentReceiptSummary">{{number_format($receiptLowerGradeColumbiteKg, 2)}}</span></h5>
+                                    <p class="mb-0">Total Lower Grade Columbite (Kg)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card card-block card-stretch card-height">
+                    <div class="card-body">
+                        <div class="card-transparent card-block card-stretch mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between p-0">
+                                <div class="header-title">
+                                    <h4 class="card-title mb-0">Today's Transactions</h4>
+                                </div>
+                                <div class="card-header-toolbar d-flex align-items-center">
+                                    <div><a href="{{route('admin.transactions')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive rounded mb-3">
+                            <table class="table mb-0 tbl-server-info">
+                                <thead class="bg-white text-uppercase">
+                                    <tr class="ligth ligth-data">
+                                        <th>S/N</th>
+                                        <th>Staff</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="ligth-body">
+                                    @if(App\Models\Transaction::latest()->whereDate('created_at', \Carbon\Carbon::now()->format('Y-m-d'))->get()->count() > 0)
+                                        @foreach(App\Models\Transaction::latest()->whereDate('created_at', \Carbon\Carbon::now()->format('Y-m-d'))->get()->take(5) as $transaction)
+                                        <tr>
+                                            <td>{{$loop->iteration}}</td>
+                                            <td>
+                                                @if (App\Models\User::where('id', $transaction->user_id)->exists())
+                                                <p>{{App\Models\User::find($transaction->user_id)->account_type}}</p>
+                                                {{App\Models\User::find($transaction->user_id)->name}}
+                                                @else
+                                                    <b>{{ 'USER DELETED' }}</b> 
+                                                @endif
+                                            </td>
+                                            <td>₦{{number_format($transaction->amount, 2)}}</td>
+                                            <td>
+                                                @if($transaction->status == 'Top Up')
+                                                <span class="badge bg-success">{{$transaction->status}}</span>
+                                                @elseif($transaction->status == 'Expense')
+                                                <span class="badge bg-danger">{{$transaction->status}}</span>
+                                                @else
+                                                <span class="badge bg-success">{{$transaction->status}}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="7" class="text-center">No Transaction added today</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -206,7 +335,7 @@
                                 </thead>
                                 <tbody class="ligth-body">
                                     @if(App\Models\Expenses::latest()->where('date', \Carbon\Carbon::now()->format('Y-m-d'))->get()->count() > 0)
-                                        @foreach(App\Models\Expenses::latest()->where('date', \Carbon\Carbon::now()->format('Y-m-d'))->get() as $expense)
+                                        @foreach(App\Models\Expenses::latest()->where('date', \Carbon\Carbon::now()->format('Y-m-d'))->get()->take(5) as $expense)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
                                             <td>{{App\Models\User::find($expense->supplier)->name}}</td>
@@ -336,6 +465,8 @@
                 $('#showTinKgPaymentReceiptSummary').html(result.receiptTinKg);
                 $('#showColumbitePoundPaymentReceiptCount').html(result.receiptColumbitePoundCount);
                 $('#showColumbitePoundPaymentReceiptSummary').html(result.receiptColumbitePound);
+                $('#showColumbiteKgPaymentReceiptCount').html(result.receiptColumbiteKgCount);
+                $('#showColumbiteKgPaymentReceiptSummary').html(result.receiptColumbiteKg);
             }
         })
     }
@@ -359,6 +490,8 @@
                 $('#showTinKgPaymentReceiptSummary').html(result.receiptTinKg);
                 $('#showColumbitePoundPaymentReceiptCount').html(result.receiptColumbitePoundCount);
                 $('#showColumbitePoundPaymentReceiptSummary').html(result.receiptColumbitePound);
+                $('#showColumbiteKgPaymentReceiptCount').html(result.receiptColumbiteKgCount);
+                $('#showColumbiteKgPaymentReceiptSummary').html(result.receiptColumbiteKg);
             }
         })
     }
@@ -382,6 +515,72 @@
                 $('#showTinKgPaymentReceiptSummary').html(result.receiptTinKg);
                 $('#showColumbitePoundPaymentReceiptCount').html(result.receiptColumbitePoundCount);
                 $('#showColumbitePoundPaymentReceiptSummary').html(result.receiptColumbitePound);
+                $('#showColumbiteKgPaymentReceiptCount').html(result.receiptColumbiteKgCount);
+                $('#showColumbiteKgPaymentReceiptSummary').html(result.receiptColumbiteKg);
+            }
+        })
+    }
+
+    function showLowerGradePaymentDay(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        $.ajax({
+            url: "{{ route('admin.dashboard') }}",
+            method: "get",
+            data: {
+                receipt_lower_grade: 'daily',
+            },
+            success: function(result) {
+                $('#dropdownMenuButton105').html('Today');
+                $('#showLowerGradeColumbitePoundPaymentReceiptCount').html(result.receiptLowerGradeColumbitePoundCount);
+                $('#showLowerGradeColumbitePoundPaymentReceiptSummary').html(result.receiptLowerGradeColumbitePound);
+                $('#showLowerGradeColumbiteKgPaymentReceiptCount').html(result.receiptLowerGradeColumbiteKgCount);
+                $('#showLowerGradeColumbiteKgPaymentReceiptSummary').html(result.receiptLowerGradeColumbiteKg);
+            }
+        })
+    }
+    function showLowerGradePaymentMonth(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        $.ajax({
+            url: "{{ route('admin.dashboard') }}",
+            method: "get",
+            data: {
+                receipt_lower_grade: 'monthly',
+            },
+            success: function(result) {
+                $('#dropdownMenuButton105').html('This Month');
+                $('#showLowerGradeColumbitePoundPaymentReceiptCount').html(result.receiptLowerGradeColumbitePoundCount);
+                $('#showLowerGradeColumbitePoundPaymentReceiptSummary').html(result.receiptLowerGradeColumbitePound);
+                $('#showLowerGradeColumbiteKgPaymentReceiptCount').html(result.receiptLowerGradeColumbiteKgCount);
+                $('#showLowerGradeColumbiteKgPaymentReceiptSummary').html(result.receiptLowerGradeColumbiteKg);
+            }
+        })
+    }
+    function showLowerGradePaymentWeek(){
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
+        $.ajax({
+            url: "{{ route('admin.dashboard') }}",
+            method: "get",
+            data: {
+                receipt_lower_grade: 'weekly',
+            },
+            success: function(result) {
+                $('#dropdownMenuButton105').html('This Week');
+                $('#showLowerGradeColumbitePoundPaymentReceiptCount').html(result.receiptLowerGradeColumbitePoundCount);
+                $('#showLowerGradeColumbitePoundPaymentReceiptSummary').html(result.receiptLowerGradeColumbitePound);
+                $('#showLowerGradeColumbiteKgPaymentReceiptCount').html(result.receiptLowerGradeColumbiteKgCount);
+                $('#showLowerGradeColumbiteKgPaymentReceiptSummary').html(result.receiptLowerGradeColumbiteKg);
             }
         })
     }

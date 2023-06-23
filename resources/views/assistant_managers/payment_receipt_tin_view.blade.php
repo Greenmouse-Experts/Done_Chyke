@@ -29,15 +29,27 @@
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
+                                <a class="nav-link @if($active_tab == 'pound') active @endif" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-kg-tab" data-toggle="pill" href="#pills-kg" role="tab" aria-controls="pills-kg" aria-selected="false">KG</a>
+                                <a class="nav-link @if($active_tab == 'kg') active @endif" id="pills-kg-tab" data-toggle="pill" href="#pills-kg" role="tab" aria-controls="pills-kg" aria-selected="false">KG</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent-2">
-                            <div class="tab-pane fade show active" id="pills-pound" role="tabpanel" aria-labelledby="pills-pound-tab">
+                            <div class="tab-pane fade @if($active_tab == 'pound') active show @endif" id="pills-pound" role="tabpanel" aria-labelledby="pills-pound-tab">
                                 <div class="table-responsive rounded mb-3">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                                        <form action="{{ route('payment.receipt.tin.view', 'pound')}}" method="POST" data-toggle="validator">
+                                            @csrf
+                                            <label class="mr-2"><strong>Start Date :</strong>
+                                            <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required >
+                                            </label>&nbsp;&nbsp;
+                                            <label class="mr-2"><strong>End Date :</strong>
+                                            <input type="date" name="end_date" value="{{$end_date}}" class="form-control" required>
+                                            </label>
+                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                        </form>
+                                    </div>
                                     <table class="data-table table mb-0 tbl-server-info">
                                         <thead class="bg-white text-uppercase">
                                             <tr class="ligth ligth-data">
@@ -57,7 +69,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach(App\Models\PaymentReceiptTin::latest()->where('user_id', Auth::user()->id)->where('type', 'pound')->get() as $receipt)
+                                            @foreach($tinPaymentReceiptPound as $receipt)
                                             <tr>
                                                 <td>
                                                     {{$loop->iteration}}
@@ -108,8 +120,20 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pills-kg" role="tabpanel" aria-labelledby="pills-kg-tab">
+                            <div class="tab-pane fade @if($active_tab == 'kg') active show @endif" id="pills-kg" role="tabpanel" aria-labelledby="pills-kg-tab">
                                 <div class="table-responsive rounded mb-3">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                                        <form action="{{ route('payment.receipt.tin.view', 'kg')}}" method="POST" data-toggle="validator">
+                                            @csrf
+                                            <label class="mr-2"><strong>Start Date :</strong>
+                                            <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required>
+                                            </label>&nbsp;&nbsp;
+                                            <label class="mr-2"><strong>End Date :</strong>
+                                            <input type="date" name="end_date" value="{{$end_date}}" class="form-control" required>
+                                            </label>
+                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                        </form>
+                                    </div>
                                     <table class="data-table table mb-0 tbl-server-info">
                                         <thead class="bg-white text-uppercase">
                                             <tr class="ligth ligth-data">
@@ -126,12 +150,13 @@
                                                 <th>Percentage (%)</th>
                                                 <th>% Analysis Rate List</th>
                                                 <th>Total Quantity In Kg</th>
+                                                <th>Benchmark</th>
                                                 <th>Receipt Image</th>
                                                 <th>Total Amount Payable</th>
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach(App\Models\PaymentReceiptTin::latest()->where('user_id', Auth::user()->id)->where('type', 'kg')->get() as $receipt)
+                                            @foreach($tinPaymentReceiptKg as $receipt)
                                             <tr>
                                                 <td>
                                                     {{$loop->iteration}}
@@ -156,6 +181,11 @@
                                                     @endforeach
                                                 </td>
                                                 <td>{{$receipt->total_in_kg}}kg</td>
+                                                <td>
+                                                    @foreach(json_decode($receipt->benchmark, true) as $key => $value)
+                                                        <p>{{ $key }} - {{ $value }}</p>
+                                                    @endforeach
+                                                </td>
                                                 <td>
                                                     <span data-toggle="modal" data-target="#preview-{{$receipt->id}}">
                                                         <a href="#" data-toggle="tooltip" data-placement="top" title="Preview Receipt Image" data-original-title="Preview Receipt Image"><img id="file-ip-1-preview" class="rm-profile-pic rounded avatar-100" src="{{$receipt->receipt_image}}" alt="{{$receipt->receipt_image}}"></a>

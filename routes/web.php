@@ -65,14 +65,20 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
     Route::prefix('/assistant-manager')->group(
         function () {
             //Tin
-            Route::get('/payment/receipt/tin/view', [AssistantManagerController::class, 'payment_receipt_tin_view'])->name('payment.receipt.tin.view');
+            Route::any('/payment/receipt/tin/view/{id}', [AssistantManagerController::class, 'payment_receipt_tin_view'])->name('payment.receipt.tin.view');
             Route::get('/payment/receipt/tin/add/{id}', [AssistantManagerController::class, 'payment_receipt_tin_add'])->name('payment.receipt.tin.add');
             Route::any('/payment/receipt/tin/pound/post', [AssistantManagerController::class, 'payment_receipt_tin_pound_post'])->name('payment.receipt.tin.pound.post');
             Route::any('/payment/receipt/tin/kg/post', [AssistantManagerController::class, 'payment_receipt_tin_kg_post'])->name('payment.receipt.tin.kg.post');
             // Columbite
-            Route::get('/payment/receipt/columbite/view', [AssistantManagerController::class, 'payment_receipt_columbite_view'])->name('payment.receipt.columbite.view');
+            Route::any('/payment/receipt/columbite/view/{id}', [AssistantManagerController::class, 'payment_receipt_columbite_view'])->name('payment.receipt.columbite.view');
             Route::get('/payment/receipt/columbite/add/{id}', [AssistantManagerController::class, 'payment_receipt_columbite_add'])->name('payment.receipt.columbite.add');
             Route::any('/payment/receipt/columbite/pound/post', [AssistantManagerController::class, 'payment_receipt_columbite_pound_post'])->name('payment.receipt.columbite.pound.post');
+            Route::any('/payment/receipt/columbite/kg/post', [AssistantManagerController::class, 'payment_receipt_columbite_kg_post'])->name('payment.receipt.columbite.kg.post');
+            // LowerGrade
+            Route::any('/payment/receipt/lower/grade/columbite/view/{id}', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_view'])->name('payment.receipt.lower.grade.columbite.view');
+            Route::get('/payment/receipt/lower/grade/columbite/add/{id}', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_add'])->name('payment.receipt.lower.grade.columbite.add');
+            Route::any('/payment/receipt/lower/grade/columbite/pound/post', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_pound_post'])->name('payment.receipt.lower.grade.columbite.pound.post');
+            Route::any('/payment/receipt/lower/grade/columbite/kg/post', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_kg_post'])->name('payment.receipt.lower.grade.columbite.kg.post');
         }
     );
 });
@@ -136,30 +142,49 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/rates/list/analysis/deactivate/{id}', [AdminController::class, 'rate_analysis_deactivate'])->name('admin.deactivate.rate.analysis');
     Route::post('/admin/rates/list/analysis/delete/{id}', [AdminController::class, 'rate_analysis_delete'])->name('admin.delete.rate.analysis');
 
+    Route::get('/admin/rates/list/benchmark', [AdminController::class, 'rates_beanchmark'])->name('admin.rates.benchmark');
+    Route::post('/admin/rates/list/benchmark/post', [AdminController::class, 'post_rate_benchmark'])->name('admin.post.rate.benchmark');
+    Route::post('/admin/rates/list/benchmark/update/{id}', [AdminController::class, 'rate_benchmark_update'])->name('admin.update.rate.benchmark');
+    Route::post('/admin/rates/list/benchmark/delete/{id}', [AdminController::class, 'rate_benchmark_delete'])->name('admin.delete.rate.benchmark');
+
     // Payment Receipts
     //Tin
-    Route::get('/admin/payment/receipt/tin/view', [AdminController::class, 'payment_receipt_tin_view'])->name('admin.payment.receipt.tin.view');
+    Route::any('/admin/payment/receipt/tin/view/{id}', [AdminController::class, 'payment_receipt_tin_view'])->name('admin.payment.receipt.tin.view');
     Route::get('/admin/payment/receipt/tin/add/{id}', [AdminController::class, 'payment_receipt_tin_add'])->name('admin.payment.receipt.tin.add');
     Route::any('/admin/payment/receipt/tin/pound/post', [AdminController::class, 'payment_receipt_tin_pound_post'])->name('admin.payment.receipt.tin.pound.post');
     Route::any('/admin/payment/receipt/tin/kg/post', [AdminController::class, 'payment_receipt_tin_kg_post'])->name('admin.payment.receipt.tin.kg.post');
     Route::get('/admin/payment/receipt/tin/edit/{id}', [AdminController::class, 'payment_receipt_tin_edit'])->name('admin.payment.receipt.tin.edit');
     Route::post('/admin/payment/receipt/tin/pound/update/{id}', [AdminController::class, 'payment_receipt_tin_pound_update'])->name('admin.payment.receipt.tin.pound.update');
     Route::post('/admin/payment/receipt/tin/kg/update/{id}', [AdminController::class, 'payment_receipt_tin_kg_update'])->name('admin.payment.receipt.tin.kg.update');
-    Route::post('/admin/payment/receipt/tin/delete/{id}', [AdminController::class, 'payment_receipt_tin_delete'])->name('admin.payment.receipt.tin.delete');
+    Route::post('/admin/payment/receipt/tin/delete/{id}/{type}', [AdminController::class, 'payment_receipt_tin_delete'])->name('admin.payment.receipt.tin.delete');
     // Columbite
-    Route::get('/admin/payment/receipt/columbite/view', [AdminController::class, 'payment_receipt_columbite_view'])->name('admin.payment.receipt.columbite.view');
-    Route::get('/admin/payment/receipt/columbite/add', [AdminController::class, 'payment_receipt_columbite_add'])->name('admin.payment.receipt.columbite.add');
-    Route::any('/admin/payment/receipt/columbite/post', [AdminController::class, 'payment_receipt_columbite_post'])->name('admin.payment.receipt.columbite.post');
+    Route::any('/admin/payment/receipt/columbite/view/{id}', [AdminController::class, 'payment_receipt_columbite_view'])->name('admin.payment.receipt.columbite.view');
+    Route::get('/admin/payment/receipt/columbite/add/{id}', [AdminController::class, 'payment_receipt_columbite_add'])->name('admin.payment.receipt.columbite.add');
+    Route::any('/admin/payment/receipt/columbite/pound/post', [AdminController::class, 'payment_receipt_columbite_pound_post'])->name('admin.payment.receipt.columbite.pound.post');
+    Route::any('/admin/payment/receipt/columbite/kg/post', [AdminController::class, 'payment_receipt_columbite_kg_post'])->name('admin.payment.receipt.columbite.kg.post');
     Route::get('/admin/payment/receipt/columbite/edit/{id}', [AdminController::class, 'payment_receipt_columbite_edit'])->name('admin.payment.receipt.columbite.edit');
-    Route::post('/admin/payment/receipt/columbite/update/{id}', [AdminController::class, 'payment_receipt_columbite_update'])->name('admin.payment.receipt.columbite.update');
-    Route::post('/admin/payment/receipt/columbite/delete/{id}', [AdminController::class, 'payment_receipt_columbite_delete'])->name('admin.payment.receipt.columbite.delete');
+    Route::post('/admin/payment/receipt/columbite/pound/update/{id}', [AdminController::class, 'payment_receipt_columbite_pound_update'])->name('admin.payment.receipt.columbite.pound.update');
+    Route::post('/admin/payment/receipt/columbite/kg/update/{id}', [AdminController::class, 'payment_receipt_columbite_kg_update'])->name('admin.payment.receipt.columbite.kg.update');
+    Route::post('/admin/payment/receipt/columbite/delete/{id}/{type}', [AdminController::class, 'payment_receipt_columbite_delete'])->name('admin.payment.receipt.columbite.delete');
+    // Lower Grade 
+    Route::any('/admin/payment/receipt/lower/grade/columbite/view/{id}', [AdminController::class, 'payment_receipt_lower_grade_columbite_view'])->name('admin.payment.receipt.lower.grade.columbite.view');
+    Route::get('/admin/payment/receipt/lower/grade/columbite/add/{id}', [AdminController::class, 'payment_receipt_lower_grade_columbite_add'])->name('admin.payment.receipt.lower.grade.columbite.add');
+    Route::any('/admin/payment/receipt/lower/grade/columbite/pound/post', [AdminController::class, 'payment_receipt_lower_grade_columbite_pound_post'])->name('admin.payment.receipt.lower.grade.columbite.pound.post');
+    Route::any('/admin/payment/receipt/lower/grade/columbite/kg/post', [AdminController::class, 'payment_receipt_lower_grade_columbite_kg_post'])->name('admin.payment.receipt.lower.grade.columbite.kg.post');
+    Route::get('/admin/payment/receipt/lower/grade/columbite/edit/{id}', [AdminController::class, 'payment_receipt_lower_grade_columbite_edit'])->name('admin.payment.receipt.lower.grade.columbite.edit');
+    Route::post('/admin/payment/receipt/lower/grade/columbite/pound/update/{id}', [AdminController::class, 'payment_receipt_lower_grade_columbite_pound_update'])->name('admin.payment.receipt.lower.grade.columbite.pound.update');
+    Route::post('/admin/payment/receipt/lower/grade/columbite/kg/update/{id}', [AdminController::class, 'payment_receipt_lower_grade_columbite_kg_update'])->name('admin.payment.receipt.lower.grade.columbite.kg.update');
+    Route::post('/admin/payment/receipt/lower/grade/columbite/delete/{id}/{type}', [AdminController::class, 'payment_receipt_lower_grade_columbite_delete'])->name('admin.payment.receipt.lower.grade.columbite.delete');
 
     // Weekly Analysis
     Route::any('/admin/weekly/analysis/tin/pound', [AdminController::class, 'weekly_analysis_tin_pound'])->name('admin.weekly.analysis.tin.pound');
-    Route::post('/admin/weekly/analysis/tin/pounds', [AdminController::class, 'weekly_analysis_tin_pounds'])->name('admin.weekly.analysis.tin.pounds');
-
     Route::any('/admin/weekly/analysis/tin/kg', [AdminController::class, 'weekly_analysis_tin_kg'])->name('admin.weekly.analysis.tin.kg');
     Route::any('/admin/weekly/analysis/columbite/pound', [AdminController::class, 'weekly_analysis_columbite_pound'])->name('admin.weekly.analysis.columbite.pound');
+    Route::any('/admin/weekly/analysis/columbite/kg', [AdminController::class, 'weekly_analysis_columbite_kg'])->name('admin.weekly.analysis.columbite.kg');
+
+    // Monthly Analysis
+    Route::any('/admin/monthly/analysis/lower/grade/columbite/pound', [AdminController::class, 'monthly_analysis_lower_grade_columbite_pound'])->name('admin.monthly.analysis.lower.grade.columbite.pound');
+    Route::any('/admin/monthly/analysis/lower/grade/columbite/kg', [AdminController::class, 'monthly_analysis_lower_grade_columbite_kg'])->name('admin.monthly.analysis.lower.grade.columbite.kg');
 
     Route::any('/admin/daily/balance', [AdminController::class, 'daily_balance'])->name('admin.daily.balance');
     Route::post('/admin/daily/balance/update/{id}', [AdminController::class, 'update_daily_balance'])->name('admin.daily.balance.update');

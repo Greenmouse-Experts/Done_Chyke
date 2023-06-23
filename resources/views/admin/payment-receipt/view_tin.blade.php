@@ -29,15 +29,27 @@
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
+                                <a class="nav-link @if($active_tab == 'pound') active @endif" id="pills-pound-tab" data-toggle="pill" href="#pills-pound" role="tab" aria-controls="pills-pound" aria-selected="true">POUND</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="pills-kg-tab" data-toggle="pill" href="#pills-kg" role="tab" aria-controls="pills-kg" aria-selected="false">KG</a>
+                                <a class="nav-link @if($active_tab == 'kg') active @endif" id="pills-kg-tab" data-toggle="pill" href="#pills-kg" role="tab" aria-controls="pills-kg" aria-selected="false">KG</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent-2">
-                            <div class="tab-pane fade show active" id="pills-pound" role="tabpanel" aria-labelledby="pills-pound-tab">
+                            <div class="tab-pane fade @if($active_tab == 'pound') active show @endif" id="pills-pound" role="tabpanel" aria-labelledby="pills-pound-tab">
                                 <div class="table-responsive rounded mb-3">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                                        <form action="{{ route('admin.payment.receipt.tin.view', 'pound')}}" method="POST" data-toggle="validator">
+                                            @csrf
+                                            <label class="mr-2"><strong>Start Date :</strong>
+                                            <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required >
+                                            </label>&nbsp;&nbsp;
+                                            <label class="mr-2"><strong>End Date :</strong>
+                                            <input type="date" name="end_date" value="{{$end_date}}" class="form-control" required>
+                                            </label>
+                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                        </form>
+                                    </div>
                                     <table class="data-table table mb-0 tbl-server-info">
                                         <thead class="bg-white text-uppercase">
                                             <tr class="ligth ligth-data">
@@ -59,7 +71,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach(App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get() as $receipt)
+                                            @foreach($tinPaymentReceiptPound as $receipt)
                                             <tr>
                                                 <td>
                                                     {{$loop->iteration}}
@@ -90,7 +102,7 @@
                                                     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title">Prview Receipt Image</h5>
+                                                                <h5 class="modal-title">Preview Receipt Image</h5>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
@@ -125,7 +137,7 @@
                                                                         <div class="popup text-left">
                                                                             <h4 class="mb-3">Are you sure, you want to delete this payment receipt?</h4>
                                                                             <div class="content create-workform bg-body">
-                                                                                <form action="{{route('admin.payment.receipt.tin.delete', Crypt::encrypt($receipt->id))}}" method="post">
+                                                                                <form action="{{route('admin.payment.receipt.tin.delete', [Crypt::encrypt($receipt->id), 'pound'])}}" method="post">
                                                                                     @csrf
                                                                                     <div class="col-lg-12 mt-4">
                                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -145,11 +157,30 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="11" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$tinPaymentReceiptPound->sum('total_in_pound')}}lbs</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($tinPaymentReceiptPound->sum('price'), 2)}}</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pills-kg" role="tabpanel" aria-labelledby="pills-kg-tab">
+                            <div class="tab-pane fade @if($active_tab == 'kg') active show @endif" id="pills-kg" role="tabpanel" aria-labelledby="pills-kg-tab">
                                 <div class="table-responsive rounded mb-3">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                                        <form action="{{ route('admin.payment.receipt.tin.view', 'kg')}}" method="POST" data-toggle="validator">
+                                            @csrf
+                                            <label class="mr-2"><strong>Start Date :</strong>
+                                            <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required>
+                                            </label>&nbsp;&nbsp;
+                                            <label class="mr-2"><strong>End Date :</strong>
+                                            <input type="date" name="end_date" value="{{$end_date}}" class="form-control" required>
+                                            </label>
+                                            <button type="submit" class="btn btn-primary">Filter</button>
+                                        </form>
+                                    </div>
                                     <table class="data-table table mb-0 tbl-server-info">
                                         <thead class="bg-white text-uppercase">
                                             <tr class="ligth ligth-data">
@@ -167,13 +198,14 @@
                                                 <th>Percentage (%)</th>
                                                 <th>% Analysis Rate List</th>
                                                 <th>Total Quantity In Kg</th>
+                                                <th>Benchmark</th>
                                                 <th>Receipt Image</th>
                                                 <th>Total Amount Payable</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach(App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get() as $receipt)
+                                            @foreach($tinPaymentReceiptKg as $receipt)
                                             <tr>
                                                 <td>
                                                     {{$loop->iteration}}
@@ -200,6 +232,11 @@
                                                 </td>
                                                 <td>{{$receipt->total_in_kg}}kg</td>
                                                 <td>
+                                                    @foreach(json_decode($receipt->benchmark, true) as $key => $value)
+                                                        <p>{{ $key }} - {{ $value }}</p>
+                                                    @endforeach
+                                                </td>
+                                                <td>
                                                     <span data-toggle="modal" data-target="#preview-{{$receipt->id}}">
                                                         <a href="#" data-toggle="tooltip" data-placement="top" title="Preview Receipt Image" data-original-title="Preview Receipt Image"><img id="file-ip-1-preview" class="rm-profile-pic rounded avatar-100" src="{{$receipt->receipt_image}}" alt="{{$receipt->receipt_image}}"></a>
                                                     </span>
@@ -210,7 +247,7 @@
                                                     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title">Prview Receipt Image</h5>
+                                                                <h5 class="modal-title">Preview Receipt Image</h5>
                                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">×</span>
                                                                 </button>
@@ -245,7 +282,7 @@
                                                                         <div class="popup text-left">
                                                                             <h4 class="mb-3">Are you sure, you want to delete this payment receipt?</h4>
                                                                             <div class="content create-workform bg-body">
-                                                                                <form action="{{route('admin.payment.receipt.tin.delete', Crypt::encrypt($receipt->id))}}" method="post">
+                                                                                <form action="{{route('admin.payment.receipt.tin.delete', [Crypt::encrypt($receipt->id), 'kg'])}}" method="post">
                                                                                     @csrf
                                                                                     <div class="col-lg-12 mt-4">
                                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -265,6 +302,13 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="13" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="3" style="font-size: 1.1rem; font-weight: 700">{{$tinPaymentReceiptKg->sum('total_in_kg')}}kg</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($tinPaymentReceiptKg->sum('price'), 2)}}</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

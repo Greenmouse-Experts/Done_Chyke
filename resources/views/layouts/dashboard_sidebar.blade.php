@@ -32,14 +32,19 @@
                         </svg>
                     </a>
                     <ul id="receipt" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="{{ (request()->is('assistant-manager/payment/receipt/tin/view')) ? 'active' : '' }}">
-                            <a href="{{route('payment.receipt.tin.view')}}">
+                        <li class="{{ (request()->is('assistant-manager/payment/receipt/tin/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('payment.receipt.tin.view', 'pound')}}">
                                 <i class="las la-minus"></i><span>Tin</span>
                             </a>
                         </li>
-                        <li class="{{ (request()->is('assistant-manager/payment/receipt/columbite/view')) ? 'active' : '' }}">
-                            <a href="{{route('payment.receipt.columbite.view')}}">
+                        <li class="{{ (request()->is('assistant-manager/payment/receipt/columbite/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('payment.receipt.columbite.view', 'pound')}}">
                                 <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('assistant-manager/payment/receipt/lower/grade/columbite/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('payment.receipt.lower.grade.columbite.view', 'pound')}}">
+                                <i class="las la-minus"></i><span>Lower Grade Columbite</span>
                             </a>
                         </li>
                     </ul>

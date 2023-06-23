@@ -36,7 +36,7 @@
                                         <i class="ri-user-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total Tin Payment Receipt (Pound)</p>
+                                        <p class="mb-2">Total Count Of Tin Payment Receipt (Pound)</p>
                                         <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}</h4>
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@
                                         <i class="ri-wallet-2-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total Tin Payment Receipt (Kg)</p>
+                                        <p class="mb-2">Total Count Of Tin Payment Receipt (Kg)</p>
                                         <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get()->count()}}</h4>
                                     </div>
                                 </div>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-12">
+            <div class="col-lg-6">
                 <div class="row">
                     <div class="col-lg-12 col-md-12">
                         <div class="card card-block card-stretch card-height">
@@ -78,12 +78,81 @@
                                         <i class="ri-flask-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Total Columbite Payment Receipt (Pound)</p>
+                                        <p class="mb-2">Total Count Of Columbite Payment Receipt (Pound)</p>
                                         <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
                                     <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
+                                        <i class="ri-flask-fill mr-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-2">Total Count Of Columbite Payment Receipt (Kg)</p>
+                                        <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'kg')->get()->count()}}</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'kg')->get()->count()}}">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
+                                        <i class="ri-flask-fill mr-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-2">Total Count Of Lower Grade Columbite Payment Receipt (Pound)</p>
+                                        <h4>{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'pound')->get()->count()}}">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
+                                        <i class="ri-flask-fill mr-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-2">Total Count Of Lower Grade Columbite Payment Receipt (Kg)</p>
+                                        <h4>{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'kg')->get()->count()}}</h4>
+                                    </div>
+                                </div>
+                                <div class="iq-progress-bar mt-2">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'kg')->get()->count()}}">
                                     </span>
                                 </div>
                             </div>

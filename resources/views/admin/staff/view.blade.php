@@ -80,7 +80,7 @@
                                         @if($staff->status == '1')
                                         <a class="badge bg-warning mr-2" data-toggle="tooltip" data-placement="top" title="Deactivate" data-original-title="Deactivate"href="{{route('admin.deactivate.staff', Crypt::encrypt($staff->id))}}"><i class="ri-stop-circle-line mr-0"></i></a>
                                         @else
-                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Active" data-original-title="Active" href="{{route('admin.activate.staff', Crypt::encrypt($staff->id))}}"><i class="ri-play-line mr-0"></i></a>
+                                        <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="Activate" data-original-title="Activate" href="{{route('admin.activate.staff', Crypt::encrypt($staff->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
                                         <span data-toggle="modal" data-target="#delete-{{$staff->id}}">
                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>

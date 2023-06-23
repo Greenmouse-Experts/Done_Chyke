@@ -365,7 +365,7 @@
                     <tr>
                       <td>
                         <p>Hello {{$name}},</p>
-                        <p>Below is your {{config('app.name')}} login details.</p>
+                        <p>Below are your {{config('app.name')}} login details.</p>
                         <hr>
                         <p>URL: <a href="{{route('admin.login')}}">{{route('admin.login')}}</a></p>
                         <p>Email: {{$email}}</p>

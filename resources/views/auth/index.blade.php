@@ -259,10 +259,10 @@
                                 <p>
                                     We are committed to promoting sustainable development in the
                                     mining industry by partnering with local businesses to
-                                    provide high-quality minerals to our clients in Nigeria. Our
+                                    provide high-quality minerals to our international clients. Our
                                     system is designed to streamline the process of collecting
                                     minerals from local businesses and exporting them to
-                                    Nigeria. Contact us today to learn more about how we can
+                                    Overseas. Contact us today to learn more about how we can
                                     help you with your mineral needs.
                                 </p>
                             </div>

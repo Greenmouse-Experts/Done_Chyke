@@ -5,13 +5,13 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">All Columbite Payment Receipt</h4>
+                <h4 class="mb-3">All Lower Grade Columbite Payment Receipt</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Columbite Payment Receipt</li>
+                    <li class="breadcrumb-item active" aria-current="page">Lower Grade Columbite Payment Receipt</li>
                 </ol>
             </nav>
         </div>
@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
-                    <a href="{{route('admin.payment.receipt.columbite.add', 'pound')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
+                    <a href="{{route('admin.payment.receipt.lower.grade.columbite.add', 'pound')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
 
@@ -39,7 +39,7 @@
                             <div class="tab-pane fade @if($active_tab == 'pound') active show @endif" id="pills-pound" role="tabpanel" aria-labelledby="pills-pound-tab">
                                 <div class="table-responsive rounded mb-3">
                                     <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
-                                        <form action="{{ route('admin.payment.receipt.columbite.view', 'pound')}}" method="POST" data-toggle="validator">
+                                        <form action="{{ route('admin.payment.receipt.lower.grade.columbite.view', 'pound')}}" method="POST" data-toggle="validator">
                                             @csrf
                                             <label class="mr-2"><strong>Start Date :</strong>
                                             <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required >
@@ -73,7 +73,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach($columbitePaymentReceiptPound as $receipt)
+                                            @foreach($lowergradecolumbitePaymentReceiptPound as $receipt)
                                             <tr>
                                                 <td>
                                                     {{$loop->iteration}}
@@ -128,7 +128,7 @@
 
                                                 <td>
                                                     <div class="d-flex align-items-center list-action">
-                                                        <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="{{route('admin.payment.receipt.columbite.edit', Crypt::encrypt($receipt->id))}}"><i class="ri-eye-line mr-0"></i></a>
+                                                        <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="{{route('admin.payment.receipt.lower.grade.columbite.edit', Crypt::encrypt($receipt->id))}}"><i class="ri-eye-line mr-0"></i></a>
                                                         <span data-toggle="modal" data-target="#delete-{{$receipt->id}}">
                                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                                         </span>
@@ -145,7 +145,7 @@
                                                                         <div class="popup text-left">
                                                                             <h4 class="mb-3">Are you sure, you want to delete this payment receipt?</h4>
                                                                             <div class="content create-workform bg-body">
-                                                                                <form action="{{route('admin.payment.receipt.columbite.delete', [Crypt::encrypt($receipt->id), 'pound'])}}" method="post">
+                                                                                <form action="{{route('admin.payment.receipt.lower.grade.columbite.delete', [Crypt::encrypt($receipt->id), 'pound'])}}" method="post">
                                                                                     @csrf
                                                                                     <div class="col-lg-12 mt-4">
                                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -168,8 +168,8 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="13" style="font-size: 1.1rem; font-weight: 700">Total</td>
-                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$columbitePaymentReceiptPound->sum('total_in_pound')}}lbs</td>
-                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($columbitePaymentReceiptPound->sum('price'), 2)}}</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$lowergradecolumbitePaymentReceiptPound->sum('total_in_pound')}}lbs</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($lowergradecolumbitePaymentReceiptPound->sum('price'), 2)}}</td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -212,7 +212,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ligth-body">
-                                            @foreach($columbitePaymentReceiptKg as $receipt)
+                                            @foreach($lowergradecolumbitePaymentReceiptKg as $receipt)
                                             <tr>
                                                 <td>
                                                     {{$loop->iteration}}
@@ -266,7 +266,7 @@
                                                 </div>
                                                 <td>
                                                     <div class="d-flex align-items-center list-action">
-                                                        <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="{{route('admin.payment.receipt.columbite.edit', Crypt::encrypt($receipt->id))}}"><i class="ri-eye-line mr-0"></i></a>
+                                                        <a class="badge badge-info mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="{{route('admin.payment.receipt.lower.grade.columbite.edit', Crypt::encrypt($receipt->id))}}"><i class="ri-eye-line mr-0"></i></a>
                                                         <span data-toggle="modal" data-target="#delete-{{$receipt->id}}">
                                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                                         </span>
@@ -283,7 +283,7 @@
                                                                         <div class="popup text-left">
                                                                             <h4 class="mb-3">Are you sure, you want to delete this payment receipt?</h4>
                                                                             <div class="content create-workform bg-body">
-                                                                                <form action="{{route('admin.payment.receipt.columbite.delete', [Crypt::encrypt($receipt->id), 'kg'])}}" method="post">
+                                                                                <form action="{{route('admin.payment.receipt.lower.grade.columbite.delete', [Crypt::encrypt($receipt->id), 'kg'])}}" method="post">
                                                                                     @csrf
                                                                                     <div class="col-lg-12 mt-4">
                                                                                         <div class="d-flex flex-wrap align-items-ceter justify-content-center">
@@ -306,8 +306,8 @@
                                         <tfoot>
                                             <tr>
                                                 <td colspan="13" style="font-size: 1.1rem; font-weight: 700">Total</td>
-                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$columbitePaymentReceiptKg->sum('total_in_kg')}}kg</td>
-                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($columbitePaymentReceiptKg->sum('price'), 2)}}</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$lowergradecolumbitePaymentReceiptKg->sum('total_in_kg')}}kg</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($lowergradecolumbitePaymentReceiptKg->sum('price'), 2)}}</td>
                                             </tr>
                                         </tfoot>
                                     </table>

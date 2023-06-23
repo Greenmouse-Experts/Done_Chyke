@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('balances', function (Blueprint $table) {
+        Schema::create('benchmarks', function (Blueprint $table) {
             $table->id();
-            $table->double('starting_balance')->nullable()->default(0.00);
-            $table->double('additional_income')->nullable()->default(0.00);
-            $table->double('amount_used')->nullable()->default(0.00);
-            $table->double('remaining_balance')->nullable()->default(0.00);
-            $table->date('date')->nullable();
+            $table->double('amount')->nullable();
+            $table->double('benchmark_value')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('balances');
+        Schema::dropIfExists('benchmarks');
     }
 };

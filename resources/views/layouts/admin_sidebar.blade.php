@@ -58,6 +58,11 @@
                                 <i class="las la-minus"></i><span>Analysis</span>
                             </a>
                         </li>
+                        <li class="{{ (request()->is('admin/rates/list/benchmark')) ? 'active' : '' }}">
+                            <a href="{{route('admin.rates.benchmark')}}">
+                                <i class="las la-minus"></i><span>Benchmark</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="{{ (request()->is('admin/payment/receipt*')) ? 'active' : '' }}">
@@ -70,14 +75,19 @@
                         </svg>
                     </a>
                     <ul id="receipt" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
-                        <li class="{{ (request()->is('admin/payment/receipt/tin/view')) ? 'active' : '' }}">
-                            <a href="{{route('admin.payment.receipt.tin.view')}}">
+                        <li class="{{ (request()->is('admin/payment/receipt/tin/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payment.receipt.tin.view', 'pound')}}">
                                 <i class="las la-minus"></i><span>Tin</span>
                             </a>
                         </li>
-                        <li class="{{ (request()->is('admin/payment/receipt/columbite/view')) ? 'active' : '' }}">
-                            <a href="{{route('admin.payment.receipt.columbite.view')}}">
+                        <li class="{{ (request()->is('admin/payment/receipt/columbite/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payment.receipt.columbite.view', 'pound')}}">
                                 <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('admin/payment/receipt/lower/grade/columbite/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payment.receipt.lower.grade.columbite.view', 'pound')}}">
+                                <i class="las la-minus"></i><span>Lower Grade Columbite</span>
                             </a>
                         </li>
                     </ul>
@@ -109,8 +119,37 @@
                                 <i class="las la-minus"></i><span>Columbite (Pound)</span>
                             </a>
                         </li>
+                        <li class="{{ (request()->is('admin/weekly/analysis/columbite/kg')) ? 'active' : '' }}">
+                            <a href="{{route('admin.weekly.analysis.columbite.kg')}}">
+                                <i class="las la-minus"></i><span>Columbite (Kg)</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
+                <!-- <li class="{{ (request()->is('admin/monthly/analysis*')) ? 'active' : '' }}">
+                    <a href="#monthly-analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <svg class="svg-icon" id="p-dash7" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span class="ml-4">Monthly Analysis</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="monthly-analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('admin/monthly/analysis/lower/grade/columbite/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.monthly.analysis.lower.grade.columbite.pound')}}">
+                                <i class="las la-minus"></i><span>Lower Grade Columbite (Pound)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('admin/monthly/analysis/lower/grade/columbite/kg')) ? 'active' : '' }}">
+                            <a href="{{route('admin.monthly.analysis.lower.grade.columbite.kg')}}">
+                                <i class="las la-minus"></i><span>Lower Grade Columbite (Kg)</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li> -->
                 <li class="{{ (request()->is('admin/expenses*')) ? 'active' : '' }}">
                     <a href="{{route('admin.expenses')}}" class="svg-icon">
                         <svg class="svg-icon" id="p-dash5" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>

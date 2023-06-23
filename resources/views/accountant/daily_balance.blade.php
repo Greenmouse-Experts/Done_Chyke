@@ -38,8 +38,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label>Additional Income for Today </label>
-                                            <input type="number" class="form-control" placeholder="Enter additional income" value="{{$additional_income}}" name="additional_income">
+                                            <label>Additional Payment In for Today </label>
+                                            <input type="number" class="form-control" placeholder="Enter additional payment in" value="{{$additional_income}}" name="additional_income">
                                             <div class="help-block with-errors"></div>
                                         </div>
                                     </div>
@@ -76,7 +76,7 @@
                                  <th class="text-center prc-wrap">
                                     <div class="prc-box active">
                                        <div class="h3 pt-4 text-white">₦{{number_format($additional_income, 2)}}
-                                       </div> <span class="type text-white">Additional Income</span>
+                                       </div> <span class="type text-white">Additional <br> Payment In</span>
                                     </div>
                                  </th>
                                  <th class="text-center prc-wrap">
@@ -88,7 +88,7 @@
                                  <th class="text-center prc-wrap">
                                     <div class="prc-box active">
                                        <div class="h3 pt-4 text-white">₦{{number_format($remaining_balance, 2)}}
-                                       </div> <span class="type text-white">Remaining Balance</span>
+                                       </div> <span class="type text-white">Remaining <br> Balance</span>
                                     </div>
                                  </th>
                               </tr>

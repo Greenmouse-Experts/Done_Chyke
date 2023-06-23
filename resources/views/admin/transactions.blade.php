@@ -45,7 +45,7 @@
                                         <b>{{ 'USER DELETED' }}</b> 
                                     @endif
                                 </td>
-                                <td>₦{{number_format($transaction->amount, 2)}}</td$transaction->
+                                <td>₦{{number_format($transaction->amount, 2)}}</td>
                                 <td>{{$transaction->reference}}</td>
                                 <td>{{$transaction->created_at->toDayDateTimeString()}}</td>
                                 <td>

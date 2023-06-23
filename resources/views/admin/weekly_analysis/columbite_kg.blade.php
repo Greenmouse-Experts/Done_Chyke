@@ -1,28 +1,29 @@
 @extends('layouts.admin_frontend')
 
 @section('page-content')
+
 <div class="content-page">
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">Summary of Tin (Pound) Material Collected</h4>
+                <h4 class="mb-3">Summary of Columbite (Kg) Material Collected</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Tin (Pound) Summary</li>
+                    <li class="breadcrumb-item active" aria-current="page">Columbite (Kg) Summary</li>
                 </ol>
             </nav>
         </div>
     </div>
     <div class="container-fluid">
-        <div class="row">            
+        <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div style="justify-content: flex-start;">
-                            <form action="{{ route('admin.weekly.analysis.tin.pound')}}" method="POST" data-toggle="validator">
+                            <form action="{{ route('admin.weekly.analysis.columbite.pound')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
                                 <input type="date" name="start_date" class="form-control" value="{{$start_date}}">
@@ -56,6 +57,9 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>Date</th>
+                                <th>18.5</th>
+                                <th>18.6</th>
+                                <th>18.7</th>
                                 <th>18.8</th>
                                 <th>18.9</th>
                                 <th>19.0</th>
@@ -74,11 +78,30 @@
                                 <th>20.3</th>
                                 <th>20.4</th>
                                 <th>20.5</th>
+                                <th>20.6</th>
+                                <th>20.7</th>
+                                <th>20.8</th>
+                                <th>20.9</th>
                             </tr>
                             <tbody class="ligth-body">
                             @foreach($analysis as $anana)
                             <tr>
                                 <td>{{$anana['date']}}</td>
+                                <td>
+                                    @if ($anana['berating'] == '18.5') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '18.6') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '18.7') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
                                 <td>
                                     @if ($anana['berating'] == '18.8') 
                                         {{$anana['total']}}
@@ -87,7 +110,7 @@
                                 <td>
                                     @if ($anana['berating'] == '18.9') 
                                         {{$anana['total']}}
-                                     @endif
+                                    @endif
                                 </td>
                                 <td> 
                                     @if ($anana['berating'] == '19.0') 
@@ -169,6 +192,26 @@
                                         {{$anana['total']}}
                                     @endif
                                 </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.6') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.7') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.8') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($anana['berating'] == '20.9') 
+                                        {{$anana['total']}}
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -203,6 +246,10 @@
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Average Berating</p>
                                 <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['AB']}}</p>
+                            </div>
+                            <div class="col">
+                                <p style="font-weight:600; font-size:18px">Percentage (%)</p>
+                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['AP']}}</p>
                             </div>
                         </div>
                     </div>

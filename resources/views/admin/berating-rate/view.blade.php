@@ -89,7 +89,7 @@
                                                                         <div class="col-md-12">
                                                                             <div class="form-group">
                                                                                 <label>Unit Price (per pound) *</label>
-                                                                                <input type="number" class="form-control" placeholder="Enter unit price" value="{{$berating->unit_price}}" name="unit_price" required>
+                                                                                <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter unit price" value="{{$berating->unit_price}}" name="unit_price" required>
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
@@ -153,4 +153,15 @@
         <!-- Page end  -->
     </div>
 </div>
+<script>
+    function isNumberKey(evt)
+    {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 
+        && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+</script>
 @endsection

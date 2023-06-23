@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payment_receipt_tins', function (Blueprint $table) {
+        Schema::create('payment_receipt_lower_grade_columbites', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['pound', 'kg'])->nullable();
             $table->unsignedBigInteger('user_id');
@@ -28,7 +28,6 @@ return new class extends Migration
             $table->double('total_in_kg')->default(0.00);
             $table->string('berating_rate_list')->nullable();
             $table->string('analysis_rate_list')->nullable();
-            $table->string('benchmark')->nullable();
             $table->double('price')->default(0.00);
             $table->double('amount_paid')->default(0.00);
             $table->string('receipt_no')->nullable();
@@ -47,6 +46,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment_receipt_tins');
+        Schema::dropIfExists('payment_receipt_lower_grade_columbites');
     }
 };

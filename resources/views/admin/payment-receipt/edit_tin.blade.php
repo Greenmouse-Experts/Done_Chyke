@@ -11,7 +11,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{route('admin.payment.receipt.tin.view')}}">Tin Payment Receipts</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.payment.receipt.tin.view', 'pound')}}">Tin Payment Receipts</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Edit</li>
                 </ol>
             </nav>
@@ -80,7 +80,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Pounds</label>
-                                                                <input type="number" class="form-control" id="txtWeight" value="{{$tinPayment->pound}}" onkeyup="this.value = minmax(this.value, null, 69)" placeholder="Enter pounds value" name="bag_pounds">
+                                                                <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" id="txtWeight" value="{{$tinPayment->pound}}" onkeyup="this.value = minmax(this.value, null, 69)" placeholder="Enter pounds value" name="bag_pounds">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
@@ -89,7 +89,7 @@
                                                 <div id="weightpound" class="desc col-12" style="display: none;">
                                                     <div class="form-group">
                                                         <label>Pounds</label>
-                                                        <input type="number" class="form-control" placeholder="Enter pounds value" value="{{$tinPayment->pound}}" name="pounds">
+                                                        <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter pounds value" value="{{$tinPayment->pound}}" name="pounds">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -151,11 +151,11 @@
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="pills-pound-tab-fill" data-toggle="pill" href="#pills-pound-fill" role="tab" aria-controls="pills-pound" aria-selected="true">TIN (KG)</a>
+                                <a class="nav-link active" id="pills-kg-tab-fill" data-toggle="pill" href="#pills-kg-fill" role="tab" aria-controls="pills-pound" aria-selected="true">TIN (KG)</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="pills-tabContent-1">
-                            <div class="tab-pane fade active show" id="pills-pound-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
+                            <div class="tab-pane fade active show" id="pills-kg-fill" role="tabpanel" aria-labelledby="pills-home-tab-fill">
                                 <div class="card" style="border: 1px solid #c7cbd3 !important;">
                                     <div class="card-body">
                                         <form id="kg-button" action="{{route('admin.payment.receipt.tin.kg.update', Crypt::encrypt($tinPayment->id))}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
@@ -189,7 +189,7 @@
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label>Percentage (%) Analysis *</label>
-                                                        <input type="number" class="form-control" placeholder="Enter percentage analysis value" value="{{$tinPayment->percentage_analysis}}" name="percentage">
+                                                        <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter percentage analysis value" value="{{$tinPayment->percentage_analysis}}" name="percentage">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -213,7 +213,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Kg</label>
-                                                                <input type="number" class="form-control" placeholder="Enter kg value" onkeyup="this.value = minmax(this.value, null, 49)" value="{{$tinPayment->kg}}" name="bag_kg">
+                                                                <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter kg value" onkeyup="this.value = minmax(this.value, null, 49)" value="{{$tinPayment->kg}}" name="bag_kg">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
@@ -222,7 +222,7 @@
                                                 <div id="kgweightkg" class="desc col-12" style="display: none;">
                                                     <div class="form-group">
                                                         <label>Kg</label>
-                                                        <input type="number" class="form-control" placeholder="Enter kg value" value="{{$tinPayment->kg}}" name="kg">
+                                                        <input ttype="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter kg value" value="{{$tinPayment->kg}}" name="kg">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -311,5 +311,15 @@
             $("#kgweight" + test).show();
         });
     });
+
+    function isNumberKey(evt)
+    {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 
+        && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
 </script>
 @endsection

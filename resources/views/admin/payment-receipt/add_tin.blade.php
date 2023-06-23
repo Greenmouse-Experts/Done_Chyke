@@ -11,7 +11,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{route('admin.payment.receipt.tin.view')}}">Tin Payment Receipts</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.payment.receipt.tin.view', 'pound')}}">Tin Payment Receipts</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Add</li>
                 </ol>
             </nav>
@@ -212,7 +212,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label>Percentage (%) Analysis *</label>
-                                                        <input type="number" class="form-control" placeholder="Enter percentage analysis value" name="percentage">
+                                                        <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter percentage analysis value" name="percentage">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -236,7 +236,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Kg</label>
-                                                                <input type="number" class="form-control" placeholder="Enter kg value" onkeyup="this.value = minmax(this.value, null, 49)" value="0" name="bag_kg">
+                                                                <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter kg value" onkeyup="this.value = minmax(this.value, null, 49)" value="0" name="bag_kg">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
@@ -245,7 +245,7 @@
                                                 <div id="kgweightkg" class="desc col-12" style="display: none;">
                                                     <div class="form-group">
                                                         <label>Kg</label>
-                                                        <input type="number" class="form-control" placeholder="Enter kg value" name="kg">
+                                                        <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter kg value" name="kg">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>
@@ -332,5 +332,15 @@
             $("#kgweight" + test).show();
         });
     });
+
+    function isNumberKey(evt)
+    {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 
+        && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
 </script>
 @endsection
