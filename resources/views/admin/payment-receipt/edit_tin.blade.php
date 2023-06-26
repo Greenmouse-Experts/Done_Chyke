@@ -22,6 +22,11 @@
             <div class="col-sm-12">
                 @if($tinPayment->type == 'pound')
                 <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <p class="text-danger"> * Indicates required</p>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">
                             <li class="nav-item">
@@ -148,6 +153,11 @@
                 @endif
                 @if($tinPayment->type == 'kg')
                 <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <p class="text-danger"> * Indicates required</p>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">
                             <li class="nav-item">

@@ -21,6 +21,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="header-title">
+                            <h5 class="card-title">Provide the following informations</h5>
+                            <p class="text-danger"> * Indicates required</p>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">
                             <li class="nav-item">

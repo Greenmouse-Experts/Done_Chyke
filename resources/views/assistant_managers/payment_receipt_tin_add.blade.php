@@ -24,6 +24,7 @@
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
                             <h5 class="card-title">Provide the following informations</h5>
+                            <p class="text-danger"> * Indicates required</p>
                         </div>
                     </div>
                     <div class="card-body">

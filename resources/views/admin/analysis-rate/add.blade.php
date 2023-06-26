@@ -24,6 +24,7 @@
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
                             <h4 class="card-title">Add Analysis Rate</h4>
+                            <p class="text-danger">* Indicates required</p>
                         </div>
                     </div>
                     <div class="card-body">

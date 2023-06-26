@@ -23,7 +23,6 @@
                     <a href="{{route('payment.receipt.lower.grade.columbite.add', 'pound')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add</a>
                 </div>
             </div>
-
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
