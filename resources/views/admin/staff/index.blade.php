@@ -133,6 +133,10 @@
             document.getElementById('password').style.display = "block";
             document.getElementById('comfirm-password').style.display = "block";
             document.getElementById('notify').style.display = "block";
+        } else if (select.value == 'Store Personnel') {
+            document.getElementById('password').style.display = "block";
+            document.getElementById('comfirm-password').style.display = "block";
+            document.getElementById('notify').style.display = "block";
         } else {
             document.getElementById('password').style.display = "none";
             document.getElementById('comfirm-password').style.display = "none";

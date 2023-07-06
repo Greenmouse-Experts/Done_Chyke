@@ -103,7 +103,7 @@
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label>Pounds</label>
-                                                                <input type="number" class="form-control" id="txtWeight" value="0" onkeyup="this.value = minmax(this.value, null, 69)" placeholder="Enter pounds value" name="bag_pounds">
+                                                                <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" id="txtWeight" value="0" onkeyup="this.value = minmax(this.value, null, 69)" placeholder="Enter pounds value" name="bag_pounds">
                                                                 <div class="help-block with-errors"></div>
                                                             </div>
                                                         </div>
@@ -112,7 +112,7 @@
                                                 <div id="weightpound" class="desc col-12" style="display: none;">
                                                     <div class="form-group">
                                                         <label>Pounds</label>
-                                                        <input type="number" class="form-control" placeholder="Enter pounds value" name="pounds">
+                                                        <input type="text" id="txtChar" onkeypress="return isNumberKey(event)" class="form-control" placeholder="Enter pounds value" name="pounds">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
                                                 </div>

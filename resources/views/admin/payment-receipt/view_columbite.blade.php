@@ -61,7 +61,7 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
-                                                <th>Berating Rate List</th>
+                                                <!-- <th>Berating Rate List</th> -->
                                                 <th>Bags</th>
                                                 <th>Pound</th>
                                                 <th>Percentage (%)</th>
@@ -85,11 +85,11 @@
                                                 <td>@if($receipt->type == 'kg')Columbite (KG) @else Columbite (POUND) @endif</td>
                                                 <td><a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->staff))}}">{{App\Models\User::find($receipt->staff)->name}}</a></td>
                                                 <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
-                                                <td>
+                                                <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
                                                     @endforeach
-                                                </td>
+                                                </td> -->
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->pound}}</td>
                                                 <th>{{$receipt->percentage_analysis}}</th>
@@ -167,7 +167,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="13" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="12" style="font-size: 1.1rem; font-weight: 700">Total</td>
                                                 <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$columbitePaymentReceiptPound->sum('total_in_pound')}}lbs</td>
                                                 <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($columbitePaymentReceiptPound->sum('price'), 2)}}</td>
                                             </tr>
@@ -200,7 +200,7 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
-                                                <th>Berating Rate List</th>
+                                                <!-- <th>Berating Rate List</th> -->
                                                 <th>Bags</th>
                                                 <th>Kg</th>
                                                 <th>Percentage (%)</th>
@@ -224,11 +224,11 @@
                                                 <td>@if($receipt->type == 'kg')Columbite (KG) @else Columbite (POUND) @endif</td>
                                                 <td><a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->staff))}}">{{App\Models\User::find($receipt->staff)->name}}</a></td>
                                                 <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
-                                                <td>
+                                                <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
                                                     @endforeach
-                                                </td>
+                                                </td> -->
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->kg}}</td>
                                                 <th>{{$receipt->percentage_analysis}}</th>
@@ -305,7 +305,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="13" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="12" style="font-size: 1.1rem; font-weight: 700">Total</td>
                                                 <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$columbitePaymentReceiptKg->sum('total_in_kg')}}kg</td>
                                                 <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($columbitePaymentReceiptKg->sum('price'), 2)}}</td>
                                             </tr>

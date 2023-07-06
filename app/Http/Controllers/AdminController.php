@@ -1486,9 +1486,8 @@ class AdminController extends Controller
                     'pounds' => ['required', 'numeric']
                 ]);
 
-                $price_pound = $berating->price / pound_rate;
+                $equivalentPriceForPound = $request->pounds * $berating->unit_price;
 
-                $equivalentPriceForPound = $request->pounds * $price_pound;
                 $total_in_pounds = $request->pounds;
 
                 $total = $equivalentPriceForPound;
@@ -1602,9 +1601,7 @@ class AdminController extends Controller
                 'pounds' => ['required', 'numeric']
             ]);
 
-            $price_pound = $berating->price / pound_rate;
-
-            $equivalentPriceForPound = $request->pounds * $price_pound;
+            $equivalentPriceForPound = $request->pounds * $berating->unit_price;
 
             $total = $equivalentPriceForPound;
 
@@ -2173,9 +2170,8 @@ class AdminController extends Controller
                     'pounds' => ['required', 'numeric']
                 ]);
 
-                $price_pound = $berating->price / pound_rate;
+                $equivalentPriceForPound = $request->pounds * $berating->unit_price;
 
-                $equivalentPriceForPound = $request->pounds * $price_pound;
                 $total_in_pounds = $request->pounds;
 
                 $total = $equivalentPriceForPound;
@@ -2315,9 +2311,7 @@ class AdminController extends Controller
                 'pounds' => ['required', 'numeric']
             ]);
 
-            $price_pound = $berating->price / pound_rate;
-
-            $equivalentPriceForPound = $request->pounds * $price_pound;
+            $equivalentPriceForPound = $request->pounds * $berating->unit_price;
 
             $total = $equivalentPriceForPound;
 
@@ -3005,7 +2999,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -3099,7 +3093,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation;
     
-                $total = $subTotal * $request->pounds;
+                $total = floor($subTotal) * $request->pounds;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -3216,7 +3210,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -3267,7 +3261,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation;
 
-            $total = $subTotal * $request->pounds;
+            $total = floor($subTotal) * $request->pounds;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -3392,7 +3386,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * rate + $request->bag_kg;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -3486,7 +3480,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation * fixed_rate;
     
-                $total = $subTotal * $request->kg;
+                $total = floor($subTotal) * $request->kg;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -3602,8 +3596,8 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * rate + $request->bag_kg;
                 
-                $total = $subTotal * $subPrice;
-
+                $total = floor($subTotal) * $subPrice;
+                
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
                 return redirect()->route('admin.payment.receipt.columbite.add', 'kg')->with([
@@ -3653,7 +3647,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation * fixed_rate;
 
-            $total = $subTotal * $request->kg;
+            $total = floor($subTotal) * $request->kg;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -3781,7 +3775,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -3901,7 +3895,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation;
     
-                $total = $subTotal * $request->pounds;
+                $total = floor($subTotal) * $request->pounds;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4044,7 +4038,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4095,7 +4089,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation;
 
-            $total = $subTotal * $request->pounds;
+            $total = floor($subTotal) * $request->pounds;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4212,7 +4206,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * rate + $request->bag_kg;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -4332,7 +4326,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation * fixed_rate;
     
-                $total = $subTotal * $request->kg;
+                $total = floor($subTotal) * $request->kg;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4473,7 +4467,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * rate + $request->bag_kg;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4524,7 +4518,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation * fixed_rate;
 
-            $total = $subTotal * $request->kg;
+            $total = floor($subTotal) * $request->kg;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4775,7 +4769,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -4869,7 +4863,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation;
     
-                $total = $subTotal * $request->pounds;
+                $total = floor($subTotal) * $request->pounds;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -4986,7 +4980,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5037,7 +5031,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation;
 
-            $total = $subTotal * $request->pounds;
+            $total = floor($subTotal) * $request->pounds;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5162,7 +5156,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * rate + $request->bag_kg;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -5256,7 +5250,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation * fixed_rate;
     
-                $total = $subTotal * $request->kg;
+                $total = floor($subTotal) * $request->kg;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5372,7 +5366,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * rate + $request->bag_kg;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5423,7 +5417,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation * fixed_rate;
 
-            $total = $subTotal * $request->kg;
+            $total = floor($subTotal) * $request->kg;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5551,7 +5545,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -5671,7 +5665,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation;
     
-                $total = $subTotal * $request->pounds;
+                $total = floor($subTotal) * $request->pounds;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5814,7 +5808,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * columbite_rate + $request->bag_pound;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5865,7 +5859,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation;
 
-            $total = $subTotal * $request->pounds;
+            $total = floor($subTotal) * $request->pounds;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -5982,7 +5976,7 @@ class AdminController extends Controller
 
                     $subPrice = $request->bags * rate + $request->bag_kg;
                     
-                    $total = $subTotal * $subPrice;
+                    $total = floor($subTotal) * $subPrice;
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
@@ -6102,7 +6096,7 @@ class AdminController extends Controller
     
                 $subTotal = $per * $rateCalculation * fixed_rate;
     
-                $total = $subTotal * $request->kg;
+                $total = floor($subTotal) * $request->kg;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -6243,7 +6237,7 @@ class AdminController extends Controller
 
                 $subPrice = $request->bags * rate + $request->bag_kg;
                 
-                $total = $subTotal * $subPrice;
+                $total = floor($subTotal) * $subPrice;
 
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -6294,7 +6288,7 @@ class AdminController extends Controller
 
             $subTotal = $per * $rateCalculation * fixed_rate;
 
-            $total = $subTotal * $request->kg;
+            $total = floor($subTotal) * $request->kg;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 

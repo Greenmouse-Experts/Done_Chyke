@@ -132,7 +132,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Update {{$user->name}} Account</button>
                             </form>
-                            @if($user->account_type == 'Accountant' || $user->account_type == 'Assistant Manager')
+                            @if($user->account_type == 'Accountant' || $user->account_type == 'Assistant Manager' || $user->account_type == 'Store Personnel')
                             <hr>
                             <h5 class="mb-3">Security</h5>
                             <form action="{{ route('admin.update.staff.password', Crypt::encrypt($user->id))}}" method="post">
