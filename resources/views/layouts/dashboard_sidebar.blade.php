@@ -21,7 +21,7 @@
                         <span class="ml-4">Dashboard</span>
                     </a>
                 </li>
-                @if(Auth::user()->account_type == 'Assistant Manager')
+                @if(Auth::user()->account_type == 'Assistant Manager' || Auth::user()->account_type == 'Store Personnel')
                 <li class="{{ (request()->is('assistant-manager/payment/receipt*')) ? 'active' : '' }}">
                     <a href="#receipt" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-calculator-line mr-0"></i>

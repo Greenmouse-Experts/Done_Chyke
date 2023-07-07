@@ -26,6 +26,7 @@
                         <div class="header-title">
                             <p class="text-danger"> * Indicates required</p>
                         </div>
+                        @include('layouts.additional_layout')
                     </div>
                     <div class="card-body">
                         <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab-1" role="tablist">

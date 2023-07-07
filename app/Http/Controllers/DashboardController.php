@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Balance;
+use App\Models\BeratingCalculation;
 use App\Models\Expenses;
 use App\Models\Notification;
 use App\Models\User;
@@ -171,5 +172,71 @@ class DashboardController extends Controller
         ]);
 
         return back();
+    }
+
+    public function get_berating_rate(Request $request)
+    {
+        $beratingcalculation = BeratingCalculation::find($request->id);
+
+        return $beratingcalculation;
+    }
+
+    public function update_berating_rate(Request $request)
+    {
+        $this->validate($request, [
+            'price' => ['required', 'numeric'],
+            'unit_price' => ['required', 'numeric'],
+        ]);
+
+        $beratingcalculation = BeratingCalculation::find($request->id);
+
+        if($beratingcalculation->grade == $request->grade)
+        {
+            $beratingcalculation->update([
+                'grade' => $request->grade,
+                'price' => $request->price,
+                'unit_price' => $request->unit_price
+            ]);
+    
+        } else {
+            $this->validate($request, [
+                'grade' => ['required', 'numeric', 'unique:berating_calculations'],
+            ]);
+
+            $beratingcalculation->update([
+                'grade' => $request->grade,
+                'price' => $request->price,
+                'unit_price' => $request->unit_price
+            ]);
+        }
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Updated successfully!'
+        ]);
+    }
+
+    public function add_berating_rate(Request $request)
+    {
+        $response = [
+            'grade.regex' => 'Grade field requires decimal point.'
+        ];
+
+        $this->validate($request, [
+            'grade' => ['required', 'numeric', 'unique:berating_calculations', 'regex:/^[-+]?[0-9]+\.[0-9]+$/'],
+            'price' => ['required', 'numeric'],
+            'unit_price' => ['required', 'numeric'], 
+        ], $response);
+
+        BeratingCalculation::create([
+            'grade' => $request->grade,
+            'price' => $request->price,
+            'unit_price' => $request->unit_price
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Added successfully!'
+        ]);
     }
 }

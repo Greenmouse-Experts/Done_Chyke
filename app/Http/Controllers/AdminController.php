@@ -611,7 +611,7 @@ class AdminController extends Controller
             'email' => ['string', 'email', 'max:255', 'unique:users']
         ]);
 
-        if($request->account_type == 'Accountant' || $request->account_type == 'Assistant Manager')
+        if($request->account_type == 'Accountant' || $request->account_type == 'Assistant Manager' || $request->account_type == 'Store Personnel')
         {
             $this->validate($request, [
                 'password' => ['required', 'string', 'min:8', 'confirmed']

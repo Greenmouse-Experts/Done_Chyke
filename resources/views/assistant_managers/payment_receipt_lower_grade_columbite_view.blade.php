@@ -59,7 +59,7 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
-                                                <th>Berating Rate List</th>
+                                                <!-- <th>Berating Rate List</th> -->
                                                 <th>Bags</th>
                                                 <th>Pound</th>
                                                 <th>Percentage (%)</th>
@@ -81,11 +81,11 @@
                                                 <td>@if($receipt->type == 'kg')Columbite (KG) @else Columbite (POUND) @endif</td>
                                                 <td>{{App\Models\User::find($receipt->staff)->name}}</td>
                                                 <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
-                                                <td>
+                                                <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
                                                     @endforeach
-                                                </td>
+                                                </td> -->
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->pound}}</td>
                                                 <th>{{$receipt->percentage_analysis}}</th>
@@ -151,7 +151,7 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
-                                                <th>Berating Rate List</th>
+                                                <!-- <th>Berating Rate List</th> -->
                                                 <th>Bags</th>
                                                 <th>Kg</th>
                                                 <th>Percentage (%)</th>
@@ -173,11 +173,11 @@
                                                 <td>@if($receipt->type == 'kg')Columbite (KG) @else Columbite (POUND) @endif</td>
                                                 <td>{{App\Models\User::find($receipt->staff)->name}}</td>
                                                 <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
-                                                <td>
+                                                <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
                                                     @endforeach
-                                                </td>
+                                                </td> -->
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->kg}}</td>
                                                 <th>{{$receipt->percentage_analysis}}</th>

@@ -1,7 +1,7 @@
 @extends('layouts.dashboard_frontend')
 
 @section('page-content')
-@if(Auth::user()->account_type == 'Assistant Manager')
+@if(Auth::user()->account_type == 'Assistant Manager' || Auth::user()->account_type == 'Store Personnel')
 <div class="content-page">
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
@@ -37,11 +37,11 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Count Of Tin Payment Receipt (Pound)</p>
-                                        <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                        <h4>{{App\Models\PaymentReceiptTin::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}">
                                     </span>
                                 </div>
                             </div>
@@ -56,11 +56,11 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Count Of Tin Payment Receipt (Kg)</p>
-                                        <h4>{{App\Models\PaymentReceiptTin::latest()->where('type', 'kg')->get()->count()}}</h4>
+                                        <h4>{{App\Models\PaymentReceiptTin::latest()->where(['user_id' => Auth::user()->id, 'type' => 'kg'])->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where('type', 'pound')->get()->count()}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptTin::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}">
                                     </span>
                                 </div>
                             </div>
@@ -79,11 +79,11 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Count Of Columbite Payment Receipt (Pound)</p>
-                                        <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                        <h4>{{App\Models\PaymentReceiptColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'pound')->get()->count()}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}">
                                     </span>
                                 </div>
                             </div>
@@ -102,11 +102,11 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Count Of Columbite Payment Receipt (Kg)</p>
-                                        <h4>{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'kg')->get()->count()}}</h4>
+                                        <h4>{{App\Models\PaymentReceiptColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'kg'])->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where('type', 'kg')->get()->count()}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'kg'])->get()->count()}}">
                                     </span>
                                 </div>
                             </div>
@@ -125,11 +125,11 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Count Of Lower Grade Columbite Payment Receipt (Pound)</p>
-                                        <h4>{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'pound')->get()->count()}}</h4>
+                                        <h4>{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'pound')->get()->count()}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'pound'])->get()->count()}}">
                                     </span>
                                 </div>
                             </div>
@@ -148,11 +148,11 @@
                                     </div>
                                     <div>
                                         <p class="mb-2">Total Count Of Lower Grade Columbite Payment Receipt (Kg)</p>
-                                        <h4>{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'kg')->get()->count()}}</h4>
+                                        <h4>{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'kg'])->get()->count()}}</h4>
                                     </div>
                                 </div>
                                 <div class="iq-progress-bar mt-2">
-                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where('type', 'kg')->get()->count()}}">
+                                    <span class="bg-danger iq-progress progress-1" data-percent="{{App\Models\PaymentReceiptLowerGradeColumbite::latest()->where(['user_id' => Auth::user()->id, 'type' => 'kg'])->get()->count()}}">
                                     </span>
                                 </div>
                             </div>

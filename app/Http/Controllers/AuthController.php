@@ -239,18 +239,15 @@ class AuthController extends Controller
                 ]);
             }
 
-
-
             if ($user->account_type == 'Accountant') {
                 return redirect()->route('dashboard', $user->username);
             }
 
-            if ($user->account_type == 'Assistant Manager') {
+            if ($user->account_type == 'Assistant Manager' || $user->account_type == 'Store Personnel') {
                 return redirect()->route('dashboard', $user->username);
             }
 
             Auth::logout();
-
 
             return back()->with([
                 'type' => 'danger',

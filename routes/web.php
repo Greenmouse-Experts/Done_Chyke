@@ -42,6 +42,10 @@ Route::prefix('/dashboard')->group(
         Route::post('/upload/profile/picture', [DashboardController::class, 'upload_profile_picture'])->name('upload.profile.picture');
         Route::get('/notifications', [DashboardController::class, 'notifications'])->name('notifications');
         Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
+
+        Route::post('/add/berating/rate', [DashboardController::class, 'add_berating_rate'])->name('add.berating.rate');
+        Route::post('/get/berating/rate', [DashboardController::class, 'get_berating_rate'])->name('get.berating.rate');
+        Route::post('/update/berating/rate', [DashboardController::class, 'update_berating_rate'])->name('update.berating.rate');
     }
 );
 
@@ -62,7 +66,7 @@ Route::middleware(['auth', 'isAccountant'])->group(function () {
 
 // Assistant Manager
 Route::middleware(['auth', 'isAssistantManager'])->group(function () {
-    Route::prefix('/assistant-manager')->group(
+    Route::prefix('/general')->group(
         function () {
             //Tin
             Route::any('/payment/receipt/tin/view/{id}', [AssistantManagerController::class, 'payment_receipt_tin_view'])->name('payment.receipt.tin.view');

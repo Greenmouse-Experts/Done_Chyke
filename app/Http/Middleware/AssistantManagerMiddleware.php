@@ -17,7 +17,7 @@ class AssistantManagerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->account_type == 'Assistant Manager'){
+        if (Auth::user()->account_type == 'Assistant Manager' || Auth::user()->account_type == 'Store Personnel' ){
             return $next($request);
         } else {
             return back()->with([
