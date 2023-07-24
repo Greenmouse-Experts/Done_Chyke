@@ -76,13 +76,31 @@
                                                 <td>
                                                     {{$loop->iteration}}
                                                 </td>
-                                                <td><a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->user_id))}}">{{App\Models\User::find($receipt->user_id)->name}}</a></td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->user_id)->exists())
+                                                    <a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->user_id))}}">{{App\Models\User::find($receipt->user_id)->name}}</a>
+                                                    @else
+                                                    <b>{{ 'USER DELETED' }}</b>
+                                                    @endif
+                                                </td>
                                                 <td>{{$receipt->date_of_purchase}}</td>
                                                 <td>{{$receipt->receipt_no}}</td>
                                                 <td>{{$receipt->supplier}}</td>
                                                 <td>@if($receipt->type == 'kg')TIN (KG) @else TIN (POUND) @endif</td>
-                                                <td><a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->staff))}}">{{App\Models\User::find($receipt->staff)->name}}</a></td>
-                                                <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->staff)->exists())
+                                                    <a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->staff))}}">{{App\Models\User::find($receipt->staff)->name}}</a>
+                                                    @else
+                                                    <b>{{ 'USER DELETED' }}</b>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
+                                                    @else
+                                                    <b>{{ 'GRADE DELETED' }}</b>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
@@ -210,13 +228,31 @@
                                                 <td>
                                                     {{$loop->iteration}}
                                                 </td>
-                                                <td><a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->user_id))}}">{{App\Models\User::find($receipt->user_id)->name}}</a></td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->user_id)->exists())
+                                                    <a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->user_id))}}">{{App\Models\User::find($receipt->user_id)->name}}</a>
+                                                    @else
+                                                    <b>{{ 'USER DELETED' }}</b>
+                                                    @endif
+                                                </td>
                                                 <td>{{$receipt->date_of_purchase}}</td>
                                                 <td>{{$receipt->receipt_no}}</td>
                                                 <td>{{$receipt->supplier}}</td>
                                                 <td>@if($receipt->type == 'kg')TIN (KG) @else TIN (POUND) @endif</td>
-                                                <td><a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->staff))}}">{{App\Models\User::find($receipt->staff)->name}}</a></td>
-                                                <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->staff)->exists())
+                                                    <a data-toggle="tooltip" data-placement="top" title="View" data-original-title="View" href="{{route('admin.edit.staff', Crypt::encrypt($receipt->staff))}}">{{App\Models\User::find($receipt->staff)->name}}</a>
+                                                    @else
+                                                    <b>{{ 'USER DELETED' }}</b>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
+                                                    @else
+                                                    <b>{{ 'GRADE DELETED' }}</b>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>

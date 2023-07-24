@@ -782,6 +782,56 @@ class AdminController extends Controller
         $finder = Crypt::decrypt($id);
 
         $user = User::find($finder);
+        
+        $paymentReceiptTin = PaymentReceiptTin::where('user_id', $user->id)->exists();
+
+        if($paymentReceiptTin)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'This user has added tin payment receipt. Delete it and try again.'
+            ]);
+        }
+
+        $paymentReceiptColumbite = PaymentReceiptColumbite::where('user_id', $user->id)->exists();
+
+        if($paymentReceiptColumbite)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'This user has added columbite payment receipt. Delete it and try again.'
+            ]);
+        }
+
+        $paymentReceiptLowerGrade = PaymentReceiptLowerGradeColumbite::where('user_id', $user->id)->exists();
+
+        if($paymentReceiptLowerGrade)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'This user has added columbite lower grade payment receipts. Delete it and try again.'
+            ]);
+        }
+
+        $expenses = Expenses::where('user_id', $user->id)->exists();
+
+        if($expenses)
+        {
+            return back()->with([
+                'type' => 'danger',
+                'message' => 'This user has added expenses. Delete it and try again.'
+            ]);
+        }
+
+        $notifications = Notification::where('to', $user->id)->get();
+
+        if($notifications->count() > 0)
+        {
+            foreach($notifications as $notification)
+            {
+                $notification->delete();
+            }
+        }
 
         if($user->avatar) {
             Storage::delete(str_replace("storage", "public", $user->avatar));

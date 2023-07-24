@@ -79,8 +79,20 @@
                                                 <td>{{$receipt->receipt_no}}</td>
                                                 <td>{{$receipt->supplier}}</td>
                                                 <td>@if($receipt->type == 'kg')Columbite (KG) @else Columbite (POUND) @endif</td>
-                                                <td>{{App\Models\User::find($receipt->staff)->name}}</td>
-                                                <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->staff)->exists())
+                                                    {{App\Models\User::find($receipt->staff)->name}}
+                                                    @else
+                                                    <b>{{ 'USER DELETED' }}</b>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
+                                                    @else
+                                                    <b>{{ 'GRADE DELETED' }}</b>
+                                                    @endif
+                                                </td>
                                                 <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
@@ -171,8 +183,20 @@
                                                 <td>{{$receipt->receipt_no}}</td>
                                                 <td>{{$receipt->supplier}}</td>
                                                 <td>@if($receipt->type == 'kg')Columbite (KG) @else Columbite (POUND) @endif</td>
-                                                <td>{{App\Models\User::find($receipt->staff)->name}}</td>
-                                                <td>{{App\Models\BeratingCalculation::find($receipt->grade)->grade}}</td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->staff)->exists())
+                                                    {{App\Models\User::find($receipt->staff)->name}}
+                                                    @else
+                                                    <b>{{ 'USER DELETED' }}</b>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
+                                                    @else
+                                                    <b>{{ 'GRADE DELETED' }}</b>
+                                                    @endif
+                                                </td>
                                                 <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>

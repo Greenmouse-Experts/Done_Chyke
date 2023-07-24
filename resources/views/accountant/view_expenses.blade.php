@@ -58,7 +58,13 @@
                             @foreach($expenses as $expense)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                <td>{{App\Models\User::find($expense->supplier)->name}}</td>
+                                <td>
+                                    @if (App\Models\User::where('id', $expense->supplier)->exists())
+                                    {{App\Models\User::find($expense->supplier)->name}}
+                                    @else
+                                    <b>{{ 'USER DELETED' }}</b>
+                                    @endif
+                                </td>
                                 <td>{{$expense->payment_source}}</td>
                                 <td>{{$expense->category}}</td>
                                 <td>{{$expense->description}}</td>
