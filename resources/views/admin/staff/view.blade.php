@@ -50,7 +50,7 @@
                                     <img class="rounded" width="50" src="{{$staff->avatar}}" alt="{{$staff->first_name}}">
                                 @else
                                 <div class="avatar-xs" style="display: inline-block; vertical-align: middle;">
-                                    <span class="img-fluid rounded" style="background: #c56963; padding: 0.5rem; color: #fff;">
+                                    <span class="img-fluid rounded" style="background: #c56963; padding: 0.5rem; color: #fff; font-size: 12px;">
                                         {{ ucfirst(substr($staff->name, 0, 1)) }} {{ ucfirst(substr($staff->name, 1, 1)) }}
                                     </span>
                                 </div>
