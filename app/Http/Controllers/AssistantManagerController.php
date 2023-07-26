@@ -4537,7 +4537,7 @@ class AssistantManagerController extends Controller
             return DataTables::of($analysis)->make(true);
         }
 
-        return view('assistant_managers.weekly_material_summary.lower_grade_pound', [
+        return view('assistant_managers.weekly_material_summary.low_grade_pound', [
             'analysis' => $analysis,
             'data' => $data,
             'start_date' => $request->start_date,
@@ -5046,7 +5046,7 @@ class AssistantManagerController extends Controller
             return DataTables::of($analysis)->make(true);
         }
 
-        return view('assistant_managers.weekly_material_summary.lower_grade_kg', [
+        return view('assistant_managers.weekly_material_summary.low_grade_kg', [
             'analysis' => $analysis,
             'data' => $data,
             'start_date' => $request->start_date,
