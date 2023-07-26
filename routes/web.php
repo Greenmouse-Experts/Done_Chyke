@@ -83,6 +83,37 @@ Route::middleware(['auth', 'isAssistantManager'])->group(function () {
             Route::get('/payment/receipt/lower/grade/columbite/add/{id}', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_add'])->name('payment.receipt.lower.grade.columbite.add');
             Route::any('/payment/receipt/lower/grade/columbite/pound/post', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_pound_post'])->name('payment.receipt.lower.grade.columbite.pound.post');
             Route::any('/payment/receipt/lower/grade/columbite/kg/post', [AssistantManagerController::class, 'payment_receipt_lower_grade_columbite_kg_post'])->name('payment.receipt.lower.grade.columbite.kg.post');
+
+            // Weekly Material Summary
+            Route::any('/weekly/material/summary/tin/pound', [AssistantManagerController::class, 'weekly_material_summary_tin_pound'])->name('weekly.material.summary.tin.pound');
+            Route::any('/weekly/material/summary/tin/kg', [AssistantManagerController::class, 'weekly_material_summary_tin_kg'])->name('weekly.material.summary.tin.kg');
+            Route::any('/weekly/material/summary/columbite/pound', [AssistantManagerController::class, 'weekly_material_summary_columbite_pound'])->name('weekly.material.summary.columbite.pound');
+            Route::any('/weekly/material/summary/columbite/kg', [AssistantManagerController::class, 'weekly_material_summary_columbite_kg'])->name('weekly.material.summary.columbite.kg');
+            Route::any('/weekly/material/summary/low/grade/pound', [AssistantManagerController::class, 'weekly_material_summary_low_grade_pound'])->name('weekly.material.summary.low.grade.pound');
+            Route::any('/weekly/material/summary/low/grade/kg', [AssistantManagerController::class, 'weekly_material_summary_low_grade_kg'])->name('weekly.material.summary.low.grade.kg');
+
+            // Rates
+            Route::get('/rates/list/berating', [AssistantManagerController::class, 'rates_berating'])->name('rates.berating');
+            Route::get('/rates/list/berating/add', [AssistantManagerController::class, 'add_rate_berating'])->name('add.rate.berating');
+            Route::post('/rates/list/berating/post', [AssistantManagerController::class, 'post_rate_berating'])->name('post.rate.berating');
+            Route::post('/rates/list/berating/update/{id}', [AssistantManagerController::class, 'rate_berating_update'])->name('update.rate.berating');
+            Route::get('/rates/list/berating/activate/{id}', [AssistantManagerController::class, 'rate_berating_activate'])->name('activate.rate.berating');
+            Route::get('/rates/list/berating/deactivate/{id}', [AssistantManagerController::class, 'rate_berating_deactivate'])->name('deactivate.rate.berating');
+            Route::post('/rates/list/berating/delete/{id}', [AssistantManagerController::class, 'rate_berating_delete'])->name('delete.rate.berating');
+
+            Route::get('/rates/list/analysis', [AssistantManagerController::class, 'rates_analysis'])->name('rates.analysis');
+            Route::get('/rates/list/analysis/add', [AssistantManagerController::class, 'add_rate_analysis'])->name('add.rate.analysis');
+            Route::post('/rates/list/analysis/post', [AssistantManagerController::class, 'post_rate_analysis'])->name('post.rate.analysis');
+            Route::post('/rates/list/analysis/update/{id}', [AssistantManagerController::class, 'rate_analysis_update'])->name('update.rate.analysis');
+            Route::get('/rates/list/analysis/activate/{id}', [AssistantManagerController::class, 'rate_analysis_activate'])->name('activate.rate.analysis');
+            Route::get('/rates/list/analysis/deactivate/{id}', [AssistantManagerController::class, 'rate_analysis_deactivate'])->name('deactivate.rate.analysis');
+            Route::post('/rates/list/analysis/delete/{id}', [AssistantManagerController::class, 'rate_analysis_delete'])->name('delete.rate.analysis');
+        
+            Route::get('/rates/list/benchmark', [AssistantManagerController::class, 'rates_beanchmark'])->name('rates.benchmark');
+            Route::post('/rates/list/benchmark/post', [AssistantManagerController::class, 'post_rate_benchmark'])->name('post.rate.benchmark');
+            Route::post('/rates/list/benchmark/update/{id}', [AssistantManagerController::class, 'rate_benchmark_update'])->name('update.rate.benchmark');
+            Route::post('/rates/list/benchmark/delete/{id}', [AssistantManagerController::class, 'rate_benchmark_delete'])->name('delete.rate.benchmark');
+        
         }
     );
 });
@@ -180,15 +211,14 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/admin/payment/receipt/lower/grade/columbite/kg/update/{id}', [AdminController::class, 'payment_receipt_lower_grade_columbite_kg_update'])->name('admin.payment.receipt.lower.grade.columbite.kg.update');
     Route::post('/admin/payment/receipt/lower/grade/columbite/delete/{id}/{type}', [AdminController::class, 'payment_receipt_lower_grade_columbite_delete'])->name('admin.payment.receipt.lower.grade.columbite.delete');
 
-    // Weekly Analysis
-    Route::any('/admin/weekly/analysis/tin/pound', [AdminController::class, 'weekly_analysis_tin_pound'])->name('admin.weekly.analysis.tin.pound');
-    Route::any('/admin/weekly/analysis/tin/kg', [AdminController::class, 'weekly_analysis_tin_kg'])->name('admin.weekly.analysis.tin.kg');
-    Route::any('/admin/weekly/analysis/columbite/pound', [AdminController::class, 'weekly_analysis_columbite_pound'])->name('admin.weekly.analysis.columbite.pound');
-    Route::any('/admin/weekly/analysis/columbite/kg', [AdminController::class, 'weekly_analysis_columbite_kg'])->name('admin.weekly.analysis.columbite.kg');
+    // Weekly Material Summary
+    Route::any('/admin/weekly/material/summary/tin/pound', [AdminController::class, 'weekly_material_summary_tin_pound'])->name('admin.weekly.material.summary.tin.pound');
+    Route::any('/admin/weekly/material/summary/tin/kg', [AdminController::class, 'weekly_material_summary_tin_kg'])->name('admin.weekly.material.summary.tin.kg');
+    Route::any('/admin/weekly/material/summary/columbite/pound', [AdminController::class, 'weekly_material_summary_columbite_pound'])->name('admin.weekly.material.summary.columbite.pound');
+    Route::any('/admin/weekly/material/summary/columbite/kg', [AdminController::class, 'weekly_material_summary_columbite_kg'])->name('admin.weekly.material.summary.columbite.kg');
+    Route::any('/admin/weekly/material/summary/low/grade/pound', [AdminController::class, 'weekly_material_summary_low_grade_pound'])->name('admin.weekly.material.summary.low.grade.pound');
+    Route::any('/admin/weekly/material/summary/low/grade/kg', [AdminController::class, 'weekly_material_summary_low_grade_kg'])->name('admin.weekly.material.summary.low.grade.kg'); 
 
-    // Monthly Analysis
-    Route::any('/admin/monthly/analysis/lower/grade/columbite/pound', [AdminController::class, 'monthly_analysis_lower_grade_columbite_pound'])->name('admin.monthly.analysis.lower.grade.columbite.pound');
-    Route::any('/admin/monthly/analysis/lower/grade/columbite/kg', [AdminController::class, 'monthly_analysis_lower_grade_columbite_kg'])->name('admin.monthly.analysis.lower.grade.columbite.kg');
 
     Route::any('/admin/daily/balance', [AdminController::class, 'daily_balance'])->name('admin.daily.balance');
     Route::post('/admin/daily/balance/update/{id}', [AdminController::class, 'update_daily_balance'])->name('admin.daily.balance.update');

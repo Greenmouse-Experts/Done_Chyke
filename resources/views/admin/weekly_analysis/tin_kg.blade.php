@@ -5,7 +5,7 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">Summary of Tin (Kg) Material Collected</h4>
+                <h4 class="mb-3">Weekly Material Summary for Tin (Kg)</h4>
             </div>
 
             <nav aria-label="breadcrumb">
@@ -22,7 +22,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div style="justify-content: flex-start;">
-                            <form action="{{ route('admin.weekly.analysis.tin.kg')}}" method="POST" data-toggle="validator">
+                            <form action="{{ route('weekly.material.summary.tin.kg')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
                                 <input type="date" name="start_date" class="form-control" value="{{$start_date}}">

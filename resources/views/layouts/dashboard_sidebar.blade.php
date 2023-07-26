@@ -22,6 +22,33 @@
                     </a>
                 </li>
                 @if(Auth::user()->account_type == 'Assistant Manager' || Auth::user()->account_type == 'Store Personnel')
+                <li class="{{ (request()->is('general/rates/list*')) ? 'active' : '' }}">
+                    <a href="#rates-list" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <i class="ri-calculator-line mr-0"></i>
+                        <span class="ml-4">Rates List</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="rates-list" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('general/rates/list/berating')) ? 'active' : '' }}">
+                            <a href="{{route('rates.berating')}}">
+                                <i class="las la-minus"></i><span>Berating</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/rates/list/analysis')) ? 'active' : '' }}">
+                            <a href="{{route('rates.analysis')}}">
+                                <i class="las la-minus"></i><span>Analysis</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/rates/list/benchmark')) ? 'active' : '' }}">
+                            <a href="{{route('rates.benchmark')}}">
+                                <i class="las la-minus"></i><span>Benchmark</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="{{ (request()->is('assistant-manager/payment/receipt*')) ? 'active' : '' }}">
                     <a href="#receipt" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-calculator-line mr-0"></i>
@@ -49,6 +76,50 @@
                         </li>
                     </ul>
                 </li>
+                <li class="{{ (request()->is('general/weekly/material/summary*')) ? 'active' : '' }}">
+                    <a href="#material" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <svg class="svg-icon" id="p-dash7" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span class="ml-4">Weekly Summary</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="material" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('general/weekly/material/summary/tin/pound')) ? 'active' : '' }}">
+                            <a href="{{route('weekly.material.summary.tin.pound')}}">
+                                <i class="las la-minus"></i><span>Tin (Pound)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/weekly/material/summary/tin/kg')) ? 'active' : '' }}">
+                            <a href="{{route('weekly.material.summary.tin.kg')}}">
+                                <i class="las la-minus"></i><span>Tin (Kg)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/weekly/material/summary/columbite/pound')) ? 'active' : '' }}">
+                            <a href="{{route('weekly.material.summary.columbite.pound')}}">
+                                <i class="las la-minus"></i><span>Columbite (Pound)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/weekly/material/summary/columbite/kg')) ? 'active' : '' }}">
+                            <a href="{{route('weekly.material.summary.columbite.kg')}}">
+                                <i class="las la-minus"></i><span>Columbite (Kg)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/weekly/material/summary/low/grade/pound')) ? 'active' : '' }}">
+                            <a href="{{route('weekly.material.summary.low.grade.pound')}}">
+                                <i class="las la-minus"></i><span>Low Grade (Pound)</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('general/weekly/material/summary/low/grade/kg')) ? 'active' : '' }}">
+                            <a href="{{route('weekly.material.summary.low.grade.kg')}}">
+                                <i class="las la-minus"></i><span>Low Grade (Kg)</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 @endif
                 @if(Auth::user()->account_type == 'Accountant')
                 <li class="{{ (request()->is('daily/balance')) ? 'active' : '' }}">
@@ -58,7 +129,7 @@
                     </a>
                 </li>
                 <li class="{{ (request()->is('accountant/expenses/*')) ? 'active' : '' }}">
-                    <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                    <a href="#expenses" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <i class="ri-wallet-2-line mr-0"></i>
                         <span class="ml-4">Expenses</span>
                         <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -66,7 +137,7 @@
                             <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
                         </svg>
                     </a>
-                    <ul id="analysis" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                    <ul id="expenses" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                         <li class="{{ (request()->is('accountant/expenses/view')) ? 'active' : '' }}">
                             <a href="{{route('expenses.view')}}">
                                 <i class="las la-minus"></i><span>View</span>

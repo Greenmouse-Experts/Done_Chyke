@@ -24,17 +24,24 @@ class AccountantController extends Controller
 
     public function expenses_view(Request $request)
     {
-        if($request->start_date == null && $request->end_date == null)
+        if($request->start_date == null && $request->end_date == null && $request->source == null)
         {
             $expenses = Expenses::latest()->where('user_id', Auth::user()->id)->get();
-        } else {
+        } elseif($request->start_date !== null && $request->end_date !== null && $request->source == null)
+        {
             $expenses = Expenses::latest()->where('user_id', Auth::user()->id)->whereBetween('date', [$request->start_date, $request->end_date])->get();
+        } elseif($request->start_date == null && $request->end_date == null && $request->source !== null)
+        {
+            $expenses = Expenses::latest()->where('user_id', Auth::user()->id)->where('payment_source', $request->source)->get();
+        } else {
+            $expenses = Expenses::latest()->where('user_id', Auth::user()->id)->where('payment_source', $request->source)->whereBetween('date', [$request->start_date, $request->end_date])->get();
         }
 
         return view('accountant.view_expenses', [
             'expenses' => $expenses,
             'start_date' => $request->start_date,
-            'end_date' => $request->end_date
+            'end_date' => $request->end_date,
+            'source' => $request->source
         ]);
     }
 

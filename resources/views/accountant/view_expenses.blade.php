@@ -25,10 +25,18 @@
                             <form action="{{ route('expenses.view')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
-                                <input type="date" name="start_date" class="form-control" value="{{$start_date}}" required>
+                                <input type="date" name="start_date" class="form-control" value="{{$start_date}}">
                                 </label>&nbsp;&nbsp;
                                 <label class="mr-2"><strong>End Date :</strong>
-                                <input type="date" name="end_date" class="form-control" value="{{$end_date}}" required>
+                                <input type="date" name="end_date" class="form-control" value="{{$end_date}}">
+                                </label>
+                                <label>
+                                    <select class="form-control" name="source">
+                                        <option value="{{$source ?? null}}">{{$source ?? '- Select Payment Source -'}}</option>
+                                        <option value="cheque">Cheque</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="transfer">Transfer</option>
+                                    </select>
                                 </label>
                                 <button type="submit" class="btn btn-primary">Filter</button>
                             </form>

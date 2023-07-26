@@ -95,7 +95,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    @if (App\Models\BeratingCalculation::where('id', $receipt->grade)->exists())
                                                     {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
                                                     @else
                                                     <b>{{ 'GRADE DELETED' }}</b>
@@ -210,11 +210,11 @@
                                                 <th>Type of Material</th>
                                                 <th>Manager</th>
                                                 <th>Grade</th>
-                                                <th>Berating Rate List</th>
+                                                <!-- <th>Berating Rate List</th> -->
                                                 <th>Bags</th>
                                                 <th>Kg</th>
                                                 <th>Percentage (%)</th>
-                                                <th>% Analysis Rate List</th>
+                                                <!-- <th>% Analysis Rate List</th> -->
                                                 <th>Total Quantity In Kg</th>
                                                 <th>Benchmark</th>
                                                 <th>Receipt Image</th>
@@ -247,25 +247,25 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    @if (App\Models\BeratingCalculation::where('id', $receipt->grade)->exists())
                                                     {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
                                                     @else
                                                     <b>{{ 'GRADE DELETED' }}</b>
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <!-- <td>
                                                     @foreach(json_decode($receipt->berating_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
                                                     @endforeach
-                                                </td>
+                                                </td> -->
                                                 <td>{{$receipt->bag}}</td>
                                                 <td>{{$receipt->kg}}</td>
                                                 <td>{{$receipt->percentage_analysis}}</td>
-                                                <td>
+                                                <!-- <td>
                                                     @foreach(json_decode($receipt->analysis_rate_list, true) as $key => $value)
                                                         <p>{{ $key }} - {{ $value }}</p>
                                                     @endforeach
-                                                </td>
+                                                </td> -->
                                                 <td>{{$receipt->total_in_kg}}kg</td>
                                                 <td>
                                                     @foreach(json_decode($receipt->benchmark, true) as $key => $value)

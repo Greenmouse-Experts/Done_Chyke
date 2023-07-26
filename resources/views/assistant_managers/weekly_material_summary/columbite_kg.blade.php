@@ -1,4 +1,4 @@
-@extends('layouts.admin_frontend')
+@extends('layouts.dashboard_frontend')
 
 @section('page-content')
 
@@ -6,12 +6,12 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">Weekly Material Summary for Columbite (Kg)</h4>
+                <h4 class="mb-3">Weekly Material Summary For Columbite (Kg)</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Columbite (Kg) Summary</li>
                 </ol>
             </nav>

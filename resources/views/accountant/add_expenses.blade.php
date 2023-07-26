@@ -38,6 +38,7 @@
                                             <option value="">-- Select Payment Source --</option>
                                             <option value="Cash">Cash</option>
                                             <option value="Cheque">Cheque</option>
+                                            <option value="Transfer">Transfer</option>
                                         </select>
                                         <div class="help-block with-errors"></div>
                                     </div>

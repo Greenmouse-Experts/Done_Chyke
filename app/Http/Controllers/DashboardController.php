@@ -6,6 +6,8 @@ use App\Models\Balance;
 use App\Models\BeratingCalculation;
 use App\Models\Expenses;
 use App\Models\Notification;
+use App\Models\PaymentReceiptColumbite;
+use App\Models\PaymentReceiptTin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

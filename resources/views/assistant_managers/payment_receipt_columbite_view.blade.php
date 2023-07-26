@@ -88,7 +88,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    @if (App\Models\BeratingCalculation::where('id', $receipt->grade)->exists())
                                                     {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
                                                     @else
                                                     <b>{{ 'GRADE DELETED' }}</b>
@@ -192,7 +192,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if (App\Models\User::where('id', $receipt->grade)->exists())
+                                                    @if (App\Models\BeratingCalculation::where('id', $receipt->grade)->exists())
                                                     {{App\Models\BeratingCalculation::find($receipt->grade)->grade}}
                                                     @else
                                                     <b>{{ 'GRADE DELETED' }}</b>

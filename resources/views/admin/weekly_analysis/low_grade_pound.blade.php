@@ -6,13 +6,13 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">Weekly Material Summary for Columbite (Kg)</h4>
+                <h4 class="mb-3">Weekly Material Summary for Low Grade (Pound)</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Columbite (Kg) Summary</li>
+                    <li class="breadcrumb-item active" aria-current="page">Low Grade (Pound) Summary</li>
                 </ol>
             </nav>
         </div>
@@ -23,7 +23,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div style="justify-content: flex-start;">
-                            <form action="{{ route('weekly.material.summary.columbite.pound')}}" method="POST" data-toggle="validator">
+                            <form action="{{ route('admin.weekly.material.summary.low.grade.pound')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
                                 <input type="date" name="start_date" class="form-control" value="{{$start_date}}">
