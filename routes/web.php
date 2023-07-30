@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/run', function () {
+    \Illuminate\Support\Facades\Artisan::call('schedule:run');
+    return 'Successful!';
+});
 
 Route::get('/', [AuthController::class, 'index'])->name('index');
 Route::get('/forgot', [AuthController::class, 'forgot'])->name('forgot');
