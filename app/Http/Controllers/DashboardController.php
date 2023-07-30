@@ -59,10 +59,9 @@ class DashboardController extends Controller
         $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $totalAdditionalIncome = Balance::whereDate('date', $today)->first()->additional_income ?? 0;
-        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('remaining_balance') ?? 0;
+        $totalClosingBalance = Balance::whereDate('date', '!=', $today)->sum('closing_balance') ?? 0;
 
-        $totalStartingBalance = $totalBalance + $totalAdditionalIncome + $totalRemainingBalance;
+        $totalStartingBalance = $totalBalance + $totalClosingBalance;
 
         return view('dashboard.dashboard', [
             'moment' => $moment,

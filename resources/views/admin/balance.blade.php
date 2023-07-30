@@ -34,7 +34,8 @@
                             </form>
                         </div>
                         <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
-                            <a class="text-white btn btn-primary add-list">{{\Carbon\Carbon::now()->toFormattedDateString()}} Starting Balance - <span style="font-size: 1.5rem;">₦{{number_format($totalStartingBalance, 2)}}</span></a>
+                            <a class="text-white btn btn-primary add-list mr-5">{{\Carbon\Carbon::now()->toFormattedDateString()}} Starting Balance - <span style="font-size: 1.5rem;">₦{{number_format($totalStartingBalance, 2)}}</span></a>
+                            <button data-toggle="modal" data-target="#add" class="btn btn-primary text-white add-list"><i class="las la-plus mr-3"></i>Add Starting Balance</button>
                         </div>
                     </div>
                 </div>
@@ -47,10 +48,8 @@
                                 <th>S/N</th>
                                 <th>Date</th>
                                 <th>Starting Balance</th>
-                                <th>Additional Payment In</th>
-                                <th>Amount Used</th>
-                                <th>Remaining Balance</th>
-                                <th>Action</th>
+                                <th>Closing Balance</th>
+                                <!-- <th>Action</th> -->
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
@@ -61,10 +60,8 @@
                                 </td>
                                 <td>{{$balance->date}}</td>
                                 <td>₦{{number_format($balance->starting_balance, 2)}}</td>
-                                <td>₦{{number_format($balance->additional_income, 2)}}</td>
-                                <td>₦{{number_format($balance->amount_used, 2)}}</td>
-                                <td>₦{{number_format($balance->remaining_balance, 2)}}</td>
-                                <td>
+                                <td>₦{{number_format($balance->closing_balance, 2)}}</td>
+                                <!-- <td>
                                     <div class="d-flex align-items-center list-action">
                                         <span data-toggle="modal" data-target="#edit-{{$balance->id}}">
                                             <a class="badge bg-primary mr-2" data-toggle="tooltip" data-placement="top" title="View/Edit" data-original-title="View/Edit" href="#"><i class="ri-pencil-line mr-0"></i></a>
@@ -88,20 +85,6 @@
                                                                             <div class="form-group">
                                                                                 <label>Starting Balance*</label>
                                                                                 <input type="number" class="form-control" placeholder="Enter startng balance" name="starting_balance" value="{{$balance->starting_balance}}" required>
-                                                                                <div class="help-block with-errors"></div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-12">
-                                                                            <div class="form-group">
-                                                                                <label>Additional Payment In</label>
-                                                                                <input type="number" class="form-control" placeholder="Enter additional payment in" value="{{$balance->additional_income}}" name="additional_income">
-                                                                                <div class="help-block with-errors"></div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-12">
-                                                                            <div class="form-group">
-                                                                                <label>Amount Used</label>
-                                                                                <input type="number" class="form-control" placeholder="Enter amount used" value="{{$balance->amount_used}}" name="amount_used">
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
@@ -149,14 +132,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                </td>
+                                </td> -->
                             </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5" style="font-size: 1.1rem; font-weight: 700">Total Remaining Balance</td>
-                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('remaining_balance'), 2)}}</td>
+                                <td colspan="3" style="font-size: 1.1rem; font-weight: 700">Total Closing Balance</td>
+                                <td colspan="" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('closing_balance'), 2)}}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -164,6 +147,40 @@
             </div>
         </div>
         <!-- Page end  -->
+    </div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add</h5>&nbsp;
+                 <p class="text-danger"> * Indicates required</p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="popup text-left">
+                    <form action="{{route('admin.daily.balance.add')}}" method="POST" data-toggle="validator">
+                        @csrf
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Starting Balance for Today - {{\Carbon\Carbon::now()->toFormattedDateString()}}  *</label>
+                                    <input type="number" class="form-control" placeholder="Enter startng balance" name="starting_balance" value="{{$starting_balance}}" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button type="submit" class="btn btn-primary mr-2">Save</button>
+                            <button type="reset" class="btn btn-danger">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

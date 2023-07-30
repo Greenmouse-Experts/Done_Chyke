@@ -123,56 +123,32 @@ class AccountantController extends Controller
     public function daily_balance()
     {
         $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
+        $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
+        $expensesCheque = Expenses::where('payment_source', 'Cheque')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
+        $expensesTransfer = Expenses::where('payment_source', 'Transfer')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
 
         if($date)
         {
-            $starting_balance = $date->starting_balance;
-            $additional_income = $date->additional_income;
-            $amount_used = $date->amount_used;
-            $remaining_balance = $date->remaining_balance;
+            $starting_balance = $date->starting_balance + $expensesCheque + $expensesTransfer;
+            $expenses = $expensesCash + $expensesCheque + $expensesTransfer;
+            $remaining_balance = $starting_balance - $expenses;
         } else {
             $starting_balance = null;
-            $additional_income = null;
-            $amount_used = null;
             $remaining_balance = null;
         }
 
         return view('accountant.daily_balance')->with([
-            'starting_balance' => $starting_balance,
-            'additional_income' => $additional_income,
-            'amount_used' => $amount_used,
+            'starting_balance' => $date->starting_balance ?? 0,
             'remaining_balance' => $remaining_balance
         ]);
     }
 
-    public function daily_balance_add(Request $request)
+    public function add_daily_balance(Request $request)
     {
         $this->validate($request, [
             'starting_balance' => ['required', 'numeric']
         ]);
 
-        if ($request->additional_income !== null) {
-            $this->validate($request, [
-                'additional_income' => ['numeric']
-            ]); 
-        }   
-
-        if ($request->amount_used !== null) {
-            $this->validate($request, [
-                'amount_used' => ['numeric'],
-            ]); 
-        }   
-
-        $response = $request->starting_balance + $request->additional_income;
-
-        if($request->amount_used > $response) 
-        {
-            return back()->with([
-                'type' => 'danger',
-                'message' => "Amount used can't be greater than the total of starting balance and additional income."
-            ]);
-        }
-        
         $balance = Balance::get();
 
         if($balance->count() > 0)
@@ -183,53 +159,9 @@ class AccountantController extends Controller
             {
                 if($request->starting_balance == $date->starting_balance)
                 {
-                    if($request->additional_income == null && $request->amount_used !== null)
-                    {
-                        $date->update([
-                            'amount_used' => $request->amount_used,
-                            'remaining_balance' => $date->starting_balance + $date->additional_income - $request->amount_used
-                        ]);
-                    } elseif($request->additional_income == !null && $request->amount_used == null)
-                    {
-                        $date->update([
-                            'additional_income' => $request->additional_income,
-                            'remaining_balance' => $date->starting_balance + $request->additional_income - $date->amount_used
-                        ]);
-                    } else {
-                        $date->update([
-                            'additional_income' => $request->additional_income,
-                            'amount_used' => $request->amount_used,
-                            'remaining_balance' => $date->starting_balance + $request->additional_income - $request->amount_used
-                        ]);
-                    }
-
-                    return back()->with([
-                        'alertType' => 'success',
-                        'message' => 'Daily starting balance updated successfully.'
+                    $date->update([
+                        'starting_balance' => $request->starting_balance,
                     ]);
-                } else {
-                    if($request->additional_income == null && $request->amount_used !== null)
-                    {
-                        $date->update([
-                            'starting_balance' => $request->starting_balance,
-                            'amount_used' => $request->amount_used,
-                            'remaining_balance' => $request->starting_balance + $date->additional_income - $request->amount_used
-                        ]);
-                    } elseif($request->additional_income == !null && $request->amount_used == null)
-                    {
-                        $date->update([
-                            'starting_balance' => $request->starting_balance,
-                            'additional_income' => $request->additional_income,
-                            'remaining_balance' => $request->starting_balance + $request->additional_income - $date->amount_used
-                        ]);
-                    } else {
-                        $date->update([
-                            'starting_balance' => $request->starting_balance,
-                            'additional_income' => $request->additional_income,
-                            'amount_used' => $request->amount_used,
-                            'remaining_balance' => $request->starting_balance + $request->additional_income - $request->amount_used
-                        ]);
-                    }
 
                     return back()->with([
                         'alertType' => 'success',
@@ -240,9 +172,6 @@ class AccountantController extends Controller
             } else {
                 Balance::create([
                     'starting_balance' => $request->starting_balance,
-                    'additional_income' => $request->additional_income,
-                    'amount_used' => $request->amount_used,
-                    'remaining_balance' => $request->starting_balance + $request->additional_income - $request->amount_used,
                     'date' => Carbon::now()->format('Y-m-d')
                 ]);
 
@@ -255,9 +184,6 @@ class AccountantController extends Controller
 
         Balance::create([
             'starting_balance' => $request->starting_balance,
-            'additional_income' => $request->additional_income,
-            'amount_used' => $request->amount_used,
-            'remaining_balance' => $request->starting_balance + $request->additional_income - $request->amount_used,
             'date' => Carbon::now()->format('Y-m-d')
         ]);
 

@@ -153,10 +153,9 @@ class AdminController extends Controller
         }
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $totalAdditionalIncome = Balance::whereDate('date', $today)->first()->additional_income ?? 0;
-        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('remaining_balance') ?? 0;
+        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('closing_balance') ?? 0;
 
-        $totalStartingBalance = $totalBalance + $totalAdditionalIncome + $totalRemainingBalance;
+        $totalStartingBalance = $totalBalance + $totalRemainingBalance;
 
         $totalReceipt = PaymentReceiptTin::get()->count() + PaymentReceiptColumbite::get()->count();
 
@@ -4579,7 +4578,7 @@ class AdminController extends Controller
         ]);
     }
 
-    // Lower Grade Columbite
+    // Low Grade Columbite
     public function payment_receipt_lower_grade_columbite_view($id, Request $request)
     {
         if($id == 'kg')
@@ -4793,7 +4792,7 @@ class AdminController extends Controller
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
-                    $filename = request()->receipt_image->getClientOriginalName();
+                    $filename = uniqid(5).'-'.request()->receipt_image->getClientOriginalName();
                     request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
                     $lgcolumbitePayment = PaymentReceiptLowerGradeColumbite::create([
@@ -10279,17 +10278,68 @@ class AdminController extends Controller
 
         $today = Carbon::now()->format('Y-m-d');
 
+        $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $totalAdditionalIncome = Balance::whereDate('date', $today)->first()->additional_income ?? 0;
-        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('remaining_balance') ?? 0;
+        $totalRemainingBalance = Balance::whereDate('date', '!=', $today)->sum('closing_balance') ?? 0;
 
-        $totalStartingBalance = $totalBalance + $totalAdditionalIncome + $totalRemainingBalance;
+        $totalStartingBalance = $totalBalance + $totalRemainingBalance;
 
         return view('admin.balance')->with([
             'balances' => $balances,
+            'starting_balance' => $date->starting_balance ?? 0,
             'totalStartingBalance' => $totalStartingBalance,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date
+        ]);
+    }
+
+    public function daily_balance_add(Request $request)
+    {
+        $this->validate($request, [
+            'starting_balance' => ['required', 'numeric']
+        ]);
+        
+        $balance = Balance::get();
+
+        if($balance->count() > 0)
+        {
+            $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
+
+            if($date)
+            {
+                if($request->starting_balance == $date->starting_balance)
+                {
+                    $date->update([
+                        'starting_balance' => $request->starting_balance,
+                    ]);
+
+                    return back()->with([
+                        'alertType' => 'success',
+                        'message' => 'Daily starting balance updated successfully.'
+                    ]);
+                }
+
+            } else {
+                Balance::create([
+                    'starting_balance' => $request->starting_balance,
+                    'date' => Carbon::now()->format('Y-m-d')
+                ]);
+
+                return back()->with([
+                    'alertType' => 'success',
+                    'message' => 'Daily starting balance added successfully.'
+                ]);
+            }
+        }
+
+        Balance::create([
+            'starting_balance' => $request->starting_balance,
+            'date' => Carbon::now()->format('Y-m-d')
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Daily starting balance added successfully.'
         ]);
     }
 

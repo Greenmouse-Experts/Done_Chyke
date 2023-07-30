@@ -24,38 +24,9 @@
                             <div class="header-title">
                                 <h4 class="card-title">{{\Carbon\Carbon::now()->toFormattedDateString()}}</h4>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <form action="{{route('daily.balance.add')}}" method="POST" data-toggle="validator" enctype="multipart/form-data">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Starting Balance for Today - {{\Carbon\Carbon::now()->toFormattedDateString()}}  *</label>
-                                            <input type="number" class="form-control" placeholder="Enter startng balance" name="starting_balance" value="{{$starting_balance}}" required>
-                                            <div class="help-block with-errors"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Additional Payment In for Today </label>
-                                            <input type="number" class="form-control" placeholder="Enter additional payment in" value="{{$additional_income}}" name="additional_income">
-                                            <div class="help-block with-errors"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Amount Used for Today </label>
-                                            <input type="number" class="form-control" placeholder="Enter amount used" value="{{$amount_used}}" name="amount_used">
-                                            <div class="help-block with-errors"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-5">
-                                    <button type="submit" name="save" value="save" class="btn btn-primary mr-2">Save</button>
-                                    <button type="reset" class="btn btn-danger">Reset</button>
-                                </div>
-                            </form>
+                            <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                                <button data-toggle="modal" data-target="#add" class="btn btn-primary text-white add-list"><i class="las la-plus mr-3"></i>Add Starting Balance</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -75,18 +46,6 @@
                                  </th>
                                  <th class="text-center prc-wrap">
                                     <div class="prc-box active">
-                                       <div class="h3 pt-4 text-white">₦{{number_format($additional_income, 2)}}
-                                       </div> <span class="type text-white">Additional <br> Payment In</span>
-                                    </div>
-                                 </th>
-                                 <th class="text-center prc-wrap">
-                                    <div class="prc-box active">
-                                       <div class="h3 pt-4 text-white">₦{{number_format($amount_used, 2)}}
-                                       </div> <span class="type text-white">Amount <br> Used</span>
-                                    </div>
-                                 </th>
-                                 <th class="text-center prc-wrap">
-                                    <div class="prc-box active">
                                        <div class="h3 pt-4 text-white">₦{{number_format($remaining_balance, 2)}}
                                        </div> <span class="type text-white">Remaining <br> Balance</span>
                                     </div>
@@ -100,6 +59,40 @@
             </div>
         </div>
         <!-- Page end  -->
+    </div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add</h5>&nbsp;
+                 <p class="text-danger"> * Indicates required</p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="popup text-left">
+                    <form action="{{route('daily.balance.add')}}" method="POST" data-toggle="validator">
+                        @csrf
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Starting Balance for Today - {{\Carbon\Carbon::now()->toFormattedDateString()}}  *</label>
+                                    <input type="number" class="form-control" placeholder="Enter startng balance" name="starting_balance" value="{{$starting_balance}}" required>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button type="submit" class="btn btn-primary mr-2">Save</button>
+                            <button type="reset" class="btn btn-danger">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -1764,7 +1764,7 @@ class AssistantManagerController extends Controller
 
                     $totalPrice = number_format((float)$total, 0, '.', '');
                     
-                    $filename = request()->receipt_image->getClientOriginalName();
+                    $filename = uniqid(5).'-'.request()->receipt_image->getClientOriginalName();
                     request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
 
                     $lgcolumbitePayment = PaymentReceiptLowerGradeColumbite::create([

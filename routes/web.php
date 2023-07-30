@@ -219,8 +219,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::any('/admin/weekly/material/summary/low/grade/pound', [AdminController::class, 'weekly_material_summary_low_grade_pound'])->name('admin.weekly.material.summary.low.grade.pound');
     Route::any('/admin/weekly/material/summary/low/grade/kg', [AdminController::class, 'weekly_material_summary_low_grade_kg'])->name('admin.weekly.material.summary.low.grade.kg'); 
 
-
     Route::any('/admin/daily/balance', [AdminController::class, 'daily_balance'])->name('admin.daily.balance');
+    Route::post('/admin/daily/balance/add', [AccountantController::class, 'add_daily_balance'])->name('admin.daily.balance.add');
     Route::post('/admin/daily/balance/update/{id}', [AdminController::class, 'update_daily_balance'])->name('admin.daily.balance.update');
     Route::post('/admin/daily/balance/delete/{id}', [AdminController::class, 'delete_daily_balance'])->name('admin.daily.balance.delete');
 });
