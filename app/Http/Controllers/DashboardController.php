@@ -52,6 +52,7 @@ class DashboardController extends Controller
         }
 
         $today = Carbon::now()->format('Y-m-d');
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
 
         $monthly_expenses = Expenses::whereDate('date', $today)->sum('amount');
         $monthly_expenses_count = Expenses::whereDate('date', $today)->get()->count();
@@ -59,7 +60,7 @@ class DashboardController extends Controller
         $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $totalClosingBalance = Balance::whereDate('date', '!=', $today)->sum('closing_balance') ?? 0;
+        $totalClosingBalance = Balance::whereDate('date', $yesterday)->sum('closing_balance') ?? 0;
 
         $totalStartingBalance = $totalBalance + $totalClosingBalance;
 

@@ -122,24 +122,24 @@ class AccountantController extends Controller
 
     public function daily_balance()
     {
-        $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
-        $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
-        $expensesCheque = Expenses::where('payment_source', 'Cheque')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
-        $expensesTransfer = Expenses::where('payment_source', 'Transfer')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
 
-        if($date)
+        $balance = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
+        $totalClosingBalance = Balance::whereDate('date', $yesterday)->sum('closing_balance') ?? 0;
+
+        if($balance)
         {
-            $starting_balance = $date->starting_balance + $expensesCheque + $expensesTransfer;
-            $expenses = $expensesCash + $expensesCheque + $expensesTransfer;
-            $remaining_balance = $starting_balance - $expenses;
+            $starting_balance = $balance->starting_balance + $totalClosingBalance;
+            $closing_balance = $balance->closing_balance;
+
         } else {
             $starting_balance = null;
-            $remaining_balance = null;
+            $closing_balance = null;
         }
 
         return view('accountant.daily_balance')->with([
-            'starting_balance' => $date->starting_balance ?? 0,
-            'remaining_balance' => $remaining_balance
+            'starting_balance' => $starting_balance,
+            'closing_balance' => $closing_balance
         ]);
     }
 

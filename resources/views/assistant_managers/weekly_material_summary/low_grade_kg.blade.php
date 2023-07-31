@@ -57,164 +57,170 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>Date</th>
-                                <th>18.5</th>
-                                <th>18.6</th>
-                                <th>18.7</th>
-                                <th>18.8</th>
-                                <th>18.9</th>
-                                <th>19.0</th>
-                                <th>19.1</th>
-                                <th>19.2</th>
-                                <th>19.3</th>
-                                <th>19.4</th>
-                                <th>19.5</th>
-                                <th>19.6</th>
-                                <th>19.7</th>
-                                <th>19.8</th>
-                                <th>19.9</th>
-                                <th>20.0</th>
-                                <th>20.1</th>
-                                <th>20.2</th>
-                                <th>20.3</th>
-                                <th>20.4</th>
-                                <th>20.5</th>
-                                <th>20.6</th>
-                                <th>20.7</th>
-                                <th>20.8</th>
-                                <th>20.9</th>
+                                <th>21.0</th>
+                                <th>21.1</th>
+                                <th>21.2</th>
+                                <th>21.3</th>
+                                <th>21.4</th>
+                                <th>21.5</th>
+                                <th>21.6</th>
+                                <th>21.7</th>
+                                <th>21.8</th>
+                                <th>21.9</th>
+                                <th>22.0</th>
+                                <th>22.1</th>
+                                <th>22.2</th>
+                                <th>22.3</th>
+                                <th>22.4</th>
+                                <th>22.5</th>
+                                <th>22.6</th>
+                                <th>22.7</th>
+                                <th>22.8</th>
+                                <th>22.9</th>
+                                <th>23.0</th>
+                                <th>23.1</th>
+                                <th>23.2</th>
+                                <th>23.3</th>
+                                <th>23.4</th>
+                                <th>23.5</th>
                             </tr>
                             <tbody class="ligth-body">
-                            @foreach($analysis as $anana)
-                            <tr>
-                                <td>{{$anana['date']}}</td>
-                                <td>
-                                    @if ($anana['berating'] == '18.5') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '18.6') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '18.7') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '18.8') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '18.9') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td> 
-                                    @if ($anana['berating'] == '19.0') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td> 
-                                    @if ($anana['berating'] == '19.1') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.2') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.3') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.4') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.5') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.6') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.7') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.8') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '19.9') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.0') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.1') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.2') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.3') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.4') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.5') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.6') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.7') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.8') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($anana['berating'] == '20.9') 
-                                        {{$anana['total']}}
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                                @foreach($analysis as $anana)
+                                <tr>
+                                    <td>{{$anana['date']}}</td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.0') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.1') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.2') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.3') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.4') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td> 
+                                        @if ($anana['berating'] == '21.5') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td> 
+                                        @if ($anana['berating'] == '21.6') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.7') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.8') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '21.9') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.0') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.1') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.2') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.3') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.4') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.5') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.6') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.7') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.8') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '22.9') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '23.0') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '23.1') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '23.2') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '23.3') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '23.4') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($anana['berating'] == '23.5') 
+                                            {{$anana['total']}}
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
                         </thead>
                     </table>
                 </div>
@@ -227,18 +233,6 @@
                     <div class="w-100">
                         <h4 class="mb-3">Production</h4>
                         <div class="row w-100 mt-5">
-                            <div class="col">
-                                <p style="font-weight:600; font-size:18px">18 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['18M']['bags']}}<sup>{{$data['18M']['pounds']}}</sup></p>
-                            </div>
-                            <div class="col">
-                                <p style="font-weight:600; font-size:18px">19 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['19M']['bags']}}<sup>{{$data['19M']['pounds']}}</sup></p>
-                            </div>
-                            <div class="col">
-                                <p style="font-weight:600; font-size:18px">20 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['20M']['bags']}}<sup>{{$data['20M']['pounds']}}</sup></p>
-                            </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Total (bags)</p>
                                 <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['TOTAL_BAGS']['bags']}}<sup>{{$data['TOTAL_BAGS']['pounds']}}</sup></p>
