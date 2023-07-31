@@ -3904,12 +3904,6 @@ class AssistantManagerController extends Controller
 
             $totalPercentage = $totalPercentage185 + $totalPercentage186 + $totalPercentage187 + $totalPercentage188 + $totalPercentage189 + $totalPercentage190 + $totalPercentage191 + $totalPercentage192 + $totalPercentage193 + $totalPercentage194 + $totalPercentage195 + $totalPercentage196 + $totalPercentage197 + $totalPercentage198 + $totalPercentage199 + $totalPercentage200 + $totalPercentage201 + $totalPercentage202 + $totalPercentage203 + $totalPercentage204 + $totalPercentage205 + $totalPercentage206 + $totalPercentage207 + $totalPercentage208 + $totalPercentage209;
 
-            // $p185 = $sum185 * $percentage185; $p186 = $sum186 * $percentage186; $p187 = $sum187 * $percentage187; $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
-            // $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
-            // $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205; $p206 = $sum206 * $percentage206; $p207 = $sum207 * $percentage207; $p208 = $sum208 * $percentage208; $p209 = $sum209 * $percentage209;
-
-            // $totalPercentage =  $p185 + $p186 + $p187 + $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205 + $p206 + $p207 + $p208 + $p209;
-            
             $percentageAverage = $totalPercentage / $totalKg;
 
             $totalPercentageAverage = number_format((float)$percentageAverage, 2, '.', '');
