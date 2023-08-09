@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AnalysisCalculation;
 use App\Models\Balance;
 use App\Models\BeratingCalculation;
 use App\Models\Expenses;
@@ -234,6 +235,71 @@ class DashboardController extends Controller
             'grade' => $request->grade,
             'price' => $request->price,
             'unit_price' => $request->unit_price
+        ]);
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Added successfully!'
+        ]);
+    }
+
+    public function get_analysis_rate(Request $request)
+    {
+        $analysiscalculation = AnalysisCalculation::find($request->id);
+
+        return $analysiscalculation;
+    }
+
+    public function update_analysis_rate(Request $request)
+    {
+        $this->validate($request, [
+            'dollar' => ['required', 'numeric'],
+            'exchange' => ['required', 'numeric'],
+        ]);
+
+        $analysiscalculation = AnalysisCalculation::find($request->id);
+        
+        if($analysiscalculation->percentage_min == $request->percentage_min && $analysiscalculation->percentage_max == $request->percentage_max)
+        {
+            $analysiscalculation->update([
+                'dollar_rate' => $request->dollar,
+                'exchange_rate' => $request->exchange
+            ]);
+
+        } else {
+            $this->validate($request, [
+                'percentage_min' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+                'percentage_max' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+            ]);
+
+            $analysiscalculation->update([
+                'percentage_min' => $request->percentage_min,
+                'percentage_max' => $request->percentage_max,
+                'dollar_rate' => $request->dollar,
+                'exchange_rate' => $request->exchange
+            ]);
+        }
+
+        return back()->with([
+            'alertType' => 'success',
+            'message' => 'Updated successfully!'
+        ]);
+    }
+
+    public function add_analysis_rate(Request $request)
+    {
+        $this->validate($request, [
+            'percentage_min' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+            'percentage_max' => ['required', 'string', 'max:255', 'unique:analysis_calculations'],
+            'dollar' => ['required', 'numeric'],
+            'exchange' => ['required', 'numeric'],
+        ]);
+        
+       AnalysisCalculation::create([
+            'percentage_min' => $request->percentage_min,
+            'percentage_max' => $request->percentage_max,
+            'dollar_rate' => $request->dollar,
+            'exchange_rate' => $request->exchange
         ]);
 
         return back()->with([

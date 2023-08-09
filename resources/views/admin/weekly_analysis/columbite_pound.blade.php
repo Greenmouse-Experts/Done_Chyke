@@ -23,7 +23,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div style="justify-content: flex-start;">
-                            <form action="{{ route('weekly.material.summary.columbite.pound')}}" method="POST" data-toggle="validator">
+                            <form action="{{ route('admin.weekly.material.summary.columbite.pound')}}" method="POST" data-toggle="validator">
                                 @csrf
                                 <label class="mr-2"><strong>Start Date :</strong>
                                 <input type="date" name="start_date" class="form-control" value="{{$start_date}}">
@@ -222,34 +222,50 @@
         </div>
         <!-- Page end  -->
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12 text-center">
                 <div class="mt-5 d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div class="w-100">
                         <h4 class="mb-3">Production</h4>
                         <div class="row w-100 mt-5">
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">18 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['18M']['bags']}}<sup>{{$data['18M']['pounds']}}</sup></p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{$data['18M']['bags']}}<sup>{{$data['18M']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">19 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['19M']['bags']}}<sup>{{$data['19M']['pounds']}}</sup></p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{$data['19M']['bags']}}<sup>{{$data['19M']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">20 Material</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['20M']['bags']}}<sup>{{$data['20M']['pounds']}}</sup></p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{$data['20M']['bags']}}<sup>{{$data['20M']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Total (bags)</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['TOTAL_BAGS']['bags']}}<sup>{{$data['TOTAL_BAGS']['pounds']}}</sup></p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{$data['TOTAL_BAGS']['bags']}}<sup>{{$data['TOTAL_BAGS']['pounds']}}</sup></p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Average Berating</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['AB']}}</p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{$data['AB']}}</p>
                             </div>
                             <div class="col">
                                 <p style="font-weight:600; font-size:18px">Percentage (%)</p>
-                                <p style="margin-left: 25px; font-size: 32px; margin-top: 15px;">{{$data['AP']}}</p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{$data['AP']}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 text-center">
+                <div class="mt-5 d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <div class="w-100">
+                        <div class="row w-100 mt-5">
+                            <div class="col">
+                                <p style="font-weight:600; font-size:18px">Total Amount Payable</p>
+                                <p style="font-size: 32px; margin-top: 15px;">₦{{number_format($data['TAP'])}}</p>
+                            </div>
+                            <div class="col">
+                                <p style="font-weight:600; font-size:18px">Average Price</p>
+                                <p style="font-size: 32px; margin-top: 15px;">{{number_format($data['AVGPRICE'])}}</p>
                             </div>
                         </div>
                     </div>

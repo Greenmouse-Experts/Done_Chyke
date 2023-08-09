@@ -55,7 +55,7 @@
                                             <tr class="ligth ligth-data">
                                                 <th>S/N</th>
                                                 <th>Assistant Manager</th>
-                                                <th>Date of Purchse</th>
+                                                <th>Date of Purchase</th>
                                                 <th>Receipt No</th>
                                                 <th>Supplier Name</th>
                                                 <th>Type of Material</th>
@@ -212,7 +212,7 @@
                                             <tr class="ligth ligth-data">
                                                 <th>S/N</th>
                                                 <th>Assistant Manager</th>
-                                                <th>Date of Purchse</th>
+                                                <th>Date of Purchase</th>
                                                 <th>Receipt No</th>
                                                 <th>Supplier Name</th>
                                                 <th>Type of Material</th>

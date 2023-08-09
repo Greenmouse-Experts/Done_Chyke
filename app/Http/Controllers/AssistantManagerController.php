@@ -203,7 +203,8 @@ class AssistantManagerController extends Controller
 
                     $total = $equivalentPriceForBag + $equivalentPriceForPound;
 
-                    $totalPrice = number_format((float)$total, 0, '.', '');
+                    // $totalPrice = number_format((float)$total, 0, '.', '');
+                    $totalPrice = floor($total);
 
                     $filename = uniqid(5).'-'.request()->receipt_image->getClientOriginalName();
                     request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
@@ -218,7 +219,7 @@ class AssistantManagerController extends Controller
                         'pound' => $bag_pounds,
                         'total_in_pound' => $total_in_pounds,
                         'berating_rate_list' => $berate,
-                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'price' => floor($totalPrice / 5) * 5,
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
                         'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -257,7 +258,8 @@ class AssistantManagerController extends Controller
 
                 $total = $equivalentPriceForPound;
 
-                $totalPrice = number_format((float)$total, 0, '.', '');
+                // $totalPrice = number_format((float)$total, 0, '.', '');
+                $totalPrice = floor($total);
 
                 $filename = uniqid(5).'-'.request()->receipt_image->getClientOriginalName();
                 request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
@@ -271,7 +273,7 @@ class AssistantManagerController extends Controller
                     'pound' => $request->pounds,
                     'total_in_pound' => $total_in_pounds,
                     'berating_rate_list' => $berate,
-                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'price' => floor($totalPrice / 5) * 5,
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
                     'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -339,11 +341,12 @@ class AssistantManagerController extends Controller
 
                 $total = $equivalentPriceForBag + $equivalentPriceForPound;
 
-                $totalPrice = number_format((float)$total, 0, '.', '');
+                // $totalPrice = number_format((float)$total, 0, '.', '');
+                $totalPrice = floor($total);
 
                 return redirect()->route('payment.receipt.tin.add', 'pound')->with([
                     'previewPrice' => 'success',
-                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                    'message' => floor($totalPrice / 5) * 5
                 ]);
             } else {
                 return redirect()->route('payment.receipt.tin.add', 'pound')->with([
@@ -363,11 +366,12 @@ class AssistantManagerController extends Controller
 
             $total = $equivalentPriceForPound;
 
-            $totalPrice = number_format((float)$total, 0, '.', '');
+            // $totalPrice = number_format((float)$total, 0, '.', '');
+            $totalPrice = floor($total);
 
             return redirect()->route('payment.receipt.tin.add', 'pound')->with([
                 'previewPrice' => 'success',
-                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                'message' => floor($totalPrice / 5) * 5
             ]);
         } 
 
@@ -508,7 +512,7 @@ class AssistantManagerController extends Controller
                         'percentage_analysis' => $request->percentage,
                         'analysis_rate_list' => $analysisRate,
                         'benchmark' => $benchMark,
-                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'price' => floor($totalPrice / 5) * 5,
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
                         'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -591,7 +595,7 @@ class AssistantManagerController extends Controller
                     'percentage_analysis' => $request->percentage,
                     'analysis_rate_list' => $analysisRate,
                     'benchmark' => $benchMark,
-                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'price' => floor($totalPrice / 5) * 5,
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
                     'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -684,7 +688,7 @@ class AssistantManagerController extends Controller
 
                 return redirect()->route('payment.receipt.tin.add', 'kg')->with([
                     'previewPrice' => 'success',
-                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                    'message' => floor($totalPrice / 5) * 5
                 ]);
             } else {
                 return redirect()->route('payment.receipt.tin.add', 'kg')->with([
@@ -731,7 +735,7 @@ class AssistantManagerController extends Controller
 
             return redirect()->route('payment.receipt.tin.add', 'kg')->with([
                 'previewPrice' => 'success',
-                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                'message' => floor($totalPrice / 5) * 5
             ]);
         } 
 
@@ -930,17 +934,13 @@ class AssistantManagerController extends Controller
 
                 if($bag_pounds < columbite_rate)
                 {
-                    $per = $request->percentage / 100;
+                    $rateCalculation = $dollarRate * $exchangeRate * ($request->percentage / 100);
 
-                    $rateCalculation = $dollarRate * $exchangeRate;
+                    $subTotal = $rateCalculation * columbite_rate;
 
-                    $subTotal = $per * $rateCalculation;
-
-                    $subPrice = $request->bags * columbite_rate + $request->bag_pound;
+                    $subPrice = ($request->bags * columbite_rate + $request->bag_pound) * $subTotal;
                     
-                    $total = floor($subTotal) * $subPrice;
-
-                    $totalPrice = number_format((float)$total, 0, '.', '');
+                    $totalPrice = $subPrice / columbite_rate;
                     
                     $filename = uniqid(5).'-'.request()->receipt_image->getClientOriginalName();
                     request()->receipt_image->storeAs('payment_analysis', $filename, 'public');
@@ -957,7 +957,7 @@ class AssistantManagerController extends Controller
                         'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
                         'analysis_rate_list' => $analysisRate,
-                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'price' => floor($totalPrice / 5) * 5,
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
                         'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -1025,7 +1025,7 @@ class AssistantManagerController extends Controller
     
                 $subTotal = $per * $rateCalculation;
     
-                $total = floor($subTotal) * $request->pounds;
+                $total = (floor($subTotal / 5) * 5) * $request->pounds;
     
                 $totalPrice = number_format((float)$total, 0, '.', '');
 
@@ -1043,7 +1043,7 @@ class AssistantManagerController extends Controller
                     'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
                     'analysis_rate_list' => $analysisRate,
-                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'price' => floor($totalPrice / 5) * 5,
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
                     'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -1126,21 +1126,17 @@ class AssistantManagerController extends Controller
 
             if($bag_pounds < columbite_rate)
             {
-                $per = $request->percentage / 100;
+                $rateCalculation = $dollarRate * $exchangeRate * ($request->percentage / 100);
 
-                $rateCalculation = $dollarRate * $exchangeRate;
+                $subTotal = $rateCalculation * columbite_rate;
 
-                $subTotal = $per * $rateCalculation;
-
-                $subPrice = $request->bags * columbite_rate + $request->bag_pound;
+                $subPrice = ($request->bags * columbite_rate + $request->bag_pound) * $subTotal;
                 
-                $total = floor($subTotal) * $subPrice;
-
-                $totalPrice = number_format((float)$total, 0, '.', '');
+                $totalPrice = $subPrice / columbite_rate;
 
                 return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
                     'previewPrice' => 'success',
-                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                    'message' => floor($totalPrice / 5) * 5
                 ]);
             } else {
                 return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
@@ -1185,13 +1181,13 @@ class AssistantManagerController extends Controller
 
             $subTotal = $per * $rateCalculation;
 
-            $total = floor($subTotal) * $request->pounds;
+            $total = (floor($subTotal / 5) * 5) * $request->pounds;
 
             $totalPrice = number_format((float)$total, 0, '.', '');
 
             return redirect()->route('payment.receipt.columbite.add', 'pound')->with([
                 'previewPrice' => 'success',
-                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                'message' => floor($totalPrice / 5) * 5
             ]);
         } 
 
@@ -1318,7 +1314,7 @@ class AssistantManagerController extends Controller
                         'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
                         'analysis_rate_list' => $analysisRate,
-                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'price' => floor($totalPrice / 5) * 5,
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
                         'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -1404,7 +1400,7 @@ class AssistantManagerController extends Controller
                     'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
                     'analysis_rate_list' => $analysisRate,
-                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'price' => floor($totalPrice / 5) * 5,
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
                     'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -1501,7 +1497,7 @@ class AssistantManagerController extends Controller
 
                 return redirect()->route('payment.receipt.columbite.add', 'kg')->with([
                     'previewPrice' => 'success',
-                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                    'message' => floor($totalPrice / 5) * 5
                 ]);
             } else {
                 return redirect()->route('payment.receipt.columbite.add', 'kg')->with([
@@ -1552,7 +1548,7 @@ class AssistantManagerController extends Controller
 
             return redirect()->route('payment.receipt.columbite.add', 'kg')->with([
                 'previewPrice' => 'success',
-                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                'message' => floor($totalPrice / 5) * 5
             ]);
         } 
 
@@ -2120,7 +2116,7 @@ class AssistantManagerController extends Controller
                         'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
                         'analysis_rate_list' => $analysisRate,
-                        'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                        'price' => floor($totalPrice / 5) * 5,
                         'date_of_purchase' => $request->date_of_purchase,
                         'receipt_no' => $request->receipt_no,
                         'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -2202,7 +2198,7 @@ class AssistantManagerController extends Controller
                     'berating_rate_list' => $berate,
                     'percentage_analysis' => $request->percentage,
                     'analysis_rate_list' => $analysisRate,
-                    'price' => $this->replaceCharsInNumber($totalPrice, '0'),
+                    'price' => floor($totalPrice / 5) * 5,
                     'date_of_purchase' => $request->date_of_purchase,
                     'receipt_no' => $request->receipt_no,
                     'receipt_image' => '/storage/payment_analysis/'.$filename
@@ -2293,7 +2289,7 @@ class AssistantManagerController extends Controller
 
                 return redirect()->route('payment.receipt.lower.grade.columbite.add', 'kg')->with([
                     'previewPrice' => 'success',
-                    'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                    'message' => floor($totalPrice / 5) * 5
                 ]);
             } else {
                 return redirect()->route('payment.receipt.lower.grade.columbite.add', 'kg')->with([
@@ -2340,7 +2336,7 @@ class AssistantManagerController extends Controller
 
             return redirect()->route('payment.receipt.lower.grade.columbite.add', 'kg')->with([
                 'previewPrice' => 'success',
-                'message' => $this->replaceCharsInNumber($totalPrice, '0')
+                'message' => floor($totalPrice / 5) * 5
             ]);
         } 
 
@@ -2396,21 +2392,21 @@ class AssistantManagerController extends Controller
         if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'payment_receipt_tins.price', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
                                 ->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'payment_receipt_tins.price', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
                                 ->where('payment_receipt_tins.staff', $request->manager)
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'payment_receipt_tins.price', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } else {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'pound')  
                                 ->where('payment_receipt_tins.staff', $request->manager)->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_pound', 'payment_receipt_tins.price', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         }
 
         if($result->isEmpty())
@@ -2436,8 +2432,10 @@ class AssistantManagerController extends Controller
             ];
 
             $totalBeratingAverage = 0;
+            $totalAmountPayable = 0;
+            $averagePrice = 0;
 
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage];
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
 
         } else {
             $sum188 = $result->where('grade', '18.8')->sum('total_in_pound');
@@ -2543,7 +2541,13 @@ class AssistantManagerController extends Controller
                 ];
             }
             
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage];
+            $totalAmountPayable = $result->sum('price');
+            $totalQualityInPounds = $result->sum('total_in_pound');
+
+            $avgPrice = $totalAmountPayable / $totalQualityInPounds;
+            $averagePrice = floor($avgPrice) * 70;
+            
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
         }
 
         if (request()->ajax()) {
@@ -2604,21 +2608,21 @@ class AssistantManagerController extends Controller
         if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.price', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
         {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
                                 ->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.price', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
         { 
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
                                 ->where('payment_receipt_tins.staff', $request->manager)
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.price', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         } else {
             $result =  PaymentReceiptTin::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_tins.grade')->latest()->where('payment_receipt_tins.type', 'kg')  
                                 ->where('payment_receipt_tins.staff', $request->manager)->whereBetween('payment_receipt_tins.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
+                                ->get(['payment_receipt_tins.date_of_purchase', 'payment_receipt_tins.total_in_kg', 'payment_receipt_tins.price', 'payment_receipt_tins.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_tins.created_at', 'payment_receipt_tins.updated_at']);
         }
         
         if($result->isEmpty())
@@ -2644,10 +2648,12 @@ class AssistantManagerController extends Controller
             ];
 
             $totalBeratingAverage = 0;
-
             $totalPercentageAverage = 0;
 
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $totalAmountPayable = 0;
+            $averagePrice = 0;
+
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
 
         } else {
             // Total Kg and Total Average Berating
@@ -2885,14 +2891,6 @@ class AssistantManagerController extends Controller
 
             $totalPercentage = $totalPercentage188 + $totalPercentage189 + $totalPercentage190 + $totalPercentage191 + $totalPercentage192 + $totalPercentage193 + $totalPercentage194 + $totalPercentage195 + $totalPercentage196 + $totalPercentage197 + $totalPercentage198 + $totalPercentage199 + $totalPercentage200 + $totalPercentage201 + $totalPercentage202 + $totalPercentage203 + $totalPercentage204 + $totalPercentage205;
 
-            // return $totalPercentage;
-
-            // $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
-            // $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
-            // $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205;
-
-            // $totalPercentage =  $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205;
-
             $percentageAverage = $totalPercentage / $totalKg;
 
             $totalPercentageAverage = number_format((float)$percentageAverage, 2, '.', '');
@@ -2969,7 +2967,13 @@ class AssistantManagerController extends Controller
                 ];
             }
             
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $totalAmountPayable = $result->sum('price');
+            $totalQualityInKg = $result->sum('total_in_kg');
+
+            $avgPrice = $totalAmountPayable / $totalQualityInKg;
+            $averagePrice = number_format((float)$avgPrice, 2, '.', '');
+            
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
         }
 
         if (request()->ajax()) {
@@ -3030,21 +3034,21 @@ class AssistantManagerController extends Controller
         if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
         {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
         { 
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->where('payment_receipt_columbites.staff', $request->manager)
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } else {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'pound')  
                                 ->where('payment_receipt_columbites.staff', $request->manager)->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_pound', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         }
         
         if($result->isEmpty())
@@ -3070,10 +3074,11 @@ class AssistantManagerController extends Controller
             ];
 
             $totalBeratingAverage = 0;
-
             $totalPercentageAverage = 0;
+            $totalAmountPayable = 0;
+            $averagePrice = 0;
 
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
 
         } else {
             // Total Kg and Total Average Berating
@@ -3395,12 +3400,6 @@ class AssistantManagerController extends Controller
 
             $totalPercentage = $totalPercentage185 + $totalPercentage186 + $totalPercentage187 + $totalPercentage188 + $totalPercentage189 + $totalPercentage190 + $totalPercentage191 + $totalPercentage192 + $totalPercentage193 + $totalPercentage194 + $totalPercentage195 + $totalPercentage196 + $totalPercentage197 + $totalPercentage198 + $totalPercentage199 + $totalPercentage200 + $totalPercentage201 + $totalPercentage202 + $totalPercentage203 + $totalPercentage204 + $totalPercentage205 + $totalPercentage206 + $totalPercentage207 + $totalPercentage208 + $totalPercentage209;
 
-            // $p185 = $sum185 * $percentage185; $p186 = $sum186 * $percentage186; $p187 = $sum187 * $percentage187; $p188 = $sum188 * $percentage188; $p189 = $sum189 * $percentage189; $p190 = $sum190 * $percentage190; $p191 = $sum191 * $percentage191; $p192 = $sum192 * $percentage192; $p193 = $sum193 * $percentage193; $p194 = $sum194 * $percentage194; $p195 = $sum195 * $percentage195;  
-            // $p196 = $sum196 * $percentage196; $p197 = $sum197 * $percentage197;  $p198 = $sum198 * $percentage198; $p199 = $sum199 * $percentage199; $p200 = $sum200 * $percentage200; $p201 = $sum201 * $percentage201; $p202 = $sum202 * $percentage202; $p203 = $sum203 * $percentage203; 
-            // $p204 = $sum204 * $percentage204; $p205 = $sum205 * $percentage205; $p206 = $sum206 * $percentage206; $p207 = $sum207 * $percentage207; $p208 = $sum208 * $percentage208; $p209 = $sum209 * $percentage209;
-
-            // $totalPercentage =  $p185 + $p186 + $p187 + $p188 + $p189 + $p190 + $p191 + $p192 + $p193 + $p194 + $p195 + $p196 + $p197 + $p198 + $p199 + $p200 + $p201 +  $p202 + $p203 + $p204 + $p205 + $p206 + $p207 + $p208 + $p209;
-            
             $percentageAverage = $totalPercentage / $totalPound;
 
             $totalPercentageAverage = number_format((float)$percentageAverage, 2, '.', '');
@@ -3478,7 +3477,13 @@ class AssistantManagerController extends Controller
                 ];
             }
             
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $totalAmountPayable = $result->sum('price');
+            $totalQualityInPounds = $result->sum('total_in_pound');
+
+            $avgPrice = $totalAmountPayable / $totalQualityInPounds;
+            $averagePrice = floor($avgPrice) * 80;
+            
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
         }
 
         if (request()->ajax()) {
@@ -3539,21 +3544,21 @@ class AssistantManagerController extends Controller
         if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'kg')  
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
         {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'kg')  
                                 ->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
         { 
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'kg')  
                                 ->where('payment_receipt_columbites.staff', $request->manager)
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         } else {
             $result =  PaymentReceiptColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_columbites.grade')->latest()->where('payment_receipt_columbites.type', 'kg')  
                                 ->where('payment_receipt_columbites.staff', $request->manager)->whereBetween('payment_receipt_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
+                                ->get(['payment_receipt_columbites.date_of_purchase', 'payment_receipt_columbites.total_in_kg', 'payment_receipt_columbites.price', 'payment_receipt_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_columbites.created_at', 'payment_receipt_columbites.updated_at']);
         }
         
         if($result->isEmpty())
@@ -3579,10 +3584,11 @@ class AssistantManagerController extends Controller
             ];
 
             $totalBeratingAverage = 0;
-
             $totalPercentageAverage = 0;
+            $totalAmountPayable = 0;
+            $averagePrice = 0;
 
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
 
         } else {
             // Total Kg and Total Average Berating
@@ -3981,7 +3987,13 @@ class AssistantManagerController extends Controller
                 ];
             }
             
-            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $totalAmountPayable = $result->sum('price');
+            $totalQualityInKg = $result->sum('total_in_kg');
+
+            $avgPrice = $totalAmountPayable / $totalQualityInKg;
+            $averagePrice = number_format((float)$avgPrice, 2, '.', '');
+            
+            $data = ['18M' => $totalBags18, '19M' => $totalBags19, '20M' => $totalBags20, 'TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
         }
 
         if (request()->ajax()) {
@@ -4042,21 +4054,21 @@ class AssistantManagerController extends Controller
         if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'pound')  
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
         {
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'pound')  
                                 ->whereBetween('payment_receipt_lower_grade_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
         { 
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'pound')  
                                 ->where('payment_receipt_lower_grade_columbites.staff', $request->manager)
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         } else {
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'pound')  
                                 ->where('payment_receipt_lower_grade_columbites.staff', $request->manager)->whereBetween('payment_receipt_lower_grade_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_pound', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         }
 
         if($result->isEmpty())
@@ -4067,10 +4079,11 @@ class AssistantManagerController extends Controller
             ];
 
             $totalBeratingAverage = 0;
-
             $totalPercentageAverage = 0;
+            $totalAmountPayable = 0;
+            $averagePrice = 0;
 
-            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
 
         } else {
             // Total Kg and Total Average Berating
@@ -4420,7 +4433,13 @@ class AssistantManagerController extends Controller
                 'pounds' => number_format((float)$answer, 0, '.', '')
             ];
   
-            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $totalAmountPayable = $result->sum('price');
+            $totalQualityInPounds = $result->sum('total_in_pound');
+
+            $avgPrice = $totalAmountPayable / $totalQualityInPounds;
+            $averagePrice = floor($avgPrice) * 80;
+  
+            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
         }
 
         if (request()->ajax()) {
@@ -4481,21 +4500,21 @@ class AssistantManagerController extends Controller
         if($request->start_date == null && $request->end_date == null && $request->manager == null)
         {
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'kg')  
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         } elseif($request->start_date !== null && $request->end_date !== null && $request->manager == null)
         {
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'kg')  
                                 ->whereBetween('payment_receipt_lower_grade_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         } elseif($request->start_date == null && $request->end_date == null && $request->manager !== null)
         { 
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'kg')  
                                 ->where('payment_receipt_lower_grade_columbites.staff', $request->manager)
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         } else {
             $result =  PaymentReceiptLowerGradeColumbite::join('berating_calculations', 'berating_calculations.id', '=', 'payment_receipt_lower_grade_columbites.grade')->latest()->where('payment_receipt_lower_grade_columbites.type', 'kg')  
                                 ->where('payment_receipt_lower_grade_columbites.staff', $request->manager)->whereBetween('payment_receipt_lower_grade_columbites.date_of_purchase', [$request->start_date, $request->end_date])
-                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
+                                ->get(['payment_receipt_lower_grade_columbites.date_of_purchase', 'payment_receipt_lower_grade_columbites.total_in_kg', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.price', 'payment_receipt_lower_grade_columbites.percentage_analysis', 'berating_calculations.grade', 'payment_receipt_lower_grade_columbites.created_at', 'payment_receipt_lower_grade_columbites.updated_at']);
         }
         
         if($result->isEmpty())
@@ -4506,10 +4525,11 @@ class AssistantManagerController extends Controller
             ];
 
             $totalBeratingAverage = 0;
-
             $totalPercentageAverage = 0;
+            $totalAmountPayable = 0;
+            $averagePrice = 0;
 
-            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
 
         } else {
             // Total Kg and Total Average Berating
@@ -4860,7 +4880,13 @@ class AssistantManagerController extends Controller
                 'pounds' => number_format((float)$answer, 0, '.', '')
             ];
   
-            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage];
+            $totalAmountPayable = $result->sum('price');
+            $totalQualityInKg = $result->sum('total_in_kg');
+
+            $avgPrice = $totalAmountPayable / $totalQualityInKg;
+            $averagePrice = number_format((float)$avgPrice, 2, '.', '');
+  
+            $data = ['TOTAL_BAGS' => $totalBags, 'AB' => $totalBeratingAverage, 'AP' => $totalPercentageAverage, 'TAP' => $totalAmountPayable, 'AVGPRICE' => $averagePrice];
         }
 
         if (request()->ajax()) {

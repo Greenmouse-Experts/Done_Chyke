@@ -50,6 +50,14 @@ Route::prefix('/dashboard')->group(
         Route::post('/add/berating/rate', [DashboardController::class, 'add_berating_rate'])->name('add.berating.rate');
         Route::post('/get/berating/rate', [DashboardController::class, 'get_berating_rate'])->name('get.berating.rate');
         Route::post('/update/berating/rate', [DashboardController::class, 'update_berating_rate'])->name('update.berating.rate');
+
+        Route::post('/add/analysis/rate', [DashboardController::class, 'add_analysis_rate'])->name('add.analysis.rate');
+        Route::post('/get/analysis/rate', [DashboardController::class, 'get_analysis_rate'])->name('get.analysis.rate');
+        Route::post('/update/analysis/rate', [DashboardController::class, 'update_analysis_rate'])->name('update.analysis.rate');
+
+        Route::post('/add/benchmark/rate', [DashboardController::class, 'add_benchmark_rate'])->name('add.benchmark.rate');
+        Route::post('/get/benchmark/rate', [DashboardController::class, 'get_benchmark_rate'])->name('get.benchmark.rate');
+        Route::post('/update/benchmark/rate', [DashboardController::class, 'update_benchmark_rate'])->name('update.benchmark.rate');
     }
 );
 

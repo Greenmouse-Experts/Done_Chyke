@@ -53,7 +53,7 @@
                                         <thead class="bg-white text-uppercase">
                                             <tr class="ligth ligth-data">
                                                 <th>S/N</th>
-                                                <th>Date of Purchse</th>
+                                                <th>Date of Purchase</th>
                                                 <th>Receipt No</th>
                                                 <th>Supplier Name</th>
                                                 <th>Type of Material</th>
@@ -136,6 +136,13 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="11" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$lowergradecolumbitePaymentReceiptPound->sum('total_in_pound')}}lbs</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($lowergradecolumbitePaymentReceiptPound->sum('price'), 2)}}</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
@@ -157,7 +164,7 @@
                                         <thead class="bg-white text-uppercase">
                                             <tr class="ligth ligth-data">
                                                 <th>S/N</th>
-                                                <th>Date of Purchse</th>
+                                                <th>Date of Purchase</th>
                                                 <th>Receipt No</th>
                                                 <th>Supplier Name</th>
                                                 <th>Type of Material</th>
@@ -240,6 +247,13 @@
                                             </tr>
                                             @endforeach
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="11" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">{{$lowergradecolumbitePaymentReceiptKg->sum('total_in_kg')}}kg</td>
+                                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($lowergradecolumbitePaymentReceiptKg->sum('price'), 2)}}</td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

@@ -119,7 +119,7 @@
                                         @else
                                         <a class="badge bg-success mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Active" href="{{route('admin.activate.rate.analysis', Crypt::encrypt($rate->id))}}"><i class="ri-play-line mr-0"></i></a>
                                         @endif
-                                        <span data-toggle="modal" data-target="#delete-{{$rate->id}}">
+                                        <!-- <span data-toggle="modal" data-target="#delete-{{$rate->id}}">
                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                         </span>
                                         <div class="modal fade" id="delete-{{$rate->id}}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -149,7 +149,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </td>
                             </tr>

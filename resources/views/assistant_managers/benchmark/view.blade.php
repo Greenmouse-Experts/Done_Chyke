@@ -83,7 +83,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <span data-toggle="modal" data-target="#delete-{{$bench->id}}">
+                                        <!-- <span data-toggle="modal" data-target="#delete-{{$bench->id}}">
                                             <a class="badge bg-danger mr-2" data-toggle="tooltip" data-placement="top" title="Delete" data-original-title="Delete" href="#"><i class="ri-delete-bin-line mr-0"></i></a>
                                         </span>
                                         <div class="modal fade" id="delete-{{$bench->id}}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -113,7 +113,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </td> 
                             </tr>

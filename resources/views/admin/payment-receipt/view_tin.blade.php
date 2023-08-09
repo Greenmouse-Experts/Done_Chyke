@@ -55,7 +55,7 @@
                                             <tr class="ligth ligth-data">
                                                 <th>S/N</th>
                                                 <th>Assistant Manager</th>
-                                                <th>Date of Purchse</th>
+                                                <th>Date of Purchase</th>
                                                 <th>Receipt No</th>
                                                 <th>Supplier Name</th>
                                                 <th>Type of Material</th>
@@ -204,7 +204,7 @@
                                             <tr class="ligth ligth-data">
                                                 <th>S/N</th>
                                                 <th>Assistant Manager</th>
-                                                <th>Date of Purchse</th>
+                                                <th>Date of Purchase</th>
                                                 <th>Receipt No</th>
                                                 <th>Supplier Name</th>
                                                 <th>Type of Material</th>
@@ -340,7 +340,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="13" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                                <td colspan="11" style="font-size: 1.1rem; font-weight: 700">Total</td>
                                                 <td colspan="3" style="font-size: 1.1rem; font-weight: 700">{{$tinPaymentReceiptKg->sum('total_in_kg')}}kg</td>
                                                 <td colspan="2" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($tinPaymentReceiptKg->sum('price'), 2)}}</td>
                                             </tr>
