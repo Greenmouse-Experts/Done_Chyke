@@ -67,12 +67,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Supplier *</label>
-                                        <select name="supplier" class="selectpicker form-control" data-style="py-0" required>
+                                        <select name="supplier" id="option" class="selectpicker form-control" data-style="py-0" required>
                                             <option value="">-- Select Supplier --</option>
                                             @if(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get()->count() > 0)
                                                 @foreach(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get() as $staff)
                                                 <option value="{{$staff->id}}">{{$staff->name}}</option>
                                                 @endforeach
+                                                <option value="0">Others</option>
                                             @else
                                             <option value="">No Supplier Added</option>
                                             @endif
@@ -85,6 +86,18 @@
                                         <label>Amount *</label>
                                         <input type="number" class="form-control" placeholder="Enter amount" name="amount" required>
                                         <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12" style="display: none;" id="textFieldContainer">
+                                    <div class="form-group">
+                                        <label for="supplier_additional_field">Other Supplier</label>
+                                        <input type="text" class="form-control" name="supplier_additional_field">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="collected_by">Collected By *</label>
+                                        <input type="text" class="form-control" name="collected_by" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -121,4 +134,18 @@
         <!-- Page end  -->
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectElement = document.querySelector("#option");
+        const textFieldContainer = document.querySelector("#textFieldContainer");
+
+        selectElement.addEventListener("change", function() {
+            if (selectElement.value === "0") {
+                textFieldContainer.style.display = "block";
+            } else {
+                textFieldContainer.style.display = "none";
+            }
+        });
+    });
+</script>
 @endsection

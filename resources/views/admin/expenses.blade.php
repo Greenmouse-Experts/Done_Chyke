@@ -52,6 +52,7 @@
                                 <th>S/N</th>
                                 <th>Accountant</th>
                                 <th>Supplier</th>
+                                <th>Collected By Who</th>
                                 <th>Payment Source</th>
                                 <th>Category</th>
                                 <th>Description</th>
@@ -76,7 +77,14 @@
                                     <b>{{ 'USER DELETED' }}</b>
                                     @endif
                                 </td>
-                                <td>{{App\Models\User::find($expense->supplier)->name}}</td>
+                                <td>
+                                    @if (App\Models\User::where('id', $expense->supplier)->exists())
+                                    {{App\Models\User::find($expense->supplier)->name}}
+                                    @else
+                                    {{$expense->supplier_additional_field}}
+                                    @endif
+                                </td>
+                                <td>{{$expense->collected_by}}</td>
                                 <td>{{$expense->payment_source}}</td>
                                 <td>{{$expense->category}}</td>
                                 <td>{{$expense->description}}</td>
@@ -170,16 +178,23 @@
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-12">
                                                                             <div class="form-group">
                                                                                 <label>Supplier *</label>
-                                                                                <select name="supplier" class="selectpicker form-control" data-style="py-0" required>
-                                                                                <option value="{{$expense->supplier}}">{{App\Models\User::find($expense->supplier)->name}}</option>
+                                                                                <select name="supplier" id="option" class="selectpicker form-control" data-style="py-0" required>
+                                                                                    <option value="{{$expense->supplier}}">
+                                                                                        @if (App\Models\User::where('id', $expense->supplier)->exists())
+                                                                                        {{App\Models\User::find($expense->supplier)->name}}
+                                                                                        @else
+                                                                                        {{$expense->supplier_additional_field}}
+                                                                                        @endif
+                                                                                    </option>
                                                                                     <option value="">-- Select Supplier --</option>
                                                                                     @if(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get()->count() > 0)
                                                                                     @foreach(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get() as $staff)
                                                                                     <option value="{{$staff->id}}">{{$staff->name}}</option>
                                                                                     @endforeach
+                                                                                    <option value="0">Others</option>
                                                                                     @else
                                                                                     <option value="">No Supplier Added</option>
                                                                                     @endif
@@ -187,7 +202,19 @@
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-12" style="display: none;" id="textFieldContainer">
+                                                                            <div class="form-group">
+                                                                                <label for="supplier_additional_field">Other Supplier</label>
+                                                                                <input type="text" class="form-control" name="supplier_additional_field" value="{{$expense->supplier_additional_field}}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <div class="form-group">
+                                                                                <label for="collected_by">Collected By *</label>
+                                                                                <input type="text" class="form-control" name="collected_by" value="{{$expense->collected_by}}" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-12">
                                                                             <div class="form-group">
                                                                                 <label>Amount *</label>
                                                                                 <input type="number" class="form-control" placeholder="Enter amount" name="amount" value="{{$expense->amount}}" required>
@@ -276,4 +303,18 @@
         <!-- Page end  -->
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectElement = document.querySelector("#option");
+        const textFieldContainer = document.querySelector("#textFieldContainer");
+
+        selectElement.addEventListener("change", function() {
+            if (selectElement.value === "0") {
+                textFieldContainer.style.display = "block";
+            } else {
+                textFieldContainer.style.display = "none";
+            }
+        });
+    });
+</script>
 @endsection

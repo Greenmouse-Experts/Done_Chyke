@@ -326,6 +326,7 @@
                                     <tr class="ligth ligth-data">
                                         <th>S/N</th>
                                         <th>Supplier</th>
+                                        <th>Collected By</th>
                                         <th>Payment Source</th>
                                         <th>Category</th>
                                         <th>Amount</th>
@@ -338,7 +339,14 @@
                                         @foreach(App\Models\Expenses::latest()->where('date', \Carbon\Carbon::now()->format('Y-m-d'))->get()->take(5) as $expense)
                                         <tr>
                                             <td>{{$loop->iteration}}</td>
-                                            <td>{{App\Models\User::find($expense->supplier)->name}}</td>
+                                            <td>
+                                            @if (App\Models\User::where('id', $expense->supplier)->exists())
+                                            {{App\Models\User::find($expense->supplier)->name}}
+                                            @else
+                                            {{$expense->supplier_additional_field}}
+                                            @endif
+                                            </td>
+                                            <td>{{$expense->collected_by}}</td>
                                             <td>{{$expense->payment_source}}</td>
                                             <td>{{$expense->category}}</td>
                                             <td>₦{{number_format($expense->amount, 2)}}</td>

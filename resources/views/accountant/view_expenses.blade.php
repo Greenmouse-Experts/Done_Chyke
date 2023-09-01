@@ -54,6 +54,7 @@
                             <tr class="ligth ligth-data">
                                 <th>S/N</th>
                                 <th>Supplier</th>
+                                <th>Collected By Who</th>
                                 <th>Payment Source</th>
                                 <th>Category</th>
                                 <th>Description</th>
@@ -70,9 +71,10 @@
                                     @if (App\Models\User::where('id', $expense->supplier)->exists())
                                     {{App\Models\User::find($expense->supplier)->name}}
                                     @else
-                                    <b>{{ 'USER DELETED' }}</b>
+                                    {{$expense->supplier_additional_field}}
                                     @endif
                                 </td>
+                                <td>{{$expense->collected_by}}</td>
                                 <td>{{$expense->payment_source}}</td>
                                 <td>{{$expense->category}}</td>
                                 <td>{{$expense->description}}</td>
@@ -118,7 +120,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5" style="font-size: 1.1rem; font-weight: 700">Grand Total</td>
+                                <td colspan="6" style="font-size: 1.1rem; font-weight: 700">Grand Total</td>
                                 <td colspan="4" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($expenses->sum('amount'), 2)}}</td>
                             </tr>
                         </tfoot>

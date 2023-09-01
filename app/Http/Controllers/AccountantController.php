@@ -58,17 +58,25 @@ class AccountantController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric'],
             'supplier' => ['required', 'numeric'],
+            'supplier_additional_field' => ['nullable', 'string'],
+            'collected_by' => ['required', 'string'],
             'date' => ['required', 'date'],
         ]);
 
-        $supplier = User::find($request->supplier);
-
-        if(!$supplier)
+        if($request->supplier <> 0)
         {
-            return back()->with([
-                'type' => 'danger',
-                'message' => 'Supplier not found in our database.'
-            ]);
+            $supplier = User::find($request->supplier);
+
+            if(!$supplier)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Supplier not found in our database.'
+                ]);
+            }
+            $supply = $supplier->id;
+        } else {
+            $supply = null;
         }
 
         if (request()->hasFile('receipt')) 
@@ -82,25 +90,29 @@ class AccountantController extends Controller
 
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
-                'supplier' => $supplier->id,
+                'supplier' => $supply,
                 'payment_source' => $request->payment_source,
                 'category' => $request->category,
                 'description' => $request->description,
                 'amount' => $request->amount,
                 'date' => $request->date,
                 'recurring_expense' => $request->recurring_expense,
+                'supplier_additional_field' => $request->supplier_additional_field,
+                'collected_by' => $request->collected_by,
                 'receipt' => '/storage/expenses_receipts/'.$filename
             ]);
 
         } else {
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
-                'supplier' => $supplier->id,
+                'supplier' => $supply,
                 'payment_source' => $request->payment_source,
                 'category' => $request->category,
                 'description' => $request->description,
                 'amount' => $request->amount,
                 'date' => $request->date,
+                'supplier_additional_field' => $request->supplier_additional_field,
+                'collected_by' => $request->collected_by,
                 'recurring_expense' => $request->recurring_expense
             ]);
         }
@@ -141,9 +153,31 @@ class AccountantController extends Controller
             'starting_balance' => $starting_balance,
             'closing_balance' => $closing_balance
         ]);
+
+        // $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
+
+        // if($date)
+        // {
+        //     $starting_balance = $date->starting_balance;
+        //     $additional_income = $date->additional_income;
+        //     $amount_used = $date->amount_used;
+        //     $remaining_balance = $date->remaining_balance;
+        // } else {
+        //     $starting_balance = null;
+        //     $additional_income = null;
+        //     $amount_used = null;
+        //     $remaining_balance = null;
+        // }
+
+        // return view('accountant.daily_balance')->with([
+        //     'starting_balance' => $starting_balance,
+        //     'additional_income' => $additional_income,
+        //     'amount_used' => $amount_used,
+        //     'remaining_balance' => $remaining_balance
+        // ]);
     }
 
-    public function add_daily_balance(Request $request)
+    public function daily_balance_add(Request $request)
     {
         $this->validate($request, [
             'starting_balance' => ['required', 'numeric']

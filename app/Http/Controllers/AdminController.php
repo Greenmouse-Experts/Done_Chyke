@@ -7191,6 +7191,8 @@ class AdminController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric'],
             'supplier' => ['required', 'numeric'],
+            'supplier_additional_field' => ['nullable', 'string'],
+            'collected_by' => ['required', 'string'],
             'date' => ['required', 'date'],
         ]);
 
@@ -7200,14 +7202,20 @@ class AdminController extends Controller
 
         $transaction = Transaction::where('accountant_process_id', $expense->id)->first();
 
-        $supplier = User::find($request->supplier);
-
-        if(!$supplier)
+        if($request->supplier <> 0)
         {
-            return back()->with([
-                'type' => 'danger',
-                'message' => 'Supplier not found in our database.'
-            ]);
+            $supplier = User::find($request->supplier);
+
+            if(!$supplier)
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => 'Supplier not found in our database.'
+                ]);
+            }
+            $supply = $supplier->id;
+        } else {
+            $supply = null;
         }
 
         if($request->amount == $expense->amount)
@@ -7227,7 +7235,9 @@ class AdminController extends Controller
                 request()->receipt->storeAs('expenses_receipts', $filename, 'public');
 
                 $expense->update([
-                    'supplier' => $supplier->id,
+                    'supplier' => $supply,
+                    'supplier_additional_field' => $request->supplier_additional_field,
+                    'collected_by' => $request->collected_by,
                     'payment_source' => $request->payment_source,
                     'category' => $request->category,
                     'description' => $request->description,
@@ -7238,7 +7248,9 @@ class AdminController extends Controller
                 ]);
             } else {
                 $expense->update([
-                    'supplier' => $supplier->id,
+                    'supplier' => $supply,
+                    'supplier_additional_field' => $request->supplier_additional_field,
+                    'collected_by' => $request->collected_by,
                     'payment_source' => $request->payment_source,
                     'category' => $request->category,
                     'description' => $request->description,
@@ -7278,7 +7290,9 @@ class AdminController extends Controller
                 request()->receipt->storeAs('expenses_receipts', $filename, 'public');
                 
                 $expense->update([
-                    'supplier' => $supplier->id,
+                    'supplier' => $supply,
+                    'supplier_additional_field' => $request->supplier_additional_field,
+                    'collected_by' => $request->collected_by,
                     'payment_source' => $request->payment_source,
                     'category' => $request->category,
                     'description' => $request->description,
@@ -7289,7 +7303,9 @@ class AdminController extends Controller
                 ]);
             } else {
                 $expense->update([
-                    'supplier' => $supplier->id,
+                    'supplier' => $supply,
+                    'supplier_additional_field' => $request->supplier_additional_field,
+                    'collected_by' => $request->collected_by,
                     'payment_source' => $request->payment_source,
                     'category' => $request->category,
                     'description' => $request->description,
@@ -7331,7 +7347,9 @@ class AdminController extends Controller
             request()->receipt->storeAs('expenses_receipts', $filename, 'public');
 
             $expense->update([
-                'supplier' => $supplier->id,
+                'supplier' => $supply,
+                'supplier_additional_field' => $request->supplier_additional_field,
+                'collected_by' => $request->collected_by,
                 'payment_source' => $request->payment_source,
                 'category' => $request->category,
                 'description' => $request->description,
@@ -7342,7 +7360,9 @@ class AdminController extends Controller
             ]);
         } else {
             $expense->update([
-                'supplier' => $supplier->id,
+                'supplier' => $supply,
+                'supplier_additional_field' => $request->supplier_additional_field,
+                'collected_by' => $request->collected_by,
                 'payment_source' => $request->payment_source,
                 'category' => $request->category,
                 'description' => $request->description,
