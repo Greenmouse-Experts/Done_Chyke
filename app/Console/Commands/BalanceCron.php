@@ -82,7 +82,5 @@ class BalanceCron extends Command
                 'transfer_by_cheques' => $cheques
             ]);
         }
-
-        \Log::info($cash);
     }
 }
