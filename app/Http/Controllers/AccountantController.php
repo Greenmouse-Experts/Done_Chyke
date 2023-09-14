@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Balance;
 use App\Models\Expenses;
+use App\Models\Payment;
+use App\Models\PaymentReceiptColumbite;
+use App\Models\PaymentReceiptLowerGradeColumbite;
+use App\Models\PaymentReceiptTin;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class AccountantController extends Controller
 {
@@ -20,6 +25,315 @@ class AccountantController extends Controller
     public function __construct()
     {
         $this->middleware(['auth','verified']);
+    }
+
+    public function payments_tin_view($id, Request $request)
+    {
+        if ($id == 'kg' || $id == 'pound') {
+            $active_tab = $id;
+            
+            $tinPaymentReceiptKg = PaymentReceiptTin::latest()->where('type', 'kg')->get();
+            $tinPaymentReceiptPound = PaymentReceiptTin::latest()->where('type', 'pound')->get();
+        
+            if ($request->start_date != null && $request->end_date != null) {
+                if ($id == 'kg') {
+                    $tinPaymentReceiptKg = $tinPaymentReceiptKg->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                } elseif ($id == 'pound') {
+                    $tinPaymentReceiptPound = $tinPaymentReceiptPound->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                }
+            }
+        
+            return view('accountant.payments.tin_view', [
+                'tinPaymentReceiptKg' => $tinPaymentReceiptKg,
+                'tinPaymentReceiptPound' => $tinPaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
+        }
+    }
+
+    public function payments_process_make($receipt_id, $type, $title, Request $request)
+    {
+        $receiptID = Crypt::decrypt($receipt_id);
+        $receiptTYPE = Crypt::decrypt($type);
+        $receiptTITLE = Crypt::decrypt($title); 
+
+        if($receiptTITLE == 'Tin')
+        {
+            $receipt = PaymentReceiptTin::find($receiptID);
+
+        } elseif($receiptTITLE == 'Columbite')
+        {
+            $receipt = PaymentReceiptColumbite::find($receiptID);
+
+        } else {
+            $receipt = PaymentReceiptLowerGradeColumbite::find($receiptID);
+        }
+
+        $this->validate($request, [
+            'payment_action' => ['nullable', 'string', 'max:255'],
+            'payment_type' => ['nullable', 'string', 'max:255'],
+            'payment_amount' => ['nullable', 'numeric'],
+            'date_paid' => ['nullable', 'date'],
+            'final_payment_type' => ['nullable', 'string', 'max:255'],
+            'final_payment_amount' => ['nullable', 'numeric'],
+            'final_date_paid' => ['nullable', 'date'],
+        ]);
+
+        if(Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->exists())
+        {
+            $payment = Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->get();
+
+            $sumPayment = $payment->sum('payment_amount') + $payment->sum('final_payment_amount');
+            $totalPayment = $receipt->price - $sumPayment;
+
+            if($request->final_payment_amount < ($totalPayment) || $request->final_payment_amount > ($totalPayment))
+            {
+                return back()->with([
+                    'type' => 'danger',
+                    'message' => "Final payment can't be greater or less than the remaining balance."
+                ]);
+            }
+
+            $payment = Payment::create(
+                [
+                    'user_id' => Auth::user()->id,
+                    'receipt_title' => $receiptTITLE,
+                    'receipt_type' => $receipt->type,
+                    'receipt_id' => $receiptID,
+                    'payment_action' => $request->payment_action,
+                    'payment_type' => $request->payment_type,
+                    'payment_amount' => $request->payment_amount,
+                    'date_paid' => $request->date_paid,
+                    'final_payment_type' => $request->final_payment_type,
+                    'final_payment_amount' => $request->final_payment_amount,
+                    'final_date_paid' => $request->final_date_paid,
+                ]
+            );
+    
+            return redirect()->route('payments.view.details', Crypt::encrypt($payment->id))->with([
+                'type' => 'success',
+                'message' => "Payment added successfully."
+            ]);
+
+        } else {
+            if($request->payment_action == 'Full Payment')
+            {
+                if($request->payment_amount < ($receipt->price) || $request->payment_amount > ($receipt->price))
+                {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => "Payment action full payment can't be greater or less than the receipt amount payable."
+                    ]);
+                }
+            } else {
+
+                if($request->payment_amount >= ($receipt->price))
+                {
+                    return back()->with([
+                        'type' => 'danger',
+                        'message' => "Payment action part payment can't be greater or equal to the receipt amount payable."
+                    ]);
+                }
+            }
+        }
+
+        $payment = Payment::create(
+            [
+                'user_id' => Auth::user()->id,
+                'receipt_title' => $receiptTITLE,
+                'receipt_type' => $receipt->type,
+                'receipt_id' => $receiptID,
+                'payment_action' => $request->payment_action,
+                'payment_type' => $request->payment_type,
+                'payment_amount' => $request->payment_amount,
+                'date_paid' => $request->date_paid,
+                'final_payment_type' => $request->final_payment_type,
+                'final_payment_amount' => $request->final_payment_amount,
+                'final_date_paid' => $request->final_date_paid,
+            ]
+        );
+
+        return redirect()->route('payments.view.details', Crypt::encrypt($payment->id))->with([
+            'type' => 'success',
+            'message' => "Payment added successfully."
+        ]);
+    }
+
+    public function payments_columbite_view($id, Request $request)
+    {
+        if ($id == 'kg' || $id == 'pound') {
+            if ($request->start_date == null && $request->end_date == null) {
+                $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                    ->where('type', 'kg')->get();
+                $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                    ->where('type', 'pound')->get();
+            } else {
+                if ($id == 'kg') {
+                    $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                        ->where('type', 'kg')
+                        ->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+                    $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                        ->where('type', 'pound')->get();
+                } elseif ($id == 'pound') {
+                    $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                        ->where('type', 'pound')
+                        ->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+                    $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                        ->where('type', 'kg')->get();
+                }
+            }
+        
+            $active_tab = $id;
+        
+            return view('accountant.payments.columbite_view', [
+                'columbitePaymentReceiptKg' => $columbitePaymentReceiptKg,
+                'columbitePaymentReceiptPound' => $columbitePaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
+        }
+    }
+
+    public function payments_lower_grade_columbite_view($id, Request $request)
+    {
+        if ($id == 'kg' || $id == 'pound') {
+            if ($request->start_date == null && $request->end_date == null) {
+                $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'kg')->get();
+                $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'pound')->get();
+            } else {
+                $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'kg')
+                    ->when($id == 'kg', function ($query) use ($request) {
+                        return $query->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                    })->get();
+                $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'pound')
+                    ->when($id == 'pound', function ($query) use ($request) {
+                        return $query->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                    })->get();
+            }
+        
+            $active_tab = $id;
+        
+            return view('accountant.payments.lower_grade_columbite_view', [
+                'lowergradecolumbitePaymentReceiptKg' => $lowergradecolumbitePaymentReceiptKg,
+                'lowergradecolumbitePaymentReceiptPound' => $lowergradecolumbitePaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
+        }
+    }
+
+    public function payments_process($receipt_id, $type, $title)
+    {
+        $receiptID = Crypt::decrypt($receipt_id);
+        $receiptTYPE = Crypt::decrypt($type);
+        $receiptTITLE = Crypt::decrypt($title); 
+
+        if($receiptTITLE == 'Tin')
+        {
+            $receipt = PaymentReceiptTin::find($receiptID);
+
+            if(Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->exists())
+            {
+                $Receipt = Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->first();
+                $paymentAmount = $Receipt->payment_amount + $Receipt->final_payment_amount;
+                $action = $Receipt->payment_action;
+                $amount = '₦'.number_format($paymentAmount, 2);
+                $type = $Receipt->payment_type ?? null;
+                $id = $Receipt->id;
+            } else {
+                $paymentAmount = 0;
+                $action = 'No Payment';
+                $amount = '₦0';
+                $type = null;
+                $id = null;
+            }
+
+        } elseif($receiptTITLE == 'Columbite')
+        {
+            $receipt = PaymentReceiptColumbite::find($receiptID);
+            if(Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->exists())
+            {
+                $Receipt = Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->first();
+                $paymentAmount = $Receipt->payment_amount + $Receipt->final_payment_amount;
+                $action = $Receipt->payment_action;
+                $amount = '₦'.number_format($paymentAmount, 2);
+                $type = $Receipt->payment_type ?? null;
+                $id = $Receipt->id;
+            } else {
+                $paymentAmount = 0;
+                $action = 'No Payment';
+                $amount = '₦0';
+                $type = null;
+                $id = null;
+            }
+
+        } else {
+            $receipt = PaymentReceiptLowerGradeColumbite::find($receiptID);
+            if(Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->exists())
+            {
+                $Receipt = Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->first();
+                $paymentAmount = $Receipt->payment_amount + $Receipt->final_payment_amount;
+                $action = $Receipt->payment_action;
+                $amount = '₦'.number_format($paymentAmount, 2);
+                $type = $Receipt->payment_type ?? null;
+                $id = $Receipt->id;
+            } else {
+                $paymentAmount = 0;
+                $action = 'No Payment';
+                $amount = '₦0';
+                $type = null;
+                $id = null;
+            }
+        }
+
+        return view('accountant.payments.process', [
+            'receiptTITLE' => $receiptTITLE,
+            'receiptTYPE' => $receiptTYPE,
+            'receiptID' => $receiptID,
+            'receipt' => $receipt,
+            'paymentAmount' => $paymentAmount,
+            'action' => $action,
+            'amount' => $amount,
+            'type' => $type,
+            'id' => $id
+        ]);
+    }
+
+    public function payments_view_details($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $full = Payment::where('id', $finder)->first();
+        if($full)
+        {
+            $full_payment = Payment::where(['receipt_title' => $full->receipt_title, 'receipt_type' => $full->receipt_type, 'receipt_id' => $full->receipt_id])->where('final_payment_type', null)->where('final_payment_amount',  null)->where('final_date_paid', null)->first();
+            $part_payment = Payment::where(['receipt_title' => $full->receipt_title, 'receipt_type' => $full->receipt_type, 'receipt_id' => $full->receipt_id])->where('final_payment_type', '<>', null)->where('final_payment_amount', '<>', null)->where('final_date_paid', '<>', null)->first();
+        
+            return view('accountant.payments.view', [
+                'full_payment' => $full_payment ?? null,
+                'part_payment' => $part_payment ?? null
+            ]);
+        }             
+        
+        $part = Payment::where('id', $finder)->first();
+        if($part)
+        {
+            $full_payment = Payment::where(['receipt_title' => $part->receipt_title, 'receipt_type' => $part->receipt_type, 'receipt_id' => $part->receipt_id])->where('final_payment_type', null)->where('final_payment_amount',  null)->where('final_date_paid', null)->first();
+            $part_payment = Payment::where(['receipt_title' => $part->receipt_title, 'receipt_type' => $part->receipt_type, 'receipt_id' => $part->receipt_id])->where('final_payment_type', '<>', null)->where('final_payment_amount', '<>', null)->where('final_date_paid', '<>', null)->first();
+        }
+
+        return view('accountant.payments.view', [
+            'full_payment' => $full_payment ?? null,
+            'part_payment' => $part_payment ?? null
+        ]);
     }
 
     public function expenses_view(Request $request)
@@ -53,6 +367,7 @@ class AccountantController extends Controller
     public function expenses_post(Request $request)
     {
         $this->validate($request, [
+            'miscellaneous_expense_type' => ['required', 'string', 'max:255'],
             'payment_source' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
@@ -90,6 +405,7 @@ class AccountantController extends Controller
 
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
+                'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                 'supplier' => $supply,
                 'payment_source' => $request->payment_source,
                 'category' => $request->category,
@@ -105,6 +421,7 @@ class AccountantController extends Controller
         } else {
             $expense = Expenses::create([
                 'user_id' => Auth::user()->id,
+                'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                 'supplier' => $supply,
                 'payment_source' => $request->payment_source,
                 'category' => $request->category,
@@ -182,48 +499,37 @@ class AccountantController extends Controller
         $this->validate($request, [
             'starting_balance' => ['required', 'numeric']
         ]);
-
-        $balance = Balance::get();
-
-        if($balance->count() > 0)
-        {
-            $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
-
-            if($date)
-            {
-                if($request->starting_balance == $date->starting_balance)
-                {
-                    $date->update([
-                        'starting_balance' => $request->starting_balance,
-                    ]);
-
-                    return back()->with([
-                        'alertType' => 'success',
-                        'message' => 'Daily starting balance updated successfully.'
-                    ]);
-                }
-
-            } else {
-                Balance::create([
-                    'starting_balance' => $request->starting_balance,
-                    'date' => Carbon::now()->format('Y-m-d')
-                ]);
-
-                return back()->with([
-                    'alertType' => 'success',
-                    'message' => 'Daily starting balance added successfully.'
-                ]);
-            }
+    
+        $date = Carbon::now()->format('Y-m-d');
+    
+        // Check if there's a balance record for the current date
+        $balance = Balance::whereDate('date', $date)->first();
+    
+        if ($balance && $request->starting_balance == $balance->starting_balance) {
+            // If the record exists and the starting balance is the same, no need to update
+            return back()->with([
+                'alertType' => 'info',
+                'message' => 'Daily starting balance is the same.'
+            ]);
         }
-
-        Balance::create([
-            'starting_balance' => $request->starting_balance,
-            'date' => Carbon::now()->format('Y-m-d')
-        ]);
-
+    
+        // If there's no record for the current date or the balance is different
+        if ($balance) {
+            // Update the existing record
+            $balance->update([
+                'starting_balance' => $balance->starting_balance + $request->starting_balance,
+            ]);
+        } else {
+            // Create a new record
+            Balance::create([
+                'starting_balance' => $request->starting_balance,
+                'date' => $date,
+            ]);
+        }
+    
         return back()->with([
             'alertType' => 'success',
-            'message' => 'Daily starting balance added successfully.'
+            'message' => 'Daily starting balance updated successfully.'
         ]);
     }
 }

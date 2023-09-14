@@ -9,6 +9,7 @@ use App\Models\BeratingCalculation;
 use App\Models\PaymentReceiptColumbite;
 use App\Models\Expenses;
 use App\Models\Notification;
+use App\Models\Payment;
 use App\Models\PaymentReceiptLowerGradeColumbite;
 use App\Models\PaymentReceiptTin;
 use App\Models\Transaction;
@@ -7186,6 +7187,7 @@ class AdminController extends Controller
     public function update_expense($id, Request $request)
     {
         $this->validate($request, [
+            'miscellaneous_expense_type' => ['required', 'string', 'max:255'],
             'payment_source' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
@@ -7235,6 +7237,7 @@ class AdminController extends Controller
                 request()->receipt->storeAs('expenses_receipts', $filename, 'public');
 
                 $expense->update([
+                    'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                     'supplier' => $supply,
                     'supplier_additional_field' => $request->supplier_additional_field,
                     'collected_by' => $request->collected_by,
@@ -7248,6 +7251,7 @@ class AdminController extends Controller
                 ]);
             } else {
                 $expense->update([
+                    'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                     'supplier' => $supply,
                     'supplier_additional_field' => $request->supplier_additional_field,
                     'collected_by' => $request->collected_by,
@@ -7290,6 +7294,7 @@ class AdminController extends Controller
                 request()->receipt->storeAs('expenses_receipts', $filename, 'public');
                 
                 $expense->update([
+                    'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                     'supplier' => $supply,
                     'supplier_additional_field' => $request->supplier_additional_field,
                     'collected_by' => $request->collected_by,
@@ -7303,6 +7308,7 @@ class AdminController extends Controller
                 ]);
             } else {
                 $expense->update([
+                    'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                     'supplier' => $supply,
                     'supplier_additional_field' => $request->supplier_additional_field,
                     'collected_by' => $request->collected_by,
@@ -7347,6 +7353,7 @@ class AdminController extends Controller
             request()->receipt->storeAs('expenses_receipts', $filename, 'public');
 
             $expense->update([
+                'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                 'supplier' => $supply,
                 'supplier_additional_field' => $request->supplier_additional_field,
                 'collected_by' => $request->collected_by,
@@ -7360,6 +7367,7 @@ class AdminController extends Controller
             ]);
         } else {
             $expense->update([
+                'miscellaneous_expense_type' => $request->miscellaneous_expense_type,
                 'supplier' => $supply,
                 'supplier_additional_field' => $request->supplier_additional_field,
                 'collected_by' => $request->collected_by,
@@ -9103,48 +9111,37 @@ class AdminController extends Controller
         $this->validate($request, [
             'starting_balance' => ['required', 'numeric']
         ]);
-        
-        $balance = Balance::get();
-
-        if($balance->count() > 0)
-        {
-            $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
-
-            if($date)
-            {
-                if($request->starting_balance == $date->starting_balance)
-                {
-                    $date->update([
-                        'starting_balance' => $request->starting_balance,
-                    ]);
-
-                    return back()->with([
-                        'alertType' => 'success',
-                        'message' => 'Daily starting balance updated successfully.'
-                    ]);
-                }
-
-            } else {
-                Balance::create([
-                    'starting_balance' => $request->starting_balance,
-                    'date' => Carbon::now()->format('Y-m-d')
-                ]);
-
-                return back()->with([
-                    'alertType' => 'success',
-                    'message' => 'Daily starting balance added successfully.'
-                ]);
-            }
+    
+        $date = Carbon::now()->format('Y-m-d');
+    
+        // Check if there's a balance record for the current date
+        $balance = Balance::whereDate('date', $date)->first();
+    
+        if ($balance && $request->starting_balance == $balance->starting_balance) {
+            // If the record exists and the starting balance is the same, no need to update
+            return back()->with([
+                'alertType' => 'info',
+                'message' => 'Daily starting balance is the same.'
+            ]);
         }
-
-        Balance::create([
-            'starting_balance' => $request->starting_balance,
-            'date' => Carbon::now()->format('Y-m-d')
-        ]);
-
+    
+        // If there's no record for the current date or the balance is different
+        if ($balance) {
+            // Update the existing record
+            $balance->update([
+                'starting_balance' => $balance->starting_balance + $request->starting_balance,
+            ]);
+        } else {
+            // Create a new record
+            Balance::create([
+                'starting_balance' => $request->starting_balance,
+                'date' => $date,
+            ]);
+        }
+    
         return back()->with([
             'alertType' => 'success',
-            'message' => 'Daily starting balance added successfully.'
+            'message' => 'Daily starting balance updated successfully.'
         ]);
     }
 
@@ -9248,5 +9245,128 @@ class AdminController extends Controller
             'message' => 'Balance deleted successfully!'
         ]);
     }
+
+    public function payments_tin_view($id, Request $request)
+    {
+        if ($id == 'kg' || $id == 'pound') {
+            $active_tab = $id;
+            
+            $tinPaymentReceiptKg = PaymentReceiptTin::latest()->where('type', 'kg')->get();
+            $tinPaymentReceiptPound = PaymentReceiptTin::latest()->where('type', 'pound')->get();
+        
+            if ($request->start_date != null && $request->end_date != null) {
+                if ($id == 'kg') {
+                    $tinPaymentReceiptKg = $tinPaymentReceiptKg->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                } elseif ($id == 'pound') {
+                    $tinPaymentReceiptPound = $tinPaymentReceiptPound->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                }
+            }
+        
+            return view('admin.payments.tin_view', [
+                'tinPaymentReceiptKg' => $tinPaymentReceiptKg,
+                'tinPaymentReceiptPound' => $tinPaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
+        }
+    }
+
+    public function payments_columbite_view($id, Request $request)
+    {
+        if ($id == 'kg' || $id == 'pound') {
+            if ($request->start_date == null && $request->end_date == null) {
+                $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                    ->where('type', 'kg')->get();
+                $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                    ->where('type', 'pound')->get();
+            } else {
+                if ($id == 'kg') {
+                    $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                        ->where('type', 'kg')
+                        ->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+                    $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                        ->where('type', 'pound')->get();
+                } elseif ($id == 'pound') {
+                    $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                        ->where('type', 'pound')
+                        ->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
+                    $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                        ->where('type', 'kg')->get();
+                }
+            }
+        
+            $active_tab = $id;
+        
+            return view('admin.payments.columbite_view', [
+                'columbitePaymentReceiptKg' => $columbitePaymentReceiptKg,
+                'columbitePaymentReceiptPound' => $columbitePaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
+        }
+    }
+
+    public function payments_lower_grade_columbite_view($id, Request $request)
+    {
+        if ($id == 'kg' || $id == 'pound') {
+            if ($request->start_date == null && $request->end_date == null) {
+                $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'kg')->get();
+                $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'pound')->get();
+            } else {
+                $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'kg')
+                    ->when($id == 'kg', function ($query) use ($request) {
+                        return $query->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                    })->get();
+                $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'pound')
+                    ->when($id == 'pound', function ($query) use ($request) {
+                        return $query->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                    })->get();
+            }
+        
+            $active_tab = $id;
+        
+            return view('admin.payments.lower_grade_columbite_view', [
+                'lowergradecolumbitePaymentReceiptKg' => $lowergradecolumbitePaymentReceiptKg,
+                'lowergradecolumbitePaymentReceiptPound' => $lowergradecolumbitePaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
+        }
+    }
     
+    public function payments_view_details($id)
+    {
+        $finder = Crypt::decrypt($id);
+
+        $full = Payment::where('id', $finder)->first();
+        if($full)
+        {
+            $full_payment = Payment::where(['receipt_title' => $full->receipt_title, 'receipt_type' => $full->receipt_type, 'receipt_id' => $full->receipt_id])->where('final_payment_type', null)->where('final_payment_amount',  null)->where('final_date_paid', null)->first();
+            $part_payment = Payment::where(['receipt_title' => $full->receipt_title, 'receipt_type' => $full->receipt_type, 'receipt_id' => $full->receipt_id])->where('final_payment_type', '<>', null)->where('final_payment_amount', '<>', null)->where('final_date_paid', '<>', null)->first();
+        
+            return view('admin.payments.view', [
+                'full_payment' => $full_payment ?? null,
+                'part_payment' => $part_payment ?? null
+            ]);
+        }             
+        
+        $part = Payment::where('id', $finder)->first();
+        if($part)
+        {
+            $full_payment = Payment::where(['receipt_title' => $part->receipt_title, 'receipt_type' => $part->receipt_type, 'receipt_id' => $part->receipt_id])->where('final_payment_type', null)->where('final_payment_amount',  null)->where('final_date_paid', null)->first();
+            $part_payment = Payment::where(['receipt_title' => $part->receipt_title, 'receipt_type' => $part->receipt_type, 'receipt_id' => $part->receipt_id])->where('final_payment_type', '<>', null)->where('final_payment_amount', '<>', null)->where('final_date_paid', '<>', null)->first();
+        }
+
+        return view('admin.payments.view', [
+            'full_payment' => $full_payment ?? null,
+            'part_payment' => $part_payment ?? null
+        ]);
+    }
 }

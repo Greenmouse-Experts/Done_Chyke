@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Balance;
 use App\Models\Expenses;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -33,27 +34,55 @@ class BalanceCron extends Command
         $today = Carbon::now()->format('Y-m-d');
         $yesterday = Carbon::yesterday()->format('Y-m-d');
 
-        $balance = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
-        $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
-        $expensesCheque = Expenses::where('payment_source', 'Cheque')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
-        $expensesTransfer = Expenses::where('payment_source', 'Transfer')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
-        $totalClosingBalance = Balance::whereDate('date', $yesterday)->sum('closing_balance') ?? 0;
+        $balance = Balance::whereDate('date', $today)->first();
 
-        $starting_balance = ($balance->starting_balance ?? 0) + $expensesCheque + $expensesTransfer + $totalClosingBalance;
-        $expenses = $expensesCash + $expensesCheque + $expensesTransfer;
-        $closing_balance = $starting_balance - $expenses;
+        $expenses = Expenses::whereDate('date', $today)->get()->sum('amount');
+
+        $paymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $today)->get();
+        $paymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $today)->get();
+        $cash = $paymentsDateCash->sum('payment_amount') + $paymentsFinalCash->sum('final_payment_amount');
+
+        $paymentsDateTransfer = Payment::where('payment_type', 'Direct Transfer')->whereDate('date_paid', $today)->get();
+        $paymentsFinalTransfer = Payment::where('payment_type', 'Direct Transfer')->whereDate('final_date_paid', $today)->get();
+        $transfer =  $paymentsDateTransfer->sum('payment_amount') + $paymentsFinalTransfer->sum('final_payment_amount');
+
+        $paymentsDateCheque = Payment::where('payment_type', 'Transfer by Cheques')->whereDate('date_paid', $today)->get();
+        $paymentsFinalCheque = Payment::where('payment_type', 'Transfer by Cheques')->whereDate('final_date_paid', $today)->get();
+        $cheques = $paymentsDateCheque->sum('payment_amount') + $paymentsFinalCheque->sum('final_payment_amount');
+        // $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
+        // $expensesCheque = Expenses::where('payment_source', 'Cheque')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
+        // $expensesTransfer = Expenses::where('payment_source', 'Transfer')->whereDate('date', Carbon::now()->format('Y-m-d'))->get()->sum('amount');
+        $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
+
+        $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
+        $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
+        $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount');
+        $yesterdayCashPayment = $yesterdaycash ?? 0;
+
+        $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
+        $closing_balance = $expenses + $cash + $transfer + $cheques;
 
         if($balance)
         {
             $balance->update([
-                'closing_balance' => $closing_balance
+                'closing_balance' => $closing_balance,
+                'expense' => $expenses,
+                'cash' => $cash,
+                'transfer' => $transfer,
+                'transfer_by_cheques' => $cheques
             ]);
         } else {
             Balance::create([
-                'starting_balance' => 0,
+                'starting_balance' => $remainingBalance,
                 'closing_balance' => $closing_balance,
-                'date' => $today
+                'date' => $today,
+                'expense' => $expenses,
+                'cash' => $cash,
+                'transfer' => $transfer,
+                'transfer_by_cheques' => $cheques
             ]);
         }
+
+        \Log::info($cash);
     }
 }

@@ -5,13 +5,13 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">All Expenses</h4>
+                <h4 class="mb-3">All Miscellaneous Expenses</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Expenses</li>
+                    <li class="breadcrumb-item active" aria-current="page">Miscellaneous Expenses</li>
                 </ol>
             </nav>
         </div>
@@ -51,6 +51,7 @@
                             <tr class="ligth ligth-data">
                                 <th>S/N</th>
                                 <th>Accountant</th>
+                                <th>Miscellaneous Expense Type</th>
                                 <th>Supplier</th>
                                 <th>Collected By Who</th>
                                 <th>Payment Source</th>
@@ -77,6 +78,7 @@
                                     <b>{{ 'USER DELETED' }}</b>
                                     @endif
                                 </td>
+                                <td>{{$expense->miscellaneous_expense_type}}</td>
                                 <td>
                                     @if (App\Models\User::where('id', $expense->supplier)->exists())
                                     {{App\Models\User::find($expense->supplier)->name}}
@@ -147,6 +149,13 @@
                                                                     <div class="row">
                                                                         <div class="col-md-6">
                                                                             <div class="form-group">
+                                                                                <label>Miscellaneous Expense Type *</label>
+                                                                                <input type="text" class="form-control" placeholder="Enter Miscellaneous Expense Type" value="{{$expense->miscellaneous_expense_type}}" name="miscellaneous_expense_type" required>
+                                                                                <div class="help-block with-errors"></div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group">
                                                                                 <label>Payment Source *</label>
                                                                                 <select name="payment_source" class="selectpicker form-control" data-style="py-0" required>
                                                                                     <option value="{{$expense->payment_source}}">{{$expense->payment_source}}</option>
@@ -164,7 +173,7 @@
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-12">
+                                                                        <div class="col-md-6">
                                                                             <div class="form-group">
                                                                                 <label>Category *</label>
                                                                                 <input type="text" class="form-control" placeholder="Enter category" name="category" value="{{$expense->category}}" required>

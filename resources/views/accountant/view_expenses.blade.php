@@ -5,13 +5,13 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">Expenses</h4>
+                <h4 class="mb-3">Miscellaneous Expenses</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Expenses</li>
+                    <li class="breadcrumb-item active" aria-current="page">Miscellaneous Expenses</li>
                 </ol>
             </nav>
         </div>
@@ -42,7 +42,7 @@
                             </form>
                         </div>
                         <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
-                            <a href="{{route('expenses.add')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Expense</a>
+                            <a href="{{route('expenses.add')}}" class="btn btn-primary add-list"><i class="las la-plus mr-3"></i>Add Miscellaneous Expense</a>
                         </div>
                     </div>
                 </div>
@@ -53,6 +53,7 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>S/N</th>
+                                <th>Miscellaneous Expense Type</th>
                                 <th>Supplier</th>
                                 <th>Collected By Who</th>
                                 <th>Payment Source</th>
@@ -67,6 +68,7 @@
                             @foreach($expenses as $expense)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
+                                <td>{{$expense->miscellaneous_expense_type}}</td>
                                 <td>
                                     @if (App\Models\User::where('id', $expense->supplier)->exists())
                                     {{App\Models\User::find($expense->supplier)->name}}

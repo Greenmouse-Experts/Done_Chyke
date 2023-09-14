@@ -92,6 +92,33 @@
                         </li>
                     </ul>
                 </li>
+                <li class="{{ (request()->is('admin/payments/*')) ? 'active' : '' }}">
+                    <a href="#payments" class="collapsed" data-toggle="collapse" aria-expanded="false">
+                        <i class="ri-calculator-line mr-0"></i>
+                        <span class="ml-4">Payment Transactions</span>
+                        <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="10 15 15 20 20 15"></polyline>
+                            <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                        </svg>
+                    </a>
+                    <ul id="payments" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                        <li class="{{ (request()->is('admin/payments/tin/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payments.tin.view', 'pound')}}">
+                                <i class="las la-minus"></i><span>Tin</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('admin/payments/columbite/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payments.columbite.view', 'pound')}}">
+                                <i class="las la-minus"></i><span>Columbite</span>
+                            </a>
+                        </li>
+                        <li class="{{ (request()->is('admin/payments/lower/grade/columbite/view/pound')) ? 'active' : '' }}">
+                            <a href="{{route('admin.payments.lower.grade.columbite.view', 'pound')}}">
+                                <i class="las la-minus"></i><span>Lower Grade Columbite</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="{{ (request()->is('admin/weekly/material/summary*')) ? 'active' : '' }}">
                     <a href="#analysis" class="collapsed" data-toggle="collapse" aria-expanded="false">
                         <svg class="svg-icon" id="p-dash7" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -141,7 +168,7 @@
                         <svg class="svg-icon" id="p-dash5" width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                             <line x1="1" y1="10" x2="23" y2="10"></line>
                         </svg>
-                        <span class="ml-4">Expenses</span>
+                        <span class="ml-4">Miscellaneous Expenses</span>
                     </a>
                 </li>
                 <li class="{{ (request()->is('admin/transactions')) ? 'active' : '' }}">

@@ -1641,7 +1641,6 @@ class AssistantManagerController extends Controller
                 ]);
             }
         }
-
     }
 
     public function payment_receipt_lower_grade_columbite_add($id)

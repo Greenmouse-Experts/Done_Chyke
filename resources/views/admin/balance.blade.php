@@ -48,6 +48,10 @@
                                 <th>S/N</th>
                                 <th>Date</th>
                                 <th>Starting Balance</th>
+                                <th>Miscellaneous Expenses</th>
+                                <th>Cash</th>
+                                <th>Transfer</th>
+                                <th>Transfer by Cheques</th>
                                 <th>Closing Balance</th>
                                 <!-- <th>Action</th> -->
                             </tr>
@@ -60,6 +64,10 @@
                                 </td>
                                 <td>{{$balance->date}}</td>
                                 <td>₦{{number_format($balance->starting_balance, 2)}}</td>
+                                <td>₦{{number_format($balance->expense, 2)}}</td>
+                                <td>₦{{number_format($balance->cash, 2)}}</td>
+                                <td>₦{{number_format($balance->transfer, 2)}}</td>
+                                <td>₦{{number_format($balance->transfer_by_cheques, 2)}}</td>
                                 <td>₦{{number_format($balance->closing_balance, 2)}}</td>
                                 <!-- <td>
                                     <div class="d-flex align-items-center list-action">
@@ -138,8 +146,13 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" style="font-size: 1.1rem; font-weight: 700">Total Closing Balance</td>
-                                <td colspan="" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('closing_balance'), 2)}}</td>
+                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('starting_balance'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('expense'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('cash'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('transfer'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('transfer_by_cheques'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('closing_balance'), 2)}}</td>
                             </tr>
                         </tfoot>
                     </table>

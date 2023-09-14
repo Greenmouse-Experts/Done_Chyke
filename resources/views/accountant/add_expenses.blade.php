@@ -5,13 +5,13 @@
     <div class="col-lg-12">
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
             <div>
-                <h4 class="mb-3">Add Expense</h4>
+                <h4 class="mb-3">Add Miscellaneous Expense</h4>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i class="ri-home-4-line mr-1 float-left"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{route('expenses.view')}}">Expense</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('expenses.view')}}">Miscellaneous Expense</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Add</li>
                 </ol>
             </nav>
@@ -33,12 +33,19 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label>Miscellaneous Expense Type *</label>
+                                        <input type="text" class="form-control" placeholder="Enter Miscellaneous Expense Type" name="miscellaneous_expense_type" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label>Payment Source *</label>
                                         <select name="payment_source" class="selectpicker form-control" data-style="py-0" required>
                                             <option value="">-- Select Payment Source --</option>
                                             <option value="Cash">Cash</option>
-                                            <option value="Cheque">Cheque</option>
-                                            <option value="Transfer">Transfer</option>
+                                            <option value="Transfer by Cheques">Transfer by Cheques</option>
+                                            <option value="Direct Transfer">Direct Transfer</option>
                                         </select>
                                         <div class="help-block with-errors"></div>
                                     </div>
@@ -50,7 +57,7 @@
                                         <div class="help-block with-errors"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Category *</label>
                                         <input type="text" class="form-control" placeholder="Enter category" name="category" required>

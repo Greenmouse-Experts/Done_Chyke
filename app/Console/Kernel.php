@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('balance:cron')->daily()->at('23:40')->withoutOverlapping();
+        $schedule->command('balance:cron')->daily()->at('23:55')->withoutOverlapping();
+        $schedule->command('balance:cron')->daily()->at('00:05')->withoutOverlapping();
     }
 
     /**

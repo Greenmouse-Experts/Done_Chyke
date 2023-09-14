@@ -65,6 +65,18 @@ Route::prefix('/dashboard')->group(
 Route::middleware(['auth', 'isAccountant'])->group(function () {
     Route::prefix('/accountant')->group(
         function () {
+            // Payments
+            //Tin
+            Route::any('/payments/tin/view/{id}', [AccountantController::class, 'payments_tin_view'])->name('payments.tin.view');
+            // Columbite
+            Route::any('/payments/columbite/view/{id}', [AccountantController::class, 'payments_columbite_view'])->name('payments.columbite.view');
+            // LowerGrade
+            Route::any('/payments/lower/grade/columbite/view/{id}', [AccountantController::class, 'payments_lower_grade_columbite_view'])->name('payments.lower.grade.columbite.view');
+            
+            Route::post('/payments/process/{receipt_id}/{type}/{title}', [AccountantController::class, 'payments_process_make'])->name('payments.process.make');
+            Route::get('/payments/process/{receipt_id}/{type}/{title}', [AccountantController::class, 'payments_process'])->name('payments.process');
+            Route::get('/payments/view/details/{id}', [AccountantController::class, 'payments_view_details'])->name('payments.view.details');
+
             // Expenses
             Route::any('/expenses/view', [AccountantController::class, 'expenses_view'])->name('expenses.view');
             Route::get('/expenses/add', [AccountantController::class, 'expenses_add'])->name('expenses.add');
@@ -232,7 +244,17 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::any('/admin/weekly/material/summary/low/grade/kg', [AdminController::class, 'weekly_material_summary_low_grade_kg'])->name('admin.weekly.material.summary.low.grade.kg'); 
 
     Route::any('/admin/daily/balance', [AdminController::class, 'daily_balance'])->name('admin.daily.balance');
-    Route::post('/admin/daily/balance/add', [AccountantController::class, 'add_daily_balance'])->name('admin.daily.balance.add');
+    Route::post('/admin/daily/balance/add', [AdminController::class, 'daily_balance_add'])->name('admin.daily.balance.add');
     Route::post('/admin/daily/balance/update/{id}', [AdminController::class, 'update_daily_balance'])->name('admin.daily.balance.update');
     Route::post('/admin/daily/balance/delete/{id}', [AdminController::class, 'delete_daily_balance'])->name('admin.daily.balance.delete');
+
+    // Payments
+    //Tin
+    Route::any('/admin/payments/tin/view/{id}', [AdminController::class, 'payments_tin_view'])->name('admin.payments.tin.view');
+    // Columbite
+    Route::any('/admin/payments/columbite/view/{id}', [AdminController::class, 'payments_columbite_view'])->name('admin.payments.columbite.view');
+    // LowerGrade
+    Route::any('/admin/payments/lower/grade/columbite/view/{id}', [AdminController::class, 'payments_lower_grade_columbite_view'])->name('admin.payments.lower.grade.columbite.view');
+
+    Route::get('/admin/payments/view/details/{id}', [AdminController::class, 'payments_view_details'])->name('admin.payments.view.details');
 });
