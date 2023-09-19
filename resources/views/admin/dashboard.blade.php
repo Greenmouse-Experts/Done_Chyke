@@ -88,7 +88,7 @@
                 <div class="card card-block card-stretch card-height">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Expenses Summary</h4>
+                            <h4 class="card-title">Miscellaneous Expenses Summary</h4>
                         </div>
                         <div class="card-header-toolbar d-flex align-items-center">
                             <div class="dropdown">
@@ -313,7 +313,7 @@
                         <div class="card-transparent card-block card-stretch mb-4">
                             <div class="card-header d-flex align-items-center justify-content-between p-0">
                                 <div class="header-title">
-                                    <h4 class="card-title mb-0">Today's Expenses</h4>
+                                    <h4 class="card-title mb-0">Today's Miscellaneous Expenses</h4>
                                 </div>
                                 <div class="card-header-toolbar d-flex align-items-center">
                                     <div><a href="{{route('admin.expenses')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>

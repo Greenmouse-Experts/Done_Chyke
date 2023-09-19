@@ -73,16 +73,16 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Supplier *</label>
+                                        <label>Collected from *</label>
                                         <select name="supplier" id="option" class="selectpicker form-control" data-style="py-0" required>
-                                            <option value="">-- Select Supplier --</option>
+                                            <option value="">-- Select Collected from --</option>
                                             @if(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get()->count() > 0)
                                                 @foreach(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get() as $staff)
                                                 <option value="{{$staff->id}}">{{$staff->name}}</option>
                                                 @endforeach
                                                 <option value="0">Others</option>
                                             @else
-                                            <option value="">No Supplier Added</option>
+                                            <option value="">None Added</option>
                                             @endif
                                         </select>
                                         <div class="help-block with-errors"></div>

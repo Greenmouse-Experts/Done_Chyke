@@ -270,7 +270,7 @@
             </div>
             <div class="col-lg-7">
                 <div class="row">
-                    <div class="col-lg-4 col-md-4">
+                    <div class="col-lg-5 col-md-5">
                         <div class="card card-block card-stretch card-height">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
@@ -278,7 +278,7 @@
                                         <i class="ri-user-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Expenses</p>
+                                        <p class="mb-2">Miscellaneous Expenses</p>
                                         <h4>{{App\Models\Expenses::get()->count()}}</h4>
                                     </div>
                                 </div>
@@ -289,7 +289,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 col-md-8">
+                    <div class="col-lg-7 col-md-7">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                    <div class="header-title">
+                                        <h4 class="card-title">{{\Carbon\Carbon::now()->toFormattedDateString()}}</h4>
+                                    </div>
+                                    <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
+                                        <a href="{{route('daily.balance')}}" class="btn btn-primary text-white add-list"><i class="las la-plus mr-3"></i>Add Starting Balance</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+               <div class="row">
+                    <div class="col-lg-4 col-md-4">
                         <div class="card card-block card-stretch card-height">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-4 card-total-sale">
@@ -304,7 +321,37 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
+                                        <i class="ri-wallet-2-fill mr-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-2">Expenses in Cash - {{\Carbon\Carbon::now()->toFormattedDateString()}}</p>
+                                        <h4>₦{{number_format($expensesCash, 2)}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="card card-block card-stretch card-height">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4 card-total-sale">
+                                    <div class="icon iq-icon-box-2 bg-danger-light">
+                                        <i class="ri-wallet-2-fill mr-0"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-2">Payments in Cash - {{\Carbon\Carbon::now()->toFormattedDateString()}}</p>
+                                        <h4>₦{{number_format($paymentCash, 2)}}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
             </div>
             <div class="col-12">
                 <div class="row">
@@ -312,7 +359,7 @@
                         <div class="card card-block card-stretch card-height">
                             <div class="card-header d-flex justify-content-between">
                                 <div class="header-title">
-                                    <h4 class="card-title">Expenses Summary Daily</h4>
+                                    <h4 class="card-title">Miscellaneous Expenses Summary Daily</h4>
                                 </div>
                                 <div class="card-header-toolbar d-flex align-items-center">
                                     <div><a href="{{route('expenses.view')}}" class="btn btn-primary view-btn font-size-14">View Reports</a></div>
@@ -424,7 +471,7 @@
                         <div class="card-transparent card-block card-stretch mb-4">
                             <div class="card-header d-flex align-items-center justify-content-between p-0">
                                 <div class="header-title">
-                                    <h4 class="card-title mb-0">Expenses</h4>
+                                    <h4 class="card-title mb-0">Miscellaneous Expenses</h4>
                                 </div>
                                 <div class="card-header-toolbar d-flex align-items-center">
                                     <div><a href="{{route('expenses.view')}}" class="btn btn-primary view-btn font-size-14">View All</a></div>

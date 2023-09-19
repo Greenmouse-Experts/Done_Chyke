@@ -25,7 +25,7 @@
                                 <h4 class="card-title">{{\Carbon\Carbon::now()->toFormattedDateString()}}</h4>
                             </div>
                             <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
-                                <button data-toggle="modal" data-target="#add" class="btn btn-primary text-white add-list"><i class="las la-plus mr-3"></i>Add Starting Balance</button>
+                                <button data-toggle="modal" data-target="#add_starting_balance" class="btn btn-primary text-white add-list"><i class="las la-plus mr-3"></i>Add Starting Balance</button>
                             </div>
                         </div>
                     </div>
@@ -44,12 +44,6 @@
                                        </div> <span class="type text-white">Starting <br> Balance</span>
                                     </div>
                                  </th>
-                                 <th class="text-center prc-wrap">
-                                    <div class="prc-box active">
-                                       <div class="h3 pt-4 text-white">₦{{number_format($closing_balance, 2)}}
-                                       </div> <span class="type text-white">Closing <br> Balance</span>
-                                    </div>
-                                 </th>
                               </tr>
                            </thead>
                         </table>
@@ -57,12 +51,57 @@
                   </div>
                </div>
             </div>
+            <div class="col-lg-12">
+                <div class="table-responsive rounded mb-3">
+                    <table class="data-table table mb-0 tbl-server-info">
+                        <thead class="bg-white text-uppercase">
+                            <tr class="ligth ligth-data">
+                                <th>S/N</th>
+                                <th>Date</th>
+                                <th>Starting Balance</th>
+                                <th>Miscellaneous Expenses</th>
+                                <th>Cash</th>
+                                <th>Transfer</th>
+                                <th>Transfer by Cheques</th>
+                                <th>Closing Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody class="ligth-body">
+                            @foreach($balances as $balance)
+                            <tr>
+                                <td>
+                                    {{$loop->iteration}}
+                                </td>
+                                <td>{{$balance->date}}</td>
+                                <td>₦{{number_format($balance->starting_balance, 2)}}</td>
+                                <td>₦{{number_format($balance->expense, 2)}}</td>
+                                <td>₦{{number_format($balance->cash, 2)}}</td>
+                                <td>₦{{number_format($balance->transfer, 2)}}</td>
+                                <td>₦{{number_format($balance->transfer_by_cheques, 2)}}</td>
+                                <td>₦{{number_format($balance->closing_balance, 2)}}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" style="font-size: 1.1rem; font-weight: 700">Total</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('starting_balance'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('expense'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('cash'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('transfer'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('transfer_by_cheques'), 2)}}</td>
+                                <td colspan="1" style="font-size: 1.1rem; font-weight: 700">₦{{number_format($balances->sum('closing_balance'), 2)}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
         <!-- Page end  -->
     </div>
 </div>
 
-<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="add_starting_balance" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

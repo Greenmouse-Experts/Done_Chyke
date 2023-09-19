@@ -54,7 +54,7 @@
                             <tr class="ligth ligth-data">
                                 <th>S/N</th>
                                 <th>Miscellaneous Expense Type</th>
-                                <th>Supplier</th>
+                                <th>Collected From</th>
                                 <th>Collected By Who</th>
                                 <th>Payment Source</th>
                                 <th>Category</th>

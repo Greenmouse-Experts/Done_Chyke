@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Balance;
+use App\Models\Expenses;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -37,7 +38,8 @@ class StartingCron extends Command
 
         $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
         $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
-        $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount');
+        $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
+        $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
         $yesterdayCashPayment = $yesterdaycash ?? 0;
 
         $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;

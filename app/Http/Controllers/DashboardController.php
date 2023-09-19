@@ -7,6 +7,7 @@ use App\Models\Balance;
 use App\Models\BeratingCalculation;
 use App\Models\Expenses;
 use App\Models\Notification;
+use App\Models\Payment;
 use App\Models\PaymentReceiptColumbite;
 use App\Models\PaymentReceiptTin;
 use App\Models\User;
@@ -58,19 +59,36 @@ class DashboardController extends Controller
         $monthly_expenses = Expenses::whereDate('date', $today)->sum('amount');
         $monthly_expenses_count = Expenses::whereDate('date', $today)->get()->count();
 
-        $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(5);
+        $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(2);
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $totalClosingBalance = Balance::whereDate('date', $yesterday)->sum('closing_balance') ?? 0;
+        $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
 
-        $totalStartingBalance = $totalBalance + $totalClosingBalance;
+        $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
+        $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
+        $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
+        $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
+        $yesterdayCashPayment = $yesterdaycash ?? 0;
+
+        $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
+
+        $totalStartingBalance = $totalBalance + $remainingBalance;
+
+        $paymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $today)->get();
+        $paymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $today)->get();
+        $paymentCash = $paymentsDateCash->sum('payment_amount') + $paymentsFinalCash->sum('final_payment_amount');
+
+        $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $today)->get()->sum('amount');
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
             'notifications' => $notifications,
             'monthly_expenses' => $monthly_expenses,
             'monthly_expenses_count' => $monthly_expenses_count,
-            'totalStartingBalance' => $totalStartingBalance
+            'totalStartingBalance' => $totalStartingBalance,
+            'paymentCash' => $paymentCash,
+            'expensesCash' => $expensesCash,
+
         ]);
     }
 

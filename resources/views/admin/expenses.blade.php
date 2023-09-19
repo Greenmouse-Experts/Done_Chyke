@@ -52,7 +52,7 @@
                                 <th>S/N</th>
                                 <th>Accountant</th>
                                 <th>Miscellaneous Expense Type</th>
-                                <th>Supplier</th>
+                                <th>Collected from</th>
                                 <th>Collected By Who</th>
                                 <th>Payment Source</th>
                                 <th>Category</th>
@@ -161,7 +161,8 @@
                                                                                     <option value="{{$expense->payment_source}}">{{$expense->payment_source}}</option>
                                                                                     <option value="">-- Select Payment Source --</option>
                                                                                     <option value="Cash">Cash</option>
-                                                                                    <option value="Cheque">Cheque</option>
+                                                                                    <option value="Transfer by Cheques">Transfer by Cheques</option>
+                                                                                    <option value="Direct Transfer">Direct Transfer</option>
                                                                                 </select>
                                                                                 <div class="help-block with-errors"></div>
                                                                             </div>
@@ -189,7 +190,7 @@
                                                                         </div>
                                                                         <div class="col-12">
                                                                             <div class="form-group">
-                                                                                <label>Supplier *</label>
+                                                                                <label>Collected from *</label>
                                                                                 <select name="supplier" id="option" class="selectpicker form-control" data-style="py-0" required>
                                                                                     <option value="{{$expense->supplier}}">
                                                                                         @if (App\Models\User::where('id', $expense->supplier)->exists())
@@ -198,14 +199,14 @@
                                                                                         {{$expense->supplier_additional_field}}
                                                                                         @endif
                                                                                     </option>
-                                                                                    <option value="">-- Select Supplier --</option>
+                                                                                    <option value="">-- Select Collected from --</option>
                                                                                     @if(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get()->count() > 0)
                                                                                     @foreach(App\Models\User::latest()->where('account_type', '!=', 'Administrator')->where('status', '1')->get() as $staff)
                                                                                     <option value="{{$staff->id}}">{{$staff->name}}</option>
                                                                                     @endforeach
                                                                                     <option value="0">Others</option>
                                                                                     @else
-                                                                                    <option value="">No Supplier Added</option>
+                                                                                    <option value="">None Added</option>
                                                                                     @endif
                                                                                 </select>
                                                                                 <div class="help-block with-errors"></div>
