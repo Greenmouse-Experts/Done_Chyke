@@ -119,7 +119,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label>Starting Balance for Today - {{\Carbon\Carbon::now()->toFormattedDateString()}}  *</label>
-                                    <input type="number" class="form-control" placeholder="Enter startng balance" name="starting_balance" value="{{$starting_balance}}" required>
+                                    <input type="number" class="form-control" placeholder="Enter startng balance" name="starting_balance" required>
                                     <div class="help-block with-errors"></div>
                                 </div>
                             </div>

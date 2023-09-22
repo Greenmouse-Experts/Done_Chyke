@@ -458,23 +458,23 @@ class AccountantController extends Controller
         $balances = Balance::whereDate('date', $yesterday)->get();
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
+        // $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
 
-        $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
-        $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
-        $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
-        $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
-        $yesterdayCashPayment = $yesterdaycash ?? 0;
+        // $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
+        // $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
+        // $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
+        // $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
+        // $yesterdayCashPayment = $yesterdaycash ?? 0;
 
-        $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
+        // $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
 
-        $totalStartingBalance = $totalBalance + $remainingBalance;
+        // $totalStartingBalance = $totalBalance + $remainingBalance;
 
-        $starting_balance = $totalStartingBalance ?? 0;
+        // $starting_balance = $totalStartingBalance ?? 0;
 
 
         return view('accountant.daily_balance')->with([
-            'starting_balance' => $starting_balance,
+            'starting_balance' => $totalBalance,
             'balances' => $balances,
         ]);
 
