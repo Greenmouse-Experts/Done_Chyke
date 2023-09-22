@@ -155,9 +155,9 @@ class AdminController extends Controller
         }
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $totalClosingBalance = Balance::whereDate('date', $yesterday)->sum('closing_balance') ?? 0;
+        // $totalClosingBalance = Balance::whereDate('date', $yesterday)->sum('closing_balance') ?? 0;
         
-        $totalStartingBalance = $totalBalance + $totalClosingBalance;
+        $totalStartingBalance = $totalBalance;
 
         $totalReceipt = PaymentReceiptTin::get()->count() + PaymentReceiptColumbite::get()->count();
 

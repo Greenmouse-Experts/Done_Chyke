@@ -62,17 +62,17 @@ class DashboardController extends Controller
         $notifications = Notification::latest()->where('to', Auth::user()->id)->get()->take(2);
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
+        // $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
 
-        $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
-        $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
-        $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
-        $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
-        $yesterdayCashPayment = $yesterdaycash ?? 0;
+        // $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
+        // $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
+        // $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
+        // $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
+        // $yesterdayCashPayment = $yesterdaycash ?? 0;
 
-        $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
+        // $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
 
-        $totalStartingBalance = $totalBalance + $remainingBalance;
+        $totalStartingBalance = $totalBalance;
 
         $paymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $today)->get();
         $paymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $today)->get();
