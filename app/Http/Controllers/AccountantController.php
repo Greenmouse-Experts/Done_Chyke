@@ -458,24 +458,27 @@ class AccountantController extends Controller
         $balances = Balance::whereDate('date', $yesterday)->get();
 
         $totalBalance = Balance::whereDate('date', $today)->first()->starting_balance ?? 0;
-        // $yesterdayBalance = Balance::whereDate('date', $yesterday)->sum('starting_balance') ?? 0 ;
+        
+        $expenses = Expenses::whereDate('date', $yesterday)->get()->sum('amount');
 
-        // $yesterdaypaymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
-        // $yesterdaypaymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
-        // $yesterdayExpensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
-        // $yesterdaycash = $yesterdaypaymentsDateCash->sum('payment_amount') + $yesterdaypaymentsFinalCash->sum('final_payment_amount') + $yesterdayExpensesCash;
-        // $yesterdayCashPayment = $yesterdaycash ?? 0;
+        $paymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
+        $paymentsFinalCash = Payment::where('payment_type', 'Cash')->whereDate('final_date_paid', $yesterday)->get();
+        $cash = $paymentsDateCash->sum('payment_amount') + $paymentsFinalCash->sum('final_payment_amount');
 
-        // $remainingBalance = $yesterdayBalance - $yesterdayCashPayment;
+        $paymentsDateTransfer = Payment::where('payment_type', 'Direct Transfer')->whereDate('date_paid', $yesterday)->get();
+        $paymentsFinalTransfer = Payment::where('payment_type', 'Direct Transfer')->whereDate('final_date_paid', $yesterday)->get();
+        $transfer =  $paymentsDateTransfer->sum('payment_amount') + $paymentsFinalTransfer->sum('final_payment_amount');
 
-        // $totalStartingBalance = $totalBalance + $remainingBalance;
+        $paymentsDateCheque = Payment::where('payment_type', 'Transfer by Cheques')->whereDate('date_paid', $yesterday)->get();
+        $paymentsFinalCheque = Payment::where('payment_type', 'Transfer by Cheques')->whereDate('final_date_paid', $yesterday)->get();
+        $cheques = $paymentsDateCheque->sum('payment_amount') + $paymentsFinalCheque->sum('final_payment_amount');
 
-        // $starting_balance = $totalStartingBalance ?? 0;
-
+        $closing_balance = $expenses + $cash + $transfer + $cheques;
 
         return view('accountant.daily_balance')->with([
             'starting_balance' => $totalBalance,
             'balances' => $balances,
+            'closing_balance' => $closing_balance
         ]);
 
         // $date = Balance::whereDate('date', Carbon::now()->format('Y-m-d'))->first();

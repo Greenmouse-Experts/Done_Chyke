@@ -44,6 +44,12 @@
                                        </div> <span class="type text-white">Starting <br> Balance</span>
                                     </div>
                                  </th>
+                                 <th class="text-center prc-wrap">
+                                    <div class="prc-box active">
+                                       <div class="h3 pt-4 text-white">₦{{number_format($closing_balance, 2)}}
+                                       </div> <span class="type text-white">Closing <br> Balance</span>
+                                    </div>
+                                 </th>
                               </tr>
                            </thead>
                         </table>

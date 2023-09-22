@@ -344,8 +344,8 @@
                                         <i class="ri-wallet-2-fill mr-0"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-2">Payments in Cash - {{\Carbon\Carbon::now()->toFormattedDateString()}}</p>
-                                        <h4>₦{{number_format($paymentCash, 2)}}</h4>
+                                        <p class="mb-2">Closing Balance - {{\Carbon\Carbon::yesterday()->toFormattedDateString()}}</p>
+                                        <h4>₦{{number_format($closing_balance, 2)}}</h4>
                                     </div>
                                 </div>
                             </div>
