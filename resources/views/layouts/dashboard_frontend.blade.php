@@ -102,6 +102,8 @@
                     },  
                 ]
             });
+
+            $('.data-tab').DataTable();
         });
     </script>
 </body>

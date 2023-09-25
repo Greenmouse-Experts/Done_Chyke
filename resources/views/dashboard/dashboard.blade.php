@@ -299,28 +299,16 @@
             <div class="col-lg-8 mb-4">
                 <div class="Hamzat">
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-sm-9">
                             <h6 class="card-title mb-0">Final Payments</h6>
                         </div>
-                        <div class="col-sm-6">
+                        <!-- <div class="col-sm-6">
                             <input type="text" id="searchInput" placeholder="Search..">
-                        </div>
-                        <div class="col-sm-3">Date:{{\Carbon\Carbon::now()->toFormattedDateString()}}</div>
-                        <!-- <div class="col-sm-2">
-                            <div class="dropdown show">
-                                <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Receipt
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" href="#"></a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </div>
                         </div> -->
+                        <!-- <div class="col-sm-3">Date:{{\Carbon\Carbon::now()->toFormattedDateString()}}</div> -->
                         <div class="col-sm-12">
                             <div class="table-responsive rounded mb-3 mt-4">
-                                <table class="table mb-0 tbl-server-info" id="dataTable">
+                                <table class="data-tab table mb-0 tbl-server-info">
                                     <thead class="bg-white text-uppercase">
                                         <tr class="accept ligth-data">
                                             <th>Date</th>
@@ -329,25 +317,28 @@
                                         </tr>
                                     </thead>
                                     <tbody class="ligth-body">
-                                        <tr>
-                                            <td>Sep 25, 2023</td>
-                                            <td>10,000</td>
+                                        @foreach($payments as $payment)
+                                        <tr class="{{$payment->id}}">
+                                            <td>
+                                                @if($payment->payment_action == 'Full Payment')
+                                                {{$payment->date_paid}}
+                                                @else
+                                                {{$payment->final_date_paid}}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($payment->payment_action == 'Full Payment')
+                                                ₦{{number_format($payment->payment_amount, 2)}}
+                                                @else
+                                                ₦{{number_format($payment->final_payment_amount, 2)}}
+                                                @endif
+                                            </td>
                                             <td><i class="bi bi-eye-fill"></i> <span>
-                                                    <a href="{{route('expenses.view')}}">View All</a></span></td>
+                                                    <a href="{{route('payments.view.details', Crypt::encrypt($payment->id))}}">View All</a></span></td>
                                         </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
-                                <div class="pagination">
-                                    <button class="arrow" id="prevPage" disabled>← <span class="nav-text">PREV</span></button>
-                                    <div class="pages">
-                                        <div class="page-number active">1</div>
-                                        <div class="page-number">2</div>
-                                        <div class="page-number">3</div>
-                                        <div class="page-number">4</div>
-                                        <div class="page-number">5</div>
-                                    </div>
-                                    <button class="arrow" id="nextPage"><span class="nav-text">NEXT</span> →</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -375,9 +366,9 @@
 
                     </div>
                     @endforeach
-                    <div class="text-center"><a href="#">
-                            See more
-                        </a></div>
+                    <div class="text-center"><a href="{{route('notifications')}}">
+                                See more
+                            </a></div>
                 </div>
             </div>
         </div>
@@ -385,32 +376,33 @@
 </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var searchInput = document.getElementById('searchInput');
-        var dataTable = document.getElementById('dataTable');
-        var tableBody = dataTable.getElementsByTagName('tbody')[0];
-        var rows = tableBody.getElementsByTagName('tr');
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     var searchInput = document.getElementById('searchInput');
+    //     var dataTable = document.getElementById('dataTable');
+    //     var tableBody = dataTable.getElementsByTagName('tbody')[0];
+    //     var rows = tableBody.getElementsByTagName('tr');
 
-        searchInput.addEventListener('keyup', function() {
-            var searchText = searchInput.value.toLowerCase();
+    //     searchInput.addEventListener('keyup', function() {
+    //         var searchText = searchInput.value.toLowerCase();
 
-            for (var i = 0; i < rows.length; i++) {
-                var row = rows[i];
-                var cells = row.getElementsByTagName('td');
-                var rowText = '';
+    //         for (var i = 0; i < rows.length; i++) {
+    //             var row = rows[i];
+    //             var cells = row.getElementsByTagName('td');
+    //             var rowText = '';
 
-                for (var j = 0; j < cells.length; j++) {
-                    rowText += cells[j].textContent.toLowerCase() + ' ';
-                }
+    //             for (var j = 0; j < cells.length; j++) {
+    //                 rowText += cells[j].textContent.toLowerCase() + ' ';
+    //             }
 
-                if (rowText.indexOf(searchText) === -1) {
-                    row.style.display = 'none';
-                } else {
-                    row.style.display = '';
-                }
-            }
-        });
-    });
+    //             if (rowText.indexOf(searchText) === -1) {
+    //                 row.style.display = 'none';
+    //             } else {
+    //                 row.style.display = '';
+    //             }
+    //         }
+    //     });
+    // });
+    // 
 </script>
 @endif
 

@@ -91,6 +91,8 @@ class DashboardController extends Controller
         $expensesCheque = Expenses::where('payment_source', 'Transfer by Cheques')->whereDate('date', $yesterday)->get()->sum('amount');
         $expensesTransfer = Expenses::where('payment_source', 'Direct Transfer')->whereDate('date', $yesterday)->get()->sum('amount');
 
+        $payments = Payment::get();
+
         return view('dashboard.dashboard', [
             'moment' => $moment,
             'notifications' => $notifications,
@@ -101,7 +103,8 @@ class DashboardController extends Controller
             'expensesCash' => $expensesCash,
             'closing_balance' => $closing_balance,
             'direct_transfer' => $expensesTransfer + $transfer,
-            'transfer_cheque' => $expensesCheque + $cheques
+            'transfer_cheque' => $expensesCheque + $cheques,
+            'payments' => $payments
         ]);
     }
 
