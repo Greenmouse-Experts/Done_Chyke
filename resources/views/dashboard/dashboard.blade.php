@@ -289,10 +289,10 @@
                         Cash: <span> ₦{{number_format($closing_balance, 2)}} </span>
                     </p>
                     <p>
-                        Direct Transfer: <span> ₦{{number_format($direct_transfer, 2)}}  </span>
+                        Direct Transfer: <span> ₦{{number_format($direct_transfer, 2)}} </span>
                     </p>
                     <p>
-                        Transfer by Cheque: <span> ₦{{number_format($transfer_cheque, 2)}}  </span>
+                        Transfer by Cheque: <span> ₦{{number_format($transfer_cheque, 2)}} </span>
                     </p>
                 </div>
             </div>
@@ -337,6 +337,17 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <button class="arrow" id="prevPage" disabled>← <span class="nav-text">PREV</span></button>
+                                    <div class="pages">
+                                        <div class="page-number active">1</div>
+                                        <div class="page-number">2</div>
+                                        <div class="page-number">3</div>
+                                        <div class="page-number">4</div>
+                                        <div class="page-number">5</div>
+                                    </div>
+                                    <button class="arrow" id="nextPage"><span class="nav-text">NEXT</span> →</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -359,10 +370,14 @@
                             <small class="float-right">{{$notification->created_at->diffForHumans()}}</small>
                         </div>
                         <div class="toast-body">
-                          <small> {{$notification->title}}</small>
+                            <small> {{$notification->title}}</small>
                         </div>
+                        
                     </div>
                     @endforeach
+                    <div class="text-center"><a href="#">
+                                See more
+                            </a></div>
                 </div>
             </div>
         </div>
@@ -370,33 +385,32 @@
 </div>
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var searchInput = document.getElementById('searchInput');
-    var dataTable = document.getElementById('dataTable');
-    var tableBody = dataTable.getElementsByTagName('tbody')[0];
-    var rows = tableBody.getElementsByTagName('tr');
+    document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.getElementById('searchInput');
+        var dataTable = document.getElementById('dataTable');
+        var tableBody = dataTable.getElementsByTagName('tbody')[0];
+        var rows = tableBody.getElementsByTagName('tr');
 
-    searchInput.addEventListener('keyup', function () {
-        var searchText = searchInput.value.toLowerCase();
+        searchInput.addEventListener('keyup', function() {
+            var searchText = searchInput.value.toLowerCase();
 
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var cells = row.getElementsByTagName('td');
-            var rowText = '';
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var cells = row.getElementsByTagName('td');
+                var rowText = '';
 
-            for (var j = 0; j < cells.length; j++) {
-                rowText += cells[j].textContent.toLowerCase() + ' ';
+                for (var j = 0; j < cells.length; j++) {
+                    rowText += cells[j].textContent.toLowerCase() + ' ';
+                }
+
+                if (rowText.indexOf(searchText) === -1) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
             }
-
-            if (rowText.indexOf(searchText) === -1) {
-                row.style.display = 'none';
-            } else {
-                row.style.display = '';
-            }
-        }
+        });
     });
-});
-
 </script>
 @endif
 
