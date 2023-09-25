@@ -9,6 +9,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{URL::ASSET('assets/images/favicon.png')}}" />
     <link rel="stylesheet" href="{{URL::ASSET('assets/css/backend-plugin.min.css')}}">
+    <link rel="stylesheet" href="{{URL::ASSET('assets/css/style.css')}}">
     <link rel="stylesheet" href="{{URL::ASSET('assets/css/backende209.css?v=1.0.0')}}">
     <link rel="stylesheet" href="{{URL::ASSET('assets/vendor/%40fortawesome/fontawesome-free/css/all.min.css')}}">
     <link rel="stylesheet" href="{{URL::ASSET('assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css')}}">
