@@ -372,12 +372,12 @@
                         <div class="toast-body">
                             <small> {{$notification->title}}</small>
                         </div>
-                        
+
                     </div>
                     @endforeach
                     <div class="text-center"><a href="#">
-                                See more
-                            </a></div>
+                            See more
+                        </a></div>
                 </div>
             </div>
         </div>

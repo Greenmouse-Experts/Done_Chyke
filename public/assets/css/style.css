@@ -85,7 +85,7 @@
     color: #A9ADBC;
     margin-left: 10px !important;
 }
-.pagination {
+.pagination{
     text-align: center;
     margin-top: 20px;
     display: flex;
@@ -114,7 +114,7 @@
     transition: .4s ease;
 }
 
-.active {
+.pagination .active {
     font-size: 1.3em;
     font-size: 12px;
     height: 25px;
