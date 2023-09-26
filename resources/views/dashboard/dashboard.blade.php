@@ -344,8 +344,9 @@
                                                 ₦{{number_format($payment->low_grade_columbite_receipt->price - $payment->payment_amount, 2)}}
                                                 @endif
                                             </td>
-                                            <td><i class="bi bi-eye-fill"></i> <span>
-                                                    <a href="{{route('payments.view.details', Crypt::encrypt($payment->id))}}">View All</a></span></td>
+                                            <td>
+                                                <i class="bi bi-eye-fill"></i> <span>
+                                                    <a href="{{route('payments.process', [Crypt::encrypt($payment->receipt_id), Crypt::encrypt($payment->receipt_type), Crypt::encrypt($payment->receipt_title)])}}">View All</a></span></td>
                                         </tr>
                                         @endforeach
                                     </tbody>

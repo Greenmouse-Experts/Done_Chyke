@@ -110,7 +110,7 @@ class DashboardController extends Controller
                 }
             }
         }
-        // return $payments;
+        return $payments;
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
