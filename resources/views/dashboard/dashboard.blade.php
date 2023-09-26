@@ -294,13 +294,16 @@
                     <p>
                         Transfer by Cheque: <span> ₦{{number_format($transfer_cheque, 2)}} </span>
                     </p>
+                    <p>
+                        Date: <span> {{\Carbon\Carbon::yesterday()->toFormattedDateString()}} </span>
+                    </p>
                 </div>
             </div>
             <div class="col-lg-8 mb-4">
                 <div class="Hamzat">
                     <div class="row">
                         <div class="col-sm-9">
-                            <h6 class="card-title mb-0">Final Payments</h6>
+                            <h6 class="card-title mb-0">Outstanding Payments</h6>
                         </div>
                         <!-- <div class="col-sm-6">
                             <input type="text" id="searchInput" placeholder="Search..">
@@ -312,6 +315,7 @@
                                     <thead class="bg-white text-uppercase">
                                         <tr class="accept ligth-data">
                                             <th>Date</th>
+                                            <th>Receipt</th>
                                             <th>Amount</th>
                                             <th>Action</th>
                                         </tr>
@@ -323,7 +327,22 @@
                                                 {{$payment->date_paid}}
                                             </td>
                                             <td>
-                                                ₦{{number_format($payment->payment_amount, 2)}}
+                                                @if($payment->receipt_title == 'Tin')
+                                                {{$payment->tin_receipt->receipt_no}}
+                                                @elseif($payment->receipt_title == 'Columbite')
+                                                {{$payment->columbite_receipt->receipt_no}}
+                                                @else
+                                                {{$payment->low_grade_columbite_receipt->receipt_no}}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($payment->receipt_title == 'Tin')
+                                                ₦{{number_format($payment->tin_receipt->price - $payment->payment_amount, 2)}}
+                                                @elseif($payment->receipt_title == 'Columbite')
+                                                ₦{{number_format($payment->columbite_receipt->price - $payment->payment_amount, 2)}}
+                                                @else
+                                                ₦{{number_format($payment->low_grade_columbite_receipt->price - $payment->payment_amount, 2)}}
+                                                @endif
                                             </td>
                                             <td><i class="bi bi-eye-fill"></i> <span>
                                                     <a href="{{route('payments.view.details', Crypt::encrypt($payment->id))}}">View All</a></span></td>

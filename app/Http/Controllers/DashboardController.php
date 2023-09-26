@@ -91,7 +91,26 @@ class DashboardController extends Controller
         $expensesCheque = Expenses::where('payment_source', 'Transfer by Cheques')->whereDate('date', $yesterday)->get()->sum('amount');
         $expensesTransfer = Expenses::where('payment_source', 'Direct Transfer')->whereDate('date', $yesterday)->get()->sum('amount');
 
-        $payments = Payment::latest()->where('payment_action', 'Full Payment')->get();
+        $payments = Payment::latest()->where(['payment_action' => 'Part Payment', 'final_payment_type' => null])->get();
+
+        $allPayments = [];
+
+        if(!$payments->isEmpty())
+        {
+            foreach($payments as $payment)
+            {
+                if($payment->receipt_title === 'Tin')
+                {
+                    $allPayments = $payment->load('tin_receipt');
+                } elseif($payment->receipt_title === 'Columbite')
+                {
+                    $allPayments = $payment->load('columbite_receipt');
+                } else {
+                    $allPayments = $payment->load('low_grade_columbite_receipt');
+                }
+            }
+        }
+        // return $payments;
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
