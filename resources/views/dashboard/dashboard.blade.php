@@ -359,8 +359,8 @@
                     </div>
                     @endforeach
                     <div class="text-center"><a href="{{route('notifications')}}">
-                                See more
-                            </a></div>
+                            See more
+                        </a></div>
                 </div>
             </div>
         </div>
