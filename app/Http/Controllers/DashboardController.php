@@ -91,7 +91,7 @@ class DashboardController extends Controller
         $expensesCheque = Expenses::where('payment_source', 'Transfer by Cheques')->whereDate('date', $yesterday)->get()->sum('amount');
         $expensesTransfer = Expenses::where('payment_source', 'Direct Transfer')->whereDate('date', $yesterday)->get()->sum('amount');
 
-        $payments = Payment::latest()->where(['payment_action' => 'Part Payment', 'final_payment_type' => null])->get();
+        $payments = Payment::latest()->where(['payment_action' => 'Part Payment', 'final_payment_type' => null, 'final_payment_amount' => null, 'final_date_paid' => null])->get();
 
         $allPayments = [];
 
