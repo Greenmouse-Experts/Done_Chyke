@@ -320,18 +320,10 @@
                                         @foreach($payments as $payment)
                                         <tr class="{{$payment->id}}">
                                             <td>
-                                                @if($payment->payment_action == 'Full Payment')
                                                 {{$payment->date_paid}}
-                                                @else
-                                                {{$payment->final_date_paid}}
-                                                @endif
                                             </td>
                                             <td>
-                                                @if($payment->payment_action == 'Full Payment')
                                                 ₦{{number_format($payment->payment_amount, 2)}}
-                                                @else
-                                                ₦{{number_format($payment->final_payment_amount, 2)}}
-                                                @endif
                                             </td>
                                             <td><i class="bi bi-eye-fill"></i> <span>
                                                     <a href="{{route('payments.view.details', Crypt::encrypt($payment->id))}}">View All</a></span></td>

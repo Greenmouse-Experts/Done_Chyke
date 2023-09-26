@@ -91,7 +91,7 @@ class DashboardController extends Controller
         $expensesCheque = Expenses::where('payment_source', 'Transfer by Cheques')->whereDate('date', $yesterday)->get()->sum('amount');
         $expensesTransfer = Expenses::where('payment_source', 'Direct Transfer')->whereDate('date', $yesterday)->get()->sum('amount');
 
-        $payments = Payment::get();
+        $payments = Payment::latest()->where('payment_action', 'Full Payment')->get();
 
         return view('dashboard.dashboard', [
             'moment' => $moment,
