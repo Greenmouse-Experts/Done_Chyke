@@ -250,7 +250,7 @@
             <div>
                 <h4 class="mb-3">Dashboard</h4>
             </div>
-
+<div style="border:2px; background:purple;"></div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"> <a href="{{route('daily.balance')}}" class="btn btn-primary text-white text-sm add-list"><i class="las la-plus"></i><small>Add Starting Balance</small></a></li>
