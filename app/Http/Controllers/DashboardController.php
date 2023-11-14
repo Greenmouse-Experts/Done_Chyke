@@ -71,7 +71,6 @@ class DashboardController extends Controller
 
         $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $today)->get()->sum('amount');
 
-
         $expenses = Expenses::whereDate('date', $yesterday)->get()->sum('amount');
 
         $paymentsDateCash = Payment::where('payment_type', 'Cash')->whereDate('date_paid', $yesterday)->get();
@@ -88,6 +87,31 @@ class DashboardController extends Controller
 
         $closing_balance = $expenses + $cash + $transfer + $cheques;
 
+        $expensesCash = Expenses::where('payment_source', 'Cash')->whereDate('date', $yesterday)->get()->sum('amount');
+        $expensesCheque = Expenses::where('payment_source', 'Transfer by Cheques')->whereDate('date', $yesterday)->get()->sum('amount');
+        $expensesTransfer = Expenses::where('payment_source', 'Direct Transfer')->whereDate('date', $yesterday)->get()->sum('amount');
+
+        $payments = Payment::latest()->where(['payment_action' => 'Part Payment', 'final_payment_type' => null, 'final_payment_amount' => null, 'final_date_paid' => null])->get();
+
+        $allPayments = [];
+
+        if(!$payments->isEmpty())
+        {
+            foreach($payments as $payment)
+            {
+                if($payment->receipt_title === 'Tin')
+                {
+                    $allPayments = $payment->load('tin_receipt');
+                } elseif($payment->receipt_title === 'Columbite')
+                {
+                    $allPayments = $payment->load('columbite_receipt');
+                } else {
+                    $allPayments = $payment->load('low_grade_columbite_receipt');
+                }
+            }
+        }
+        // return $payments;
+
         return view('dashboard.dashboard', [
             'moment' => $moment,
             'notifications' => $notifications,
@@ -96,8 +120,10 @@ class DashboardController extends Controller
             'totalStartingBalance' => $totalStartingBalance,
             'paymentCash' => $paymentCash,
             'expensesCash' => $expensesCash,
-            'closing_balance' => $closing_balance
-
+            'closing_balance' => $closing_balance,
+            'direct_transfer' => $expensesTransfer + $transfer,
+            'transfer_cheque' => $expensesCheque + $cheques,
+            'payments' => $payments
         ]);
     }
 

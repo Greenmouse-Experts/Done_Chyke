@@ -9256,52 +9256,63 @@ class AdminController extends Controller
 
     public function payments_tin_view($id, Request $request)
     {
-        if ($id == 'kg' || $id == 'pound') {
+        if ($id == 'pound') {
             $active_tab = $id;
             
             $tinPaymentReceiptKg = PaymentReceiptTin::latest()->where('type', 'kg')->get();
             $tinPaymentReceiptPound = PaymentReceiptTin::latest()->where('type', 'pound')->get();
         
-            if ($request->start_date != null && $request->end_date != null) {
-                if ($id == 'kg') {
-                    $tinPaymentReceiptKg = $tinPaymentReceiptKg->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
-                } elseif ($id == 'pound') {
-                    $tinPaymentReceiptPound = $tinPaymentReceiptPound->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
-                }
+            if ($request->start_date_pound != null && $request->end_date_pound != null) {
+                $tinPaymentReceiptPound = $tinPaymentReceiptPound->whereBetween('date_of_purchase', [$request->start_date_pound, $request->end_date_pound]);
             }
         
             return view('admin.payments.tin_view', [
                 'tinPaymentReceiptKg' => $tinPaymentReceiptKg,
                 'tinPaymentReceiptPound' => $tinPaymentReceiptPound,
                 'active_tab' => $active_tab,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date
+                'start_date_pound' => $request->start_date_pound,
+                'end_date_pound' => $request->end_date_pound,
+                'start_date_kg' => $request->start_date_kg,
+                'end_date_kg' => $request->end_date_kg
+            ]);
+        }
+
+        if ($id == 'kg') {
+            $active_tab = $id;
+            
+            $tinPaymentReceiptKg = PaymentReceiptTin::latest()->where('type', 'kg')->get();
+            $tinPaymentReceiptPound = PaymentReceiptTin::latest()->where('type', 'pound')->get();
+        
+            if ($request->start_date_kg != null && $request->end_date_kg != null) {
+                $tinPaymentReceiptKg = $tinPaymentReceiptKg->whereBetween('date_of_purchase', [$request->start_date_kg, $request->end_date_kg]);
+            }
+        
+            return view('admin.payments.tin_view', [
+                'tinPaymentReceiptKg' => $tinPaymentReceiptKg,
+                'tinPaymentReceiptPound' => $tinPaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date_pound' => $request->start_date_pound,
+                'end_date_pound' => $request->end_date_pound,
+                'start_date_kg' => $request->start_date_kg,
+                'end_date_kg' => $request->end_date_kg
             ]);
         }
     }
 
     public function payments_columbite_view($id, Request $request)
     {
-        if ($id == 'kg' || $id == 'pound') {
-            if ($request->start_date == null && $request->end_date == null) {
+        if ($id == 'pound') {
+            if ($request->start_date_pound == null && $request->end_date_pound == null) {
                 $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
                     ->where('type', 'kg')->get();
                 $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
                     ->where('type', 'pound')->get();
             } else {
-                if ($id == 'kg') {
-                    $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
-                        ->where('type', 'kg')
-                        ->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
-                    $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
-                        ->where('type', 'pound')->get();
-                } elseif ($id == 'pound') {
-                    $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
-                        ->where('type', 'pound')
-                        ->whereBetween('date_of_purchase', [$request->start_date, $request->end_date])->get();
-                    $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
-                        ->where('type', 'kg')->get();
-                }
+                $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                ->where('type', 'kg')->get();
+                $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                    ->where('type', 'pound')
+                    ->whereBetween('date_of_purchase', [$request->start_date_pound, $request->end_date_pound])->get();
             }
         
             $active_tab = $id;
@@ -9310,30 +9321,56 @@ class AdminController extends Controller
                 'columbitePaymentReceiptKg' => $columbitePaymentReceiptKg,
                 'columbitePaymentReceiptPound' => $columbitePaymentReceiptPound,
                 'active_tab' => $active_tab,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date
+                'start_date_pound' => $request->start_date_pound,
+                'end_date_pound' => $request->end_date_pound,
+                'start_date_kg' => $request->start_date_kg,
+                'end_date_kg' => $request->end_date_kg
+            ]);
+        }
+
+        if ($id == 'kg') {
+            if ($request->start_date_kg == null && $request->end_date_kg == null) {
+                $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                    ->where('type', 'kg')->get();
+                $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                    ->where('type', 'pound')->get();
+            } else {
+                $columbitePaymentReceiptPound = PaymentReceiptColumbite::latest()
+                    ->where('type', 'pound')->get();
+                $columbitePaymentReceiptKg = PaymentReceiptColumbite::latest()
+                    ->where('type', 'kg')
+                    ->whereBetween('date_of_purchase', [$request->start_date_kg, $request->end_date_kg])->get();
+            }
+        
+            $active_tab = $id;
+        
+            return view('admin.payments.columbite_view', [
+                'columbitePaymentReceiptKg' => $columbitePaymentReceiptKg,
+                'columbitePaymentReceiptPound' => $columbitePaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date_pound' => $request->start_date_pound,
+                'end_date_pound' => $request->end_date_pound,
+                'start_date_kg' => $request->start_date_kg,
+                'end_date_kg' => $request->end_date_kg
             ]);
         }
     }
 
     public function payments_lower_grade_columbite_view($id, Request $request)
     {
-        if ($id == 'kg' || $id == 'pound') {
-            if ($request->start_date == null && $request->end_date == null) {
+        if ($id == 'pound') {
+            if ($request->start_date_pound == null && $request->end_date_pound == null) {
                 $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
                     ->where('type', 'kg')->get();
                 $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
                     ->where('type', 'pound')->get();
             } else {
                 $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
-                    ->where('type', 'kg')
-                    ->when($id == 'kg', function ($query) use ($request) {
-                        return $query->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
-                    })->get();
+                ->where('type', 'kg')->get();
                 $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
                     ->where('type', 'pound')
                     ->when($id == 'pound', function ($query) use ($request) {
-                        return $query->whereBetween('date_of_purchase', [$request->start_date, $request->end_date]);
+                        return $query->whereBetween('date_of_purchase', [$request->start_date_pound, $request->end_date_pound]);
                     })->get();
             }
         
@@ -9343,8 +9380,39 @@ class AdminController extends Controller
                 'lowergradecolumbitePaymentReceiptKg' => $lowergradecolumbitePaymentReceiptKg,
                 'lowergradecolumbitePaymentReceiptPound' => $lowergradecolumbitePaymentReceiptPound,
                 'active_tab' => $active_tab,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date
+                'start_date_pound' => $request->start_date_pound,
+                'end_date_pound' => $request->end_date_pound,
+                'start_date_kg' => $request->start_date_kg,
+                'end_date_kg' => $request->end_date_kg
+            ]);
+        }
+
+        if ($id == 'kg') {
+            if ($request->start_date_kg == null && $request->end_date_kg == null) {
+                $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'kg')->get();
+                $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'pound')->get();
+            } else {
+                $lowergradecolumbitePaymentReceiptPound = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'pound')->get();
+                $lowergradecolumbitePaymentReceiptKg = PaymentReceiptLowerGradeColumbite::latest()
+                    ->where('type', 'kg')
+                    ->when($id == 'kg', function ($query) use ($request) {
+                        return $query->whereBetween('date_of_purchase', [$request->start_date_kg, $request->end_date_kg]);
+                    })->get();
+            }
+        
+            $active_tab = $id;
+        
+            return view('admin.payments.lower_grade_columbite_view', [
+                'lowergradecolumbitePaymentReceiptKg' => $lowergradecolumbitePaymentReceiptKg,
+                'lowergradecolumbitePaymentReceiptPound' => $lowergradecolumbitePaymentReceiptPound,
+                'active_tab' => $active_tab,
+                'start_date_pound' => $request->start_date_pound,
+                'end_date_pound' => $request->end_date_pound,
+                'start_date_kg' => $request->start_date_kg,
+                'end_date_kg' => $request->end_date_kg
             ]);
         }
     }

@@ -83,8 +83,7 @@
         $(document).ready(function() {
             $('.data-table').DataTable({
                 dom: "Blfrtip",
-                buttons: [
-                    {
+                buttons: [{
                         text: 'csv',
                         extend: 'csvHtml5',
                     },
@@ -99,11 +98,15 @@
                     {
                         text: 'print',
                         extend: 'print',
-                    },  
+                    },
                 ]
             });
+
+            $('.data-tab').DataTable();
         });
     </script>
+  
+
 </body>
 
 </html>

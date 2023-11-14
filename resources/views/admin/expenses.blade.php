@@ -33,9 +33,9 @@
                                 <label>
                                     <select class="form-control" name="source">
                                         <option value="{{$source ?? null}}">{{$source ?? '- Select Payment Source -'}}</option>
-                                        <option value="cheque">Cheque</option>
-                                        <option value="cash">Cash</option>
-                                        <option value="transfer">Transfer</option>
+                                        <option value="Transfer by Cheques">Transfer by Cheques</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Direct Transfer">Direct Transfer</option>
                                     </select>
                                 </label>
                                 <button type="submit" class="btn btn-primary">Filter</button>

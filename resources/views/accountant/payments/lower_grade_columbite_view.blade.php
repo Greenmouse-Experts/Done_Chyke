@@ -36,10 +36,10 @@
                                         <form action="{{ route('payments.lower.grade.columbite.view', 'pound')}}" method="POST" data-toggle="validator">
                                             @csrf
                                             <label class="mr-2"><strong>Start Date :</strong>
-                                            <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required >
+                                            <input type="date" name="start_date_pound" value="{{$start_date_pound}}" class="form-control" required >
                                             </label>&nbsp;&nbsp;
                                             <label class="mr-2"><strong>End Date :</strong>
-                                            <input type="date" name="end_date" value="{{$end_date}}" class="form-control" required>
+                                            <input type="date" name="end_date_pound" value="{{$end_date_pound}}" class="form-control" required>
                                             </label>
                                             <button type="submit" class="btn btn-primary">Filter</button>
                                         </form>
@@ -147,10 +147,10 @@
                                         <form action="{{ route('payments.lower.grade.columbite.view', 'kg')}}" method="POST" data-toggle="validator">
                                             @csrf
                                             <label class="mr-2"><strong>Start Date :</strong>
-                                            <input type="date" name="start_date" value="{{$start_date}}" class="form-control" required >
+                                            <input type="date" name="start_date_kg" value="{{$start_date_kg}}" class="form-control" required >
                                             </label>&nbsp;&nbsp;
                                             <label class="mr-2"><strong>End Date :</strong>
-                                            <input type="date" name="end_date" value="{{$end_date}}" class="form-control" required>
+                                            <input type="date" name="end_date_kg" value="{{$end_date_kg}}" class="form-control" required>
                                             </label>
                                             <button type="submit" class="btn btn-primary">Filter</button>
                                         </form>
