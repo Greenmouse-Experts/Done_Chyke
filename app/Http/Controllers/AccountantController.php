@@ -104,8 +104,6 @@ class AccountantController extends Controller
         {
             $payment = Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->get();
 
-            return $payment;
-
             $sumPayment = $payment->sum('payment_amount') + $payment->sum('final_payment_amount');
             $totalPayment = $receipt->price - $sumPayment;
 
