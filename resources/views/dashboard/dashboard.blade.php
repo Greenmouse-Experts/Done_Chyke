@@ -322,32 +322,38 @@
                                     </thead>
                                     <tbody class="ligth-body">
                                         @foreach($payments as $payment)
-                                        <tr class="{{$payment->id}}">
-                                            <td>
-                                                {{$payment->date_paid}}
-                                            </td>
-                                            <td>
-                                                @if($payment->receipt_title == 'Tin')
-                                                {{$payment->tin_receipt->receipt_no}}
-                                                @elseif($payment->receipt_title == 'Columbite')
-                                                {{$payment->columbite_receipt->receipt_no}}
-                                                @else
-                                                {{$payment->low_grade_columbite_receipt->receipt_no}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($payment->receipt_title == 'Tin')
-                                                ₦{{number_format($payment->tin_receipt->price - $payment->payment_amount, 2)}}
-                                                @elseif($payment->receipt_title == 'Columbite')
-                                                ₦{{number_format($payment->columbite_receipt->price - $payment->payment_amount, 2)}}
-                                                @else
-                                                ₦{{number_format($payment->low_grade_columbite_receipt->price - $payment->payment_amount, 2)}}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <i class="bi bi-eye-fill"></i> <span>
-                                                    <a href="{{route('payments.process', [Crypt::encrypt($payment->receipt_id), Crypt::encrypt($payment->receipt_type), Crypt::encrypt($payment->receipt_title)])}}">View All</a></span></td>
-                                        </tr>
+                                        @if(App\Models\Payment::where([
+                                                'receipt_title' => $payment->receipt_title,
+                                                'receipt_type' => $payment->receipt_type,
+                                                'receipt_id' => $payment->receipt_id,
+                                            ])->get()->count() == 1)
+                                            <tr class="{{$payment->id}}">
+                                                <td>
+                                                    {{$payment->date_paid}}
+                                                </td>
+                                                <td>
+                                                    @if($payment->receipt_title == 'Tin')
+                                                    {{$payment->tin_receipt->receipt_no}}
+                                                    @elseif($payment->receipt_title == 'Columbite')
+                                                    {{$payment->columbite_receipt->receipt_no}}
+                                                    @else
+                                                    {{$payment->low_grade_columbite_receipt->receipt_no}}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($payment->receipt_title == 'Tin')
+                                                    ₦{{number_format($payment->tin_receipt->price - $payment->payment_amount, 2)}}
+                                                    @elseif($payment->receipt_title == 'Columbite')
+                                                    ₦{{number_format($payment->columbite_receipt->price - $payment->payment_amount, 2)}}
+                                                    @else
+                                                    ₦{{number_format($payment->low_grade_columbite_receipt->price - $payment->payment_amount, 2)}}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <i class="bi bi-eye-fill"></i> <span>
+                                                        <a href="{{route('payments.process', [Crypt::encrypt($payment->receipt_id), Crypt::encrypt($payment->receipt_type), Crypt::encrypt($payment->receipt_title)])}}">View All</a></span></td>
+                                            </tr>
+                                        @endif
                                         @endforeach
                                     </tbody>
                                 </table>

@@ -104,6 +104,8 @@ class AccountantController extends Controller
         {
             $payment = Payment::where(['receipt_title' => $receiptTITLE, 'receipt_type' => $receiptTYPE, 'receipt_id' => $receiptID])->get();
 
+            return $payment;
+
             $sumPayment = $payment->sum('payment_amount') + $payment->sum('final_payment_amount');
             $totalPayment = $receipt->price - $sumPayment;
 
@@ -143,7 +145,7 @@ class AccountantController extends Controller
                 {
                     return back()->with([
                         'type' => 'danger',
-                        'message' => "Payment action full payment can't be greater or less than the receipt amount payable."
+                        'message' => "Full payment can't be greater or less than the receipt amount payable."
                     ]);
                 }
             } else {
@@ -152,7 +154,7 @@ class AccountantController extends Controller
                 {
                     return back()->with([
                         'type' => 'danger',
-                        'message' => "Payment action part payment can't be greater or equal to the receipt amount payable."
+                        'message' => "Part payment can't be greater or equal to the receipt amount payable."
                     ]);
                 }
             }

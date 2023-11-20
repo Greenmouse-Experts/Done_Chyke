@@ -34,8 +34,8 @@
                             </form>
                         </div>
                         <div class="d-flex flex-wrap align-items-center justify-content-end mb-4">
-                            <a class="text-white btn btn-primary add-list mr-5">{{\Carbon\Carbon::now()->toFormattedDateString()}} Starting Balance - <span style="font-size: 1.5rem;">₦{{number_format($totalStartingBalance, 2)}}</span></a>
-                            <button data-toggle="modal" data-target="#add" class="btn btn-primary text-white add-list"><i class="las la-plus mr-3"></i>Add Starting Balance</button>
+                            <a class="text-white btn btn-primary add-list mr-5" style="margin-top: 1rem;">{{\Carbon\Carbon::now()->toFormattedDateString()}} Starting Balance - <span style="font-size: 1.5rem;">₦{{number_format($totalStartingBalance, 2)}}</span></a>
+                            <button data-toggle="modal" data-target="#add" class="btn btn-primary text-white add-list" style="margin-top: 1rem;"><i class="las la-plus mr-3"></i>Add Starting Balance</button>
                         </div>
                     </div>
                 </div>

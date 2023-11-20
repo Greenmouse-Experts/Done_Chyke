@@ -91,25 +91,34 @@ class DashboardController extends Controller
         $expensesCheque = Expenses::where('payment_source', 'Transfer by Cheques')->whereDate('date', $yesterday)->get()->sum('amount');
         $expensesTransfer = Expenses::where('payment_source', 'Direct Transfer')->whereDate('date', $yesterday)->get()->sum('amount');
 
-        $payments = Payment::latest()->where(['payment_action' => 'Part Payment', 'final_payment_type' => null, 'final_payment_amount' => null, 'final_date_paid' => null])->get();
+        $payments = Payment::latest()
+            ->where([
+                'payment_action' => 'Part Payment',
+                'final_payment_type' => null,
+                'final_payment_amount' => null,
+                'final_date_paid' => null
+            ])
+            ->get();
 
         $allPayments = [];
 
-        if(!$payments->isEmpty())
-        {
-            foreach($payments as $payment)
-            {
-                if($payment->receipt_title === 'Tin')
-                {
-                    $allPayments = $payment->load('tin_receipt');
-                } elseif($payment->receipt_title === 'Columbite')
-                {
-                    $allPayments = $payment->load('columbite_receipt');
-                } else {
-                    $allPayments = $payment->load('low_grade_columbite_receipt');
+        if (!$payments->isEmpty()) {
+            foreach ($payments as $payment) {
+                // Use switch statement for better readability
+                switch ($payment->receipt_title) {
+                    case 'Tin':
+                        $allPayments[] = $payment->load('tin_receipt');
+                        break;
+                    case 'Columbite':
+                        $allPayments[] = $payment->load('columbite_receipt');
+                        break;
+                    default:
+                        $allPayments[] = $payment->load('low_grade_columbite_receipt');
+                        break;
                 }
             }
         }
+
         // return $payments;
 
         return view('dashboard.dashboard', [
