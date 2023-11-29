@@ -69,7 +69,7 @@
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('admin.update.rate.berating', Crypt::encrypt($berating->id))}}" method="POST" data-toggle="validator">
+                                                                <form action="{{route('update.rate.berating', Crypt::encrypt($berating->id))}}" method="POST" data-toggle="validator">
                                                                     @csrf
                                                                     <div class="row">
                                                                         <div class="col-md-6">
