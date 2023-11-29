@@ -71,7 +71,7 @@
                                                     <div class="modal-body">
                                                         <div class="popup text-left">
                                                             <div class="content create-workform bg-body">
-                                                                <form action="{{route('update.rate.analysis', Crypt::encrypt($rate->id))}}" method="POST" data-toggle="validator">
+                                                                <form action="{{route('admin.update.rate.analysis', Crypt::encrypt($rate->id))}}" method="POST" data-toggle="validator">
                                                                     @csrf
                                                                     <div class="row">
                                                                         <div class="col-md-6">

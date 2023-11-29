@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{route('post.rate.analysis')}}" method="POST" data-toggle="validator">
+                        <form action="{{route('admin.post.rate.analysis')}}" method="POST" data-toggle="validator">
                         @csrf
                             <div class="row">
                                 <div class="col-md-6">
