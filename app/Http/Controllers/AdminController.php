@@ -3018,6 +3018,8 @@ class AdminController extends Controller
                     $subTotal = $rateCalculation * columbite_rate;
 
                     $subPrice = ($request->bags * columbite_rate + $request->bag_pound) * $subTotal;
+
+                    $totalInPound = ($request->bags * columbite_rate + $request->bag_pound);
                     
                     $totalPrice = $subPrice / columbite_rate;
                     
@@ -3032,7 +3034,7 @@ class AdminController extends Controller
                         'grade' => $request->grade,
                         'bag' => $request->bags,
                         'pound' => $bag_pounds,
-                        'total_in_pound' => $subPrice,
+                        'total_in_pound' => $totalInPound,
                         'berating_rate_list' => $berate,
                         'percentage_analysis' => $request->percentage,
                         'analysis_rate_list' => $analysisRate,
@@ -3786,6 +3788,8 @@ class AdminController extends Controller
                     $subTotal = $rateCalculation * columbite_rate;
 
                     $subPrice = ($request->bags * columbite_rate + $request->bag_pound) * $subTotal;
+
+                    $totalInPound = ($request->bags * columbite_rate + $request->bag_pound);
                     
                     $totalPrice = $subPrice / columbite_rate;
                     
@@ -3808,7 +3812,7 @@ class AdminController extends Controller
                             'grade' => $request->grade,
                             'bag' => $request->bags,
                             'pound' => $bag_pounds,
-                            'total_in_pound' => $subPrice,
+                            'total_in_pound' => $totalInPound,
                             'berating_rate_list' => $berate,
                             'percentage_analysis' => $request->percentage,
                             'analysis_rate_list' => $analysisRate,
